@@ -16,6 +16,7 @@ class MyDB(object):
     	return self._db_cur.fetchall()
 
     def __del__(self):
+        self._db_connection.commit()
         self._db_connection.close()
 
 
