@@ -4,3 +4,5 @@ Hadarak : Nicolas Roche 3IBD
 AlexisLib : Alexis Liberge
 
 Sujet : Determiner l'age d'une personne à partir de photographies
+
+consulter le site www.boudeville.fr qui la présentation du sujet
