@@ -57,7 +57,7 @@ namespace YoutubeImageDataset
                     if (equalElements >= 256)
                     {
                         var tmpFile = Path.GetFileName(file);
-                        File.Move(file, "C:\\Users\\nico_\\Documents\\DataFromYoutube\\deleted\\" + tmpFile);
+                        File.Delete(file);
                         imageDeleted++;
                         deleted = true;
                         break;

@@ -48,7 +48,7 @@
             // 
             // ConvertImages
             // 
-            this.ConvertImages.Location = new System.Drawing.Point(1148, 955);
+            this.ConvertImages.Location = new System.Drawing.Point(1148, 721);
             this.ConvertImages.Name = "ConvertImages";
             this.ConvertImages.Size = new System.Drawing.Size(244, 72);
             this.ConvertImages.TabIndex = 0;
@@ -90,7 +90,7 @@
             this.SelectDestination.Name = "SelectDestination";
             this.SelectDestination.Size = new System.Drawing.Size(326, 60);
             this.SelectDestination.TabIndex = 6;
-            this.SelectDestination.Text = "Select Screenshot source";
+            this.SelectDestination.Text = "Select Screenshot destination";
             this.SelectDestination.UseVisualStyleBackColor = true;
             this.SelectDestination.Click += new System.EventHandler(this.SelectDestination_Click_1);
             // 
@@ -200,9 +200,9 @@
             // 
             // OpenCropper
             // 
-            this.OpenCropper.Location = new System.Drawing.Point(748, 955);
+            this.OpenCropper.Location = new System.Drawing.Point(614, 850);
             this.OpenCropper.Name = "OpenCropper";
-            this.OpenCropper.Size = new System.Drawing.Size(266, 72);
+            this.OpenCropper.Size = new System.Drawing.Size(244, 72);
             this.OpenCropper.TabIndex = 18;
             this.OpenCropper.Text = "Open Cropper";
             this.OpenCropper.UseVisualStyleBackColor = true;
