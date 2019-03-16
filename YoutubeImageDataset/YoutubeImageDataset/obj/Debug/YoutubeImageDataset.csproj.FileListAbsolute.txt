@@ -8,3 +8,14 @@ C:\Users\nico_\Documents\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\Youtu
 C:\Users\nico_\Documents\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.csproj.CoreCompileInputs.cache
 C:\Users\nico_\Documents\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.exe
 C:\Users\nico_\Documents\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.pdb
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\bin\Debug\YoutubeImageDataset.exe.config
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\bin\Debug\YoutubeImageDataset.exe
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\bin\Debug\YoutubeImageDataset.pdb
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.csprojAssemblyReference.cache
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.Form1.resources
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.Form2.resources
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.Properties.Resources.resources
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.csproj.GenerateResource.cache
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.csproj.CoreCompileInputs.cache
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.exe
+C:\Users\nico_\Documents\GitHub\ProjetAnnuel3IBD\YoutubeImageDataset\YoutubeImageDataset\obj\Debug\YoutubeImageDataset.pdb

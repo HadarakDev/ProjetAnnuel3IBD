@@ -43,11 +43,12 @@
             this.SelectIntervalLabel = new System.Windows.Forms.Label();
             this.intervalTextBox = new System.Windows.Forms.TextBox();
             this.useInterval = new System.Windows.Forms.CheckBox();
+            this.OpenCropper = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ConvertImages
             // 
-            this.ConvertImages.Location = new System.Drawing.Point(1147, 991);
+            this.ConvertImages.Location = new System.Drawing.Point(1148, 955);
             this.ConvertImages.Name = "ConvertImages";
             this.ConvertImages.Size = new System.Drawing.Size(244, 72);
             this.ConvertImages.TabIndex = 0;
@@ -197,11 +198,22 @@
             this.useInterval.Text = "Use Interval";
             this.useInterval.UseVisualStyleBackColor = true;
             // 
+            // OpenCropper
+            // 
+            this.OpenCropper.Location = new System.Drawing.Point(748, 955);
+            this.OpenCropper.Name = "OpenCropper";
+            this.OpenCropper.Size = new System.Drawing.Size(266, 72);
+            this.OpenCropper.TabIndex = 18;
+            this.OpenCropper.Text = "Open Cropper";
+            this.OpenCropper.UseVisualStyleBackColor = true;
+            this.OpenCropper.Click += new System.EventHandler(this.OpenCropper_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1461, 1143);
+            this.Controls.Add(this.OpenCropper);
             this.Controls.Add(this.useInterval);
             this.Controls.Add(this.intervalTextBox);
             this.Controls.Add(this.SelectIntervalLabel);
@@ -240,6 +252,7 @@
         private System.Windows.Forms.Label SelectIntervalLabel;
         private System.Windows.Forms.TextBox intervalTextBox;
         private System.Windows.Forms.CheckBox useInterval;
+        private System.Windows.Forms.Button OpenCropper;
     }
 }
 

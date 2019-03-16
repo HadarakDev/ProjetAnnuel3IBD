@@ -26,7 +26,7 @@ namespace YoutubeImageDataset
             this.Close();
         }
 
-        private bool checkError()
+        private bool checkError(int full = 1)
         {
             string error = "";
             if (SelectedSourceFolder.Text.Equals("No Source"))
@@ -38,12 +38,12 @@ namespace YoutubeImageDataset
             {
                 error += " - No destination selected \r\n";
             }
-            if (SelectGender.SelectedIndex == -1)
+            if (full == 1 && SelectGender.SelectedIndex == -1)
             {
                 error += " - No Gender selected \r\n";
             }
 
-            if (SelectRace.SelectedIndex == -1)
+            if (full == 1 && SelectRace.SelectedIndex == -1)
             {
                 error += " - No Race selected \r\n";
             }
@@ -193,6 +193,25 @@ namespace YoutubeImageDataset
             {
                 SelectedSourceFolder.Text = fd.SelectedPath + "\\";
             }
+        }
+
+        private void OpenCropper_Click(object sender, EventArgs e)
+        {
+            Form f2 = new Form2();
+
+            if (checkError(0) == false)
+                return;
+            f2.Show();
+            ErrorLabel.ForeColor = Color.Green;
+            string sourcePath = SelectedSourceFolder.Text;
+            string[] files = Directory.GetFiles(sourcePath);
+            Image img = Image.FromFile(files[0]);
+            Size size = new Size(img.Width, img.Height);
+            Application.OpenForms["Form2"].Controls["pictureBox"].Size = size;
+            Application.OpenForms["Form2"].Controls["pictureBox"].BackgroundImage = img;
+
+
+
         }
     }
 }
