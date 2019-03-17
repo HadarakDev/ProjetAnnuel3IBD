@@ -102,7 +102,7 @@ namespace YoutubeImageDataset
         {
             string[] dirs = Directory.GetDirectories(sourcePath);
             var dirList = from x in dirs orderby x.Length, x select x;
-            
+
             int id = 0;
             foreach (var dir in dirList)
             {
@@ -134,19 +134,23 @@ namespace YoutubeImageDataset
             int days = 0;
             int age = 0;
 
-            try {
+            try
+            {
                 Int32.TryParse(startAgeTextBox.Text, out age);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
                 return (-1);
             }
-            
+
             int interval;
-            try {
+            try
+            {
                 Int32.TryParse(intervalTextBox.Text, out interval);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
                 return (-1);
             }
@@ -212,6 +216,79 @@ namespace YoutubeImageDataset
 
 
 
+        }
+
+        //private void GrayConvert_Click(object sender, EventArgs e)
+        //{
+        //    if (checkError(0) == false)
+        //        return;
+        //    string sourcePath = SelectedSourceFolder.Text;
+        //    string[] files = Directory.GetFiles(sourcePath);
+        //    string destPath = SelectedDestinationFolder.Text;
+        //    GrayConvert.Enabled = false;
+        //    foreach (string file in files)
+        //    {
+        //        Bitmap oldImg = new Bitmap(file);
+        //        Bitmap newImg;
+        //        int x, y;
+        //        Application.DoEvents();
+        //        for (x = 0; x < oldImg.Width; x++)
+        //        {
+        //            for (y = 0; y < oldImg.Height; y++)
+        //            {
+        //                Color pixelColor = oldImg.GetPixel(x, y);
+        //                int r = pixelColor.R;
+        //                int g = pixelColor.G;
+        //                int b = pixelColor.B;
+        //                int avg = (r + g + b) / 3;
+        //                Color newColor = Color.FromArgb(avg, avg, avg);
+        //                oldImg.SetPixel(x, y, newColor); // Now greyscale
+        //            }
+        //        }
+        //        newImg = oldImg;
+        //        string filename = Path.GetFileName(file);
+        //        newImg.Save(destPath + filename);
+        //        oldImg.Dispose();
+        //        newImg.Dispose();
+        //    }
+        //    GrayConvert.Enabled = true;
+        //}
+
+        private void GrayConvert_Click(object sender, EventArgs e)
+        {
+            if (checkError(0) == false)
+                return;
+            string destPath = SelectedDestinationFolder.Text;
+            string sourcePath = SelectedSourceFolder.Text;
+            string[] files = Directory.GetFiles(sourcePath);
+            GrayConvert.Enabled = false;
+            foreach (string file in files)
+            {
+                Application.DoEvents();
+                Bitmap original = new Bitmap(file);
+                Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+                Graphics g = Graphics.FromImage(newBitmap);
+                ColorMatrix colorMatrix = new ColorMatrix(
+                   new float[][]
+                  {
+                 new float[] {.3f, .3f, .3f, 0, 0},
+                 new float[] {.59f, .59f, .59f, 0, 0},
+                 new float[] {.11f, .11f, .11f, 0, 0},
+                 new float[] {0, 0, 0, 1, 0},
+                 new float[] {0, 0, 0, 0, 1}
+                  });
+                ImageAttributes attributes = new ImageAttributes();
+                attributes.SetColorMatrix(colorMatrix);
+
+                g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+                   0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+                g.Dispose();
+                original.Dispose();
+                string filename = Path.GetFileName(file);
+                newBitmap.Save(destPath + filename);
+                newBitmap.Dispose();
+            }
+            GrayConvert.Enabled = true;
         }
     }
 }
