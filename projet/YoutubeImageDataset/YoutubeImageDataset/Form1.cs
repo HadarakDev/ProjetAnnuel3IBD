@@ -213,46 +213,7 @@ namespace YoutubeImageDataset
             Size size = new Size(img.Width, img.Height);
             Application.OpenForms["Form2"].Controls["pictureBox"].Size = size;
             Application.OpenForms["Form2"].Controls["pictureBox"].BackgroundImage = img;
-
-
-
         }
-
-        //private void GrayConvert_Click(object sender, EventArgs e)
-        //{
-        //    if (checkError(0) == false)
-        //        return;
-        //    string sourcePath = SelectedSourceFolder.Text;
-        //    string[] files = Directory.GetFiles(sourcePath);
-        //    string destPath = SelectedDestinationFolder.Text;
-        //    GrayConvert.Enabled = false;
-        //    foreach (string file in files)
-        //    {
-        //        Bitmap oldImg = new Bitmap(file);
-        //        Bitmap newImg;
-        //        int x, y;
-        //        Application.DoEvents();
-        //        for (x = 0; x < oldImg.Width; x++)
-        //        {
-        //            for (y = 0; y < oldImg.Height; y++)
-        //            {
-        //                Color pixelColor = oldImg.GetPixel(x, y);
-        //                int r = pixelColor.R;
-        //                int g = pixelColor.G;
-        //                int b = pixelColor.B;
-        //                int avg = (r + g + b) / 3;
-        //                Color newColor = Color.FromArgb(avg, avg, avg);
-        //                oldImg.SetPixel(x, y, newColor); // Now greyscale
-        //            }
-        //        }
-        //        newImg = oldImg;
-        //        string filename = Path.GetFileName(file);
-        //        newImg.Save(destPath + filename);
-        //        oldImg.Dispose();
-        //        newImg.Dispose();
-        //    }
-        //    GrayConvert.Enabled = true;
-        //}
 
         private void GrayConvert_Click(object sender, EventArgs e)
         {
@@ -289,6 +250,42 @@ namespace YoutubeImageDataset
                 newBitmap.Dispose();
             }
             GrayConvert.Enabled = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ResizeImage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (checkError(0) == false)
+                    return;
+                string destPath = SelectedDestinationFolder.Text;
+                string sourcePath = SelectedSourceFolder.Text;
+
+                string[] files = Directory.GetFiles(sourcePath);
+                foreach (string file in files)
+                {
+
+                    Bitmap bmp = new Bitmap(file);
+                    string filename = Path.GetFileName(file);
+
+                    int W = Convert.ToInt32(WidthResize.Text);
+                    int H = Convert.ToInt32(HeightResize.Text);
+                    Bitmap newBitmap = new Bitmap(bmp, new Size(W, H));
+                    newBitmap.Save(destPath + filename);
+                    newBitmap.Dispose();
+                    bmp.Dispose();
+                    Application.DoEvents();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace YoutubeImageDataset
+﻿using System.Windows.Forms;
+
+namespace YoutubeImageDataset
 {
     partial class Form1
     {
@@ -45,11 +47,18 @@
             this.useInterval = new System.Windows.Forms.CheckBox();
             this.OpenCropper = new System.Windows.Forms.Button();
             this.GrayConvert = new System.Windows.Forms.Button();
+            this.HeightResizeLabel = new System.Windows.Forms.Label();
+            this.labelSeparator1 = new System.Windows.Forms.Label();
+            this.labelSeparator2 = new System.Windows.Forms.Label();
+            this.HeightResize = new System.Windows.Forms.TextBox();
+            this.WidthResize = new System.Windows.Forms.TextBox();
+            this.WidthResizeLabel = new System.Windows.Forms.Label();
+            this.ResizeImage = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ConvertImages
             // 
-            this.ConvertImages.Location = new System.Drawing.Point(1148, 721);
+            this.ConvertImages.Location = new System.Drawing.Point(1148, 1291);
             this.ConvertImages.Name = "ConvertImages";
             this.ConvertImages.Size = new System.Drawing.Size(244, 72);
             this.ConvertImages.TabIndex = 0;
@@ -104,7 +113,7 @@
             this.SelectGender.Items.AddRange(new object[] {
             "0",
             "1"});
-            this.SelectGender.Location = new System.Drawing.Point(877, 337);
+            this.SelectGender.Location = new System.Drawing.Point(877, 907);
             this.SelectGender.Name = "SelectGender";
             this.SelectGender.Size = new System.Drawing.Size(500, 33);
             this.SelectGender.TabIndex = 7;
@@ -112,7 +121,7 @@
             // 
             // selectGenderLabel
             // 
-            this.selectGenderLabel.Location = new System.Drawing.Point(90, 322);
+            this.selectGenderLabel.Location = new System.Drawing.Point(90, 892);
             this.selectGenderLabel.Name = "selectGenderLabel";
             this.selectGenderLabel.Size = new System.Drawing.Size(326, 61);
             this.selectGenderLabel.TabIndex = 8;
@@ -121,7 +130,7 @@
             // 
             // SelectRaceLabel
             // 
-            this.SelectRaceLabel.Location = new System.Drawing.Point(90, 402);
+            this.SelectRaceLabel.Location = new System.Drawing.Point(90, 972);
             this.SelectRaceLabel.Name = "SelectRaceLabel";
             this.SelectRaceLabel.Size = new System.Drawing.Size(326, 61);
             this.SelectRaceLabel.TabIndex = 9;
@@ -140,7 +149,7 @@
             "2",
             "3",
             "4"});
-            this.SelectRace.Location = new System.Drawing.Point(877, 402);
+            this.SelectRace.Location = new System.Drawing.Point(877, 972);
             this.SelectRace.Name = "SelectRace";
             this.SelectRace.Size = new System.Drawing.Size(500, 33);
             this.SelectRace.TabIndex = 10;
@@ -149,7 +158,7 @@
             // ErrorLabel
             // 
             this.ErrorLabel.ForeColor = System.Drawing.Color.Green;
-            this.ErrorLabel.Location = new System.Drawing.Point(61, 850);
+            this.ErrorLabel.Location = new System.Drawing.Point(44, 1291);
             this.ErrorLabel.Name = "ErrorLabel";
             this.ErrorLabel.Size = new System.Drawing.Size(625, 235);
             this.ErrorLabel.TabIndex = 12;
@@ -157,7 +166,7 @@
             // 
             // startAgeTextBox
             // 
-            this.startAgeTextBox.Location = new System.Drawing.Point(877, 488);
+            this.startAgeTextBox.Location = new System.Drawing.Point(877, 1058);
             this.startAgeTextBox.Name = "startAgeTextBox";
             this.startAgeTextBox.Size = new System.Drawing.Size(500, 31);
             this.startAgeTextBox.TabIndex = 13;
@@ -165,7 +174,7 @@
             // 
             // SelectStartAgeLabel
             // 
-            this.SelectStartAgeLabel.Location = new System.Drawing.Point(90, 473);
+            this.SelectStartAgeLabel.Location = new System.Drawing.Point(90, 1043);
             this.SelectStartAgeLabel.Name = "SelectStartAgeLabel";
             this.SelectStartAgeLabel.Size = new System.Drawing.Size(326, 61);
             this.SelectStartAgeLabel.TabIndex = 14;
@@ -174,7 +183,7 @@
             // 
             // SelectIntervalLabel
             // 
-            this.SelectIntervalLabel.Location = new System.Drawing.Point(90, 551);
+            this.SelectIntervalLabel.Location = new System.Drawing.Point(90, 1121);
             this.SelectIntervalLabel.Name = "SelectIntervalLabel";
             this.SelectIntervalLabel.Size = new System.Drawing.Size(326, 63);
             this.SelectIntervalLabel.TabIndex = 15;
@@ -183,7 +192,7 @@
             // 
             // intervalTextBox
             // 
-            this.intervalTextBox.Location = new System.Drawing.Point(877, 551);
+            this.intervalTextBox.Location = new System.Drawing.Point(877, 1121);
             this.intervalTextBox.Name = "intervalTextBox";
             this.intervalTextBox.Size = new System.Drawing.Size(500, 31);
             this.intervalTextBox.TabIndex = 16;
@@ -192,7 +201,7 @@
             // useInterval
             // 
             this.useInterval.AutoSize = true;
-            this.useInterval.Location = new System.Drawing.Point(877, 636);
+            this.useInterval.Location = new System.Drawing.Point(877, 1206);
             this.useInterval.Name = "useInterval";
             this.useInterval.Size = new System.Drawing.Size(158, 29);
             this.useInterval.TabIndex = 17;
@@ -201,7 +210,7 @@
             // 
             // OpenCropper
             // 
-            this.OpenCropper.Location = new System.Drawing.Point(411, 894);
+            this.OpenCropper.Location = new System.Drawing.Point(196, 407);
             this.OpenCropper.Name = "OpenCropper";
             this.OpenCropper.Size = new System.Drawing.Size(244, 72);
             this.OpenCropper.TabIndex = 18;
@@ -211,7 +220,7 @@
             // 
             // GrayConvert
             // 
-            this.GrayConvert.Location = new System.Drawing.Point(828, 894);
+            this.GrayConvert.Location = new System.Drawing.Point(1035, 407);
             this.GrayConvert.Name = "GrayConvert";
             this.GrayConvert.Size = new System.Drawing.Size(244, 72);
             this.GrayConvert.TabIndex = 19;
@@ -219,11 +228,78 @@
             this.GrayConvert.UseVisualStyleBackColor = true;
             this.GrayConvert.Click += new System.EventHandler(this.GrayConvert_Click);
             // 
+            // HeightResizeLabel
+            // 
+            this.HeightResizeLabel.Location = new System.Drawing.Point(90, 591);
+            this.HeightResizeLabel.Name = "HeightResizeLabel";
+            this.HeightResizeLabel.Size = new System.Drawing.Size(326, 61);
+            this.HeightResizeLabel.TabIndex = 20;
+            this.HeightResizeLabel.Text = "Height Resize";
+            this.HeightResizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelSeparator1
+            // 
+            this.labelSeparator1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelSeparator1.Location = new System.Drawing.Point(12, 529);
+            this.labelSeparator1.Name = "labelSeparator1";
+            this.labelSeparator1.Size = new System.Drawing.Size(1451, 1);
+            this.labelSeparator1.TabIndex = 0;
+            // 
+            // labelSeparator2
+            // 
+            this.labelSeparator2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelSeparator2.Location = new System.Drawing.Point(12, 868);
+            this.labelSeparator2.Name = "labelSeparator2";
+            this.labelSeparator2.Size = new System.Drawing.Size(1451, 1);
+            this.labelSeparator2.TabIndex = 0;
+            // 
+            // HeightResize
+            // 
+            this.HeightResize.Location = new System.Drawing.Point(877, 584);
+            this.HeightResize.Name = "HeightResize";
+            this.HeightResize.Size = new System.Drawing.Size(500, 31);
+            this.HeightResize.TabIndex = 21;
+            this.HeightResize.Text = "720";
+            // 
+            // WidthResize
+            // 
+            this.WidthResize.Location = new System.Drawing.Point(877, 667);
+            this.WidthResize.Name = "WidthResize";
+            this.WidthResize.Size = new System.Drawing.Size(500, 31);
+            this.WidthResize.TabIndex = 22;
+            this.WidthResize.Text = "1280";
+            // 
+            // WidthResizeLabel
+            // 
+            this.WidthResizeLabel.Location = new System.Drawing.Point(90, 652);
+            this.WidthResizeLabel.Name = "WidthResizeLabel";
+            this.WidthResizeLabel.Size = new System.Drawing.Size(326, 61);
+            this.WidthResizeLabel.TabIndex = 23;
+            this.WidthResizeLabel.Text = "Width Resize";
+            this.WidthResizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // ResizeImage
+            // 
+            this.ResizeImage.Location = new System.Drawing.Point(1148, 748);
+            this.ResizeImage.Name = "ResizeImage";
+            this.ResizeImage.Size = new System.Drawing.Size(244, 72);
+            this.ResizeImage.TabIndex = 24;
+            this.ResizeImage.Text = "Resize Image";
+            this.ResizeImage.UseVisualStyleBackColor = true;
+            this.ResizeImage.Click += new System.EventHandler(this.ResizeImage_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1461, 1143);
+            this.ClientSize = new System.Drawing.Size(1493, 1527);
+            this.Controls.Add(this.ResizeImage);
+            this.Controls.Add(this.WidthResizeLabel);
+            this.Controls.Add(this.WidthResize);
+            this.Controls.Add(this.labelSeparator1);
+            this.Controls.Add(this.HeightResize);
+            this.Controls.Add(this.HeightResizeLabel);
+            this.Controls.Add(this.labelSeparator2);
             this.Controls.Add(this.GrayConvert);
             this.Controls.Add(this.OpenCropper);
             this.Controls.Add(this.useInterval);
@@ -243,6 +319,7 @@
             this.Controls.Add(this.ConvertImages);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,6 +343,13 @@
         private System.Windows.Forms.CheckBox useInterval;
         private System.Windows.Forms.Button OpenCropper;
         private System.Windows.Forms.Button GrayConvert;
+        private System.Windows.Forms.Label labelSeparator1;
+        private System.Windows.Forms.Label labelSeparator2;
+        private System.Windows.Forms.Label HeightResizeLabel;
+        private TextBox HeightResize;
+        private TextBox WidthResize;
+        private Label WidthResizeLabel;
+        private Button ResizeImage;
     }
 }
 
