@@ -61,7 +61,7 @@ function getResults() {
     };
 
     xhr.onerror = function() {
-        alert('Woops, there was an error making the request.');
+        alert('Erreur AJAX API.');
     };
 
     xhr.send();
