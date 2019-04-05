@@ -1,12 +1,5 @@
-#if _WIN32
-#define SUPEREXPORT __declspec(dllexport)
-#else
-#define SUPEREXPORT 
-#endif
+#include "include.h"
 
-#include <iostream>
-#include <stdlib.h>
-using namespace std;
 
 extern "C" {
 
@@ -31,10 +24,12 @@ extern "C" {
 		double* YTrain
 	)
 	{
+
 		std::cout << " arrayWeight = " << arrayWeight[0] << " Xtrain = " << XTrain[0] << " Sample Count = " << SampleCount << " inputCount = "
 			<< inputCountPerSample << " Ytrain = " << YTrain[0] << endl;
 		// TODO : entrainement (correction des W, cf slides !)
-
+		auto a = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
+		std::cout << a << std::endl;
 	}
 
 	SUPEREXPORT double predict_regression(

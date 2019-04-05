@@ -19,7 +19,6 @@ if __name__ == "__main__":
 	SampleCount = len(trainY)
 	inputCountPerSample = len(trainX)
 
-
 	myDll = CDLL("C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Debug/ML_Library.dll")
 	myDll.create_linear_model.argtypes = [c_int]
 	myDll.create_linear_model.restype = POINTER(c_double * 6)	
