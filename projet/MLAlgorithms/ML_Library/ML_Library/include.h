@@ -5,6 +5,7 @@
 //C++ LIB
 #include <iostream>
 #include <fstream>
+#include <time.h>
 
 
 //OpenCV 
@@ -19,6 +20,7 @@ using namespace cv;
 
 // matrixUtils.cpp
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array);
+void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
 //bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB);
 
 // imageUtils.cpp

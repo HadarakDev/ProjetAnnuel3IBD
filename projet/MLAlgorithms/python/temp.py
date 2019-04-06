@@ -1,9 +1,11 @@
 from ctypes import *
 from numpy.ctypeslib import ndpointer
 import os
+from data import *
 
 if __name__ == "__main__":
 
+	print(test)
 	#information dataset
 	#pathDataset = "C:"
 	#composante = 3
@@ -13,13 +15,11 @@ if __name__ == "__main__":
 	#for file in files:
 	#	#executer la dll
 
-	trainX = [0,0,1,1]
-	trainY = [0,1]
-	arrayWeight = [0.5, 0.4, -0.8]
+
 	SampleCount = len(trainY)
 	inputCountPerSample = len(trainX)
 
-	myDll = CDLL("C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Debug/ML_Library.dll")
+	myDll = CDLL("D:/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Debug/ML_Library.dll")
 	myDll.create_linear_model.argtypes = [c_int]
 	myDll.create_linear_model.restype = POINTER(c_double * 6)	
 	

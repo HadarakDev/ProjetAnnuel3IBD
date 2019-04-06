@@ -6,46 +6,57 @@ extern "C" {
 	// Initialisation random weight [-1,1]
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample)
 	{
-		std::cout << inputCountPerSample << endl;
+		srand(time(NULL));
+
 		auto arrayWeight = new double[inputCountPerSample + 1];
 		
 		for (int i = 0 ; i < inputCountPerSample + 1 ; i++){
-			//arrayWeight[i] = (rand() / (double)RAND_MAX) * (1.0 - -1.0) + -1.0;
-			arrayWeight[i] = 0.42;
+			arrayWeight[i] = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 		}
 		return arrayWeight;
 	}
 		
-	SUPEREXPORT void fit_regression(
-		double* arrayWeight,
+	SUPEREXPORT double* fit_regression(
 		double* XTrain,
+		double* YTrain,
 		int SampleCount,
-		int inputCountPerSample,
-		double* YTrain
+		int inputCountPerSample
 	)
 	{
+		auto arrayWeight = new double[inputCountPerSample + 1];
+		auto X = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
+		auto Y = convertArrayToMatrix(SampleCount, 1, YTrain);
+		Eigen::MatrixXd Xtranspose(inputCountPerSample, SampleCount);
+		Eigen::MatrixXd W(++inputCountPerSample, 1);
+		Xtranspose = X.transpose();
+		
+		W = ((Xtranspose * X).inverse() * Xtranspose) * Y;
 
-		std::cout << " arrayWeight = " << arrayWeight[0] << " Xtrain = " << XTrain[0] << " Sample Count = " << SampleCount << " inputCount = "
-			<< inputCountPerSample << " Ytrain = " << YTrain[0] << endl;
-		// TODO : entrainement (correction des W, cf slides !)
-		auto a = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
-		std::cout << a << std::endl;
+		convertMatrixToSimpleArray(W, arrayWeight);
+		return arrayWeight;
 	}
 
 	SUPEREXPORT double predict_regression(
-		double* W,
+		double* arrayWeight,
 		double* XToPredict,
 		int inputCountPerSample
 	)
 	{
-		// TODO : Inférence (CF Slides !)
-		return 0.42;
+		double ret= 0.0;
+		auto X = convertArrayToMatrix(inputCountPerSample, 1, XToPredict);
+		auto W = convertArrayToMatrix( 1, inputCountPerSample, arrayWeight);
+		Eigen::MatrixXd R(1, 1);
+
+		R = W * X; 
+
+		return (double)R(0, 0);
 	}
 
 
-	SUPEREXPORT void delete_linear_model(double* W)
+	SUPEREXPORT void delete_linear_model(double* arrayWeight)
 	{
-		delete[] W;
+		//delete[] arrayWeight;
+		std::cout << "Pas du tout nettoye" << endl;
 	}
 
 
