@@ -9,6 +9,12 @@ if __name__ == "__main__":
 
 	#chargemennt de la DLL
 	myDll = CDLL(pathDLL)
+
+	# #recuperer data from image
+	# files = os.listdir(pathDataset)
+	# for file in files:
+	# 	myDll.getPixelsFromImage.argtypes = 
+			
 	
 	#changement de dimension pour le transfert
 	arrTrainX, arrTrainXSize = matrixToArray(trainX)
@@ -43,7 +49,7 @@ if __name__ == "__main__":
 
 	print("reponse : %s" % predict)
 
-# 	# nettoyage
-# myDll.delete_linear_model.argtypes = [ POINTER(ARRAY(c_double, sizeArrayWeight)) ]
-# myDll.delete_linear_model( (c_double * sizeArrayWeight)(*arrayWeight) )
+	# nettoyage
+myDll.delete_linear_model.argtypes = [ POINTER(ARRAY(c_double, sizeArrayWeight)) ]
+myDll.delete_linear_model( (c_double * sizeArrayWeight)(*arrayWeight) )
 

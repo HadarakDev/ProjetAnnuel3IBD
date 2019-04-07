@@ -24,8 +24,8 @@ extern "C" {
 	)
 	{
 		auto arrayWeight = new double[inputCountPerSample + 1];
-		auto X = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
-		auto Y = convertArrayToMatrix(SampleCount, 1, YTrain);
+		Eigen::MatrixXd X = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
+		Eigen::MatrixXd Y = convertArrayToMatrix(SampleCount, 1, YTrain);
 		Eigen::MatrixXd Xtranspose(inputCountPerSample, SampleCount);
 		Eigen::MatrixXd W(++inputCountPerSample, 1);
 		Xtranspose = X.transpose();
@@ -43,8 +43,8 @@ extern "C" {
 	)
 	{
 		double ret= 0.0;
-		auto X = convertArrayToMatrix(inputCountPerSample, 1, XToPredict);
-		auto W = convertArrayToMatrix( 1, inputCountPerSample, arrayWeight);
+		Eigen::MatrixXd X = convertArrayToMatrix(inputCountPerSample, 1, XToPredict);
+		Eigen::MatrixXd W = convertArrayToMatrix( 1, inputCountPerSample, arrayWeight);
 		Eigen::MatrixXd R(1, 1);
 
 		R = W * X; 
@@ -55,8 +55,8 @@ extern "C" {
 
 	SUPEREXPORT void delete_linear_model(double* arrayWeight)
 	{
-		//delete[] arrayWeight;
 		std::cout << "Pas du tout nettoye" << endl;
+		delete[] arrayWeight;
 	}
 
 

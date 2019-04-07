@@ -10,6 +10,7 @@ def matrixToArray(matrix):
 	for el in matrix:
 		ret.extend(el)
 
-	# if isinstance(list, )
+
 
 	return ret, len(ret)
+
