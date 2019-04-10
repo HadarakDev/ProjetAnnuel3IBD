@@ -375,3 +375,8 @@ projet/MLAlgorithms/ML_Library/.vs/ML_Library/v15/Browse.VC.opendb
 *.jpg
 projet/MLAlgorithms/ML_Library/ML_Library/Debug/ML_Library.Build.CppClean.log
 *.db
+*.pyc
+*.pyc
+*.xml
+*.iml
+*.pyc
