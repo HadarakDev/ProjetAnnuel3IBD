@@ -16,14 +16,14 @@ extern "C" {
 		return arrayWeight;
 	}
 		
-	SUPEREXPORT double* fit_regression(
+	SUPEREXPORT double fit_regression(
+		double *arrayWeight,
 		double* XTrain,
 		double* YTrain,
 		int SampleCount,
 		int inputCountPerSample
 	)
 	{
-		auto arrayWeight = new double[inputCountPerSample + 1];
 		Eigen::MatrixXd X = convertArrayToMatrix(SampleCount, inputCountPerSample, XTrain);
 		Eigen::MatrixXd Y = convertArrayToMatrix(SampleCount, 1, YTrain);
 		Eigen::MatrixXd Xtranspose(inputCountPerSample, SampleCount);
@@ -33,7 +33,7 @@ extern "C" {
 		W = ((Xtranspose * X).inverse() * Xtranspose) * Y;
 
 		convertMatrixToSimpleArray(W, arrayWeight);
-		return arrayWeight;
+		return 0.42;
 	}
 
 	SUPEREXPORT double predict_regression(
@@ -55,7 +55,6 @@ extern "C" {
 
 	SUPEREXPORT void delete_linear_model(double* arrayWeight)
 	{
-		std::cout << "Pas du tout nettoye" << endl;
 		delete[] arrayWeight;
 	}
 
