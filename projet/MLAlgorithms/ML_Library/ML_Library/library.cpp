@@ -13,6 +13,7 @@ extern "C" {
 		for (int i = 0 ; i < inputCountPerSample + 1 ; i++){
 			arrayWeight[i] = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 		}
+
 		return arrayWeight;
 	}
 		
