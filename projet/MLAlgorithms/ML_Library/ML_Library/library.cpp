@@ -8,9 +8,9 @@ extern "C" {
 	{
 		srand(time(NULL));
 
-		auto arrayWeight = new double[inputCountPerSample + 1];
+		auto arrayWeight = new double[inputCountPerSample];
 		
-		for (int i = 0 ; i < inputCountPerSample + 1 ; i++){
+		for (int i = 0 ; i < inputCountPerSample ; i++){
 			arrayWeight[i] = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 		}
 

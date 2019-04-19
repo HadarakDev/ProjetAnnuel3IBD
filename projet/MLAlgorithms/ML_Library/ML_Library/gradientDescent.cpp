@@ -7,31 +7,46 @@ extern "C" {
 		double* XTrain,
 		double* YTrain,
 		int sampleCount,
-		int inputCountPerSample
+		int inputCountPerSample 
 	)
 	{
-		int nb_epoch = 30;
-		double lr = 1.05;
+		int nb_epoch = 100;
+		double lr = 1.1;
 
 		Eigen::MatrixXd X = convertArrayToMatrix(sampleCount, inputCountPerSample, XTrain);
 		Eigen::MatrixXd Y = convertArrayToMatrix(sampleCount, 1, YTrain);
-		Eigen::MatrixXd W = convertArrayToMatrix(++inputCountPerSample, 1, arrayWeight);
+		Eigen::MatrixXd W = convertArrayToMatrix(inputCountPerSample, 1, arrayWeight);
 		Eigen::MatrixXd mat(0, 0);
-		/*
+		Eigen::MatrixXd result = Eigen::MatrixXd::Constant(inputCountPerSample, 1, 0);
+
+		//W << 0.1, 0.1, 0.1;
+
+
 		for (int epo = 0; epo < nb_epoch; epo++) {
-			for (int sample = 0; sample < sampleCount; sample++) {
-				for (int weight = 0; weight < inputCountPerSample; weight++) {
-					mat = 
+			result = Eigen::MatrixXd::Constant(inputCountPerSample, 1, 0);
+			for (int j = 0; j < inputCountPerSample; j++) {
+				for (int i = 0; i < sampleCount; i++) {
+					mat = X.block(i, 0, 1, inputCountPerSample) * W;
+					result(j, 0) += -X(i, j) * (Y(i, 0) - mat(0, 0));
 				}
 			}
-		}
-		*/
-		//découper en sous matrice
-		std::cout << X << std::endl;
-		std::cout << "--" << std::endl;
-		std::cout << X.block<1, inputCountPerSample>(0,0) << std::endl;
 
-			return 0.42;
+
+			for (int i = 0; i < inputCountPerSample; i++) {
+				result(i, 0) = result(i, 0) * (float(1) / sampleCount);
+				W(i, 0) = W(i, 0) - lr * result(i, 0);
+			}
+		}
+
+
+		std::cout << "W : " << std::endl;
+		std::cout << W << std::endl;
+		std::cout << "--" << std::endl;
+
+		convertMatrixToSimpleArray(W, arrayWeight);
+
+
+		return 0.42;
 	}
 
 }

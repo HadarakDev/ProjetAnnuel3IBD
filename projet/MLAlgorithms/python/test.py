@@ -37,14 +37,16 @@ for epo in range(1, 31):
 		mat = multMat(weight, datas[i])
 		result[2] += -datas[i][2] * (datas[i][3] - mat)
 
+	# print(result)
 	result = [x * 1/10 for x in result ]
 	# print(result)
 
 	weight = [ weight[x] - lr * result[x]  for x in range(len(result)) ]
 	
-	print("%s :" % epo, end=' ' )
-	print(weight, end='\n\n')
+	#print("%s :" % epo, end=' ' )
+	#print(weight, end='\n\n')
 
+print(weight)
 
 # weight(1:3)
 # x1(3:1)
