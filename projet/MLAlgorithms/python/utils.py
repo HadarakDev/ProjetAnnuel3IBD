@@ -11,3 +11,10 @@ def matrixToArray(matrix):
 		ret.extend(el)
 	return ret, len(ret)
 
+def convertListToString(list):
+	ret = ""
+	for el in list:
+		ret += el
+		ret += ','
+	#ret += '\0'
+	return ret

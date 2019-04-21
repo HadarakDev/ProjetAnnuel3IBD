@@ -1,7 +1,32 @@
 
 
-//#include "include.h"
+#include "include.h"
 #include <Eigen/Dense>
+
+extern "C" {
+	SUPEREXPORT Eigen::MatrixXd *getDatasetX(char *str, unsigned int sizeImage, unsigned int numberImage)
+	{
+		size_t pos = 0;
+		std::string token;
+		std::string s = str;
+		int imageIdx = 0;
+		unsigned int inputCountPerSample = sizeImage + 1;
+		Eigen::MatrixXd retMatrix(numberImage, sizeImage);
+		while ((pos = s.find(",")) != std::string::npos) {
+			token = s.substr(0, pos);
+			
+			retMatrix(imageIdx, 0) = 1;
+
+
+
+			s.erase(0, pos + 1);
+			imageIdx++;
+		}
+		
+
+		return &retMatrix;
+	}
+}
 
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array)
 {

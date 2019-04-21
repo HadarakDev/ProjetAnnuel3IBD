@@ -57,5 +57,5 @@ if __name__ == "__main__":
 
 	# nettoyage
 myDll.delete_linear_model.argtypes = [ c_void_p ]
-myDll.delete_linear_model( arrayWeight)
+myDll.delete_linear_model( arrayWeight )
 
