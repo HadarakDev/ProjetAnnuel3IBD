@@ -29,7 +29,7 @@ def prepareDataset(imagePaths, myDll, numberImage):
 	
 	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint]
 	myDll.getDatasetX.restype = c_void_p
-	pMatrixX = myDll.getDatasetX(param, sizeImage, numberImage, 1)
+	pMatrixX = myDll.getDatasetX(param, sizeImage, numberImage, component)
 
 	myDll.getDatasetY.restype = c_void_p
 	myDll.getDatasetY.argtypes = [c_char_p, c_uint]

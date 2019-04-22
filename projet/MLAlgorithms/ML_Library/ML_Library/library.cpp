@@ -59,22 +59,11 @@ extern "C" {
 		int inputCountPerSample
 	)
 	{
-		cout << "DEBUT NAISSANCE" << endl;
 		double ret= 0.0;
-		//Eigen::MatrixXd X = convertArrayToMatrix(inputCountPerSample, 1, XToPredict);
 		Eigen::MatrixXd W = convertArrayToMatrix( 1, inputCountPerSample, arrayWeight);
 		Eigen::MatrixXd R(1, 1);
-		cout << "DEBUT AFFICHAGE" << endl;
-		//cout << (*X).cols() << endl;
-		//cout << (*X).rows() << endl;
-		//cout << (*X) << endl;
-
-
-		cout << "DEBUT CALCUL" << endl;
 
 		R = W * (*X); 
-
-		cout << "DEBUT DE LA FAIM" << endl;
 
 		return (double)R(0, 0);
 	}
