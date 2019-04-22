@@ -20,11 +20,11 @@ using namespace cv;
 
 // matrixUtils.cpp
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array);
-void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
+void convertMatrixToSimpleArray();//Eigen::MatrixXd matrix, double *arr);
 //bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB);
 
 // imageUtils.cpp
-//int *getPixelsFromImage(string imagePath, int component);
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx);
 
 #if _WIN32
 #define SUPEREXPORT __declspec(dllexport)

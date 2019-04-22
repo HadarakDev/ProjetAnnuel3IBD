@@ -1,27 +1,26 @@
 #include "include.h"
+#include <Eigen/Dense>
 
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx)
+{
+	Mat image;
+	image = imread(imagePath, component);
+	int i = 1;
+	int fullSize = image.rows * image.cols * component;
+	int* pixelArray = new int[fullSize];
 
-extern "C" {
-	SUPEREXPORT int *getPixelsFromImage(string imagePath, int component)
+	for (int x = 0; x < image.rows; x++)
 	{
-		Mat image;
-		image = imread(imagePath, component);
-		int i = 0;
-		int fullSize = image.rows * image.cols * component;
-		int *pixelArray = new int[fullSize];
-
-		for (int x = 0; x < image.rows; x++)
+		for (int y = 0; y < image.cols; y++)
 		{
-			for (int y = 0; y < image.cols; y++)
+			unsigned char* p = image.ptr(x, y); // order B G R 
+			for (int c = 0; c < component; c++)
 			{
-				unsigned char *p = image.ptr(x, y); // order B G R 
-				for (int c = 0; c < component; c++)
-				{
-					pixelArray[i++] = p[c];
-				}
+				int tmp = p[c];
+				(*datasetX)(imageIdx, i) = tmp;
+				i++;
 			}
 		}
-		return (pixelArray);
 	}
 }
 
