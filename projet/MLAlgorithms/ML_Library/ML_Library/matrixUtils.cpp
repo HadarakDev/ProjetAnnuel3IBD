@@ -59,7 +59,6 @@ extern "C" {
 		{
 			(*retMatrix)(imageIdx, 0) = 1;
 			getPixelsFromImage(s, component, retMatrix, imageIdx);
-			cout << "OK JE SUIS LA" << endl;
 		}
 		return retMatrix;
 	}

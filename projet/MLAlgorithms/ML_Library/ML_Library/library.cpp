@@ -40,9 +40,6 @@ extern "C" {
 
 			Eigen::MatrixXd pinv = (*X).completeOrthogonalDecomposition().pseudoInverse();
 			W = pinv * (*Y);
-			//cout << "raw = " << W.rows() << endl;
-			//cout << "col = " << W.cols() << endl;
-			//cout << W << endl;
 			convertMatrixToSimpleArray(W, arrayWeight);
 		}
 		catch (const std::exception & ex)
