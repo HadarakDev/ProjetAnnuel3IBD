@@ -25,6 +25,16 @@ extern "C" {
 			s.erase(0, pos + 1);
 			imageIdx++;
 		}
+		if (s.length() != 0)
+		{
+			size_t start = s.find_last_of("/") + 1;
+			string filename = s.erase(0, start);
+
+			size_t delim = filename.find("_");
+			string age = filename.substr(0, delim);
+
+			(*retMatrix)(imageIdx) = std::stoi(age);
+		}
 		return retMatrix;
 	}
 
@@ -42,9 +52,14 @@ extern "C" {
 			(*retMatrix)(imageIdx, 0) = 1;
 			getPixelsFromImage(token, component, retMatrix, imageIdx);
 
-
 			s.erase(0, pos + 1);
 			imageIdx++;
+		}
+		if (s.length() != 0)
+		{
+			(*retMatrix)(imageIdx, 0) = 1;
+			getPixelsFromImage(s, component, retMatrix, imageIdx);
+			cout << "OK JE SUIS LA" << endl;
 		}
 		return retMatrix;
 	}
@@ -65,26 +80,20 @@ Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, d
 	return (retMatrix);
 }
 
-void convertMatrixToSimpleArray() { //Eigen::MatrixXd W, double *arr) {
-	cout << "coucoué" << endl;
-	//int col = W.cols();
-	//int row = W.rows();
+void convertMatrixToSimpleArray(Eigen::MatrixXd W, double *arr) {
+	int col = W.cols();
+	int row = W.rows();
 	int j = 0;
-
 	
-/*	cout << W.cols() << endl;
-	cout << W.rows() << endl;
 	for (int x = 0; x < row; x++)
 	{
 		for (int y = 0; y < col; y++)
 		{
-			arr[j] = W(x,y);
-			cout << arr[j] << endl;
+			arr[j] = W(x, y);
 			j++;
 
 		}
-	*///}
-	
+	}
 }
 //bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB)
 //{

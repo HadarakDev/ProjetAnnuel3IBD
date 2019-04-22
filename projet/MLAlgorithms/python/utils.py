@@ -22,7 +22,7 @@ def convertListToString(list):
 	#ret += '\0'
 	return ret
 
-def prepareDataset(imagePaths, myDll):	
+def prepareDataset(imagePaths, myDll, numberImage):	
 	paths = convertListToString(imagePaths)
 	#paths = [x.replace("\\", "/") for x in paths]
 	param = paths.encode('utf-8')

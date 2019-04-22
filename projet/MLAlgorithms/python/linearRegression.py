@@ -14,7 +14,7 @@ if __name__ == "__main__":
 	imagesPath = os.listdir(pathDataset)
 	
 	selectedImages = random.sample(imagesPath, numberImage)
-	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll)
+	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImage)
 	
 	#changement de dimension pour le transfert
 	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
@@ -43,23 +43,23 @@ if __name__ == "__main__":
 	print ("----Prediction---")
 	#faire une prediction
 	
-	# toPredictImage = random.sample(imagesPath, 1)
-	# pMatrixXPredict, pMatrixYPredict = prepareDataset(toPredictImage, myDll)
-	# myDll.predict_regression.argtypes = [
-	# 										c_void_p,
-	# 										c_void_p,
-	# 										c_int
-	# 									]
-	# myDll.predict_regression.restype = c_double
-	# predict = myDll.predict_regression	(
-	# 										pArrayWeight,
-	# 										pMatrixXPredict,
-	# 										inputCountPerSample
-	# 									)
+	toPredictImage = random.sample(imagesPath, 1)
+	pMatrixXPredict, pMatrixYPredict = prepareDataset(toPredictImage, myDll, 1)
+	myDll.predict_regression.argtypes = [
+											c_void_p,
+											c_void_p,
+											c_int
+										]
+	myDll.predict_regression.restype = c_double
+	predict = myDll.predict_regression	(
+											pArrayWeight,
+											pMatrixXPredict,
+											inputCountPerSample
+										)
 
-	# print("response : %s , image %s " % (predict, toPredictImage))
+	print("response : %s , image %s " % (predict, toPredictImage))
 
 	# nettoyage
-myDll.delete_linear_model.argtypes = [ c_void_p ]
-myDll.delete_linear_model( arrayWeight )
+#myDll.delete_linear_model.argtypes = [ c_void_p ]
+#myDll.delete_linear_model( arrayWeight )
 
