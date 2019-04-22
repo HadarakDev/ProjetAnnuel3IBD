@@ -5,7 +5,7 @@ from data import *
 from utils import *
 from params import *
 
-if __name__ == "__main__":
+if __name__ == "__main__":   
 
 	#chargemennt de la DLL
 	myDll = CDLL(pathDLL)
