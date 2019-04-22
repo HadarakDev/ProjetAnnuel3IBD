@@ -2,45 +2,70 @@ from ctypes import *
 from numpy.ctypeslib import ndpointer
 import os
 from data import *
+from utils import *
+from params import *
+import random
 
 if __name__ == "__main__":
 
-	print(test)
-	#information dataset
-	#pathDataset = "C:"
-	#composante = 3
-	#sizeImage = 490 * 357
+	#chargemennt de la DLL
+	myDll = CDLL(pathDLL)
 
-	#files = os.listdir(pathDataset)
-	#for file in files:
-	#	#executer la dll
-
-
-	SampleCount = len(trainY)
-	inputCountPerSample = len(trainX)
-
-	myDll = CDLL("D:/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Debug/ML_Library.dll")
-	myDll.create_linear_model.argtypes = [c_int]
-	myDll.create_linear_model.restype = POINTER(c_double * 6)	
+	imagesPath = os.listdir(pathDataset)
 	
-	#creer le modele
-	#arrayWeight = myDll.create_linear_model(len(trainX[0]))
+	selectedImages = random.sample(imagesPath, numberImage)	
+	paths = convertListToString(selectedImages)
+	paths = [x.replace("\\", "/") for x in paths]
+	param = paths.encode('utf-8')
 	
+	myDll.getDatasetX.argtypes = [ c_char_p , c_uint, c_uint, c_uint ]
+	myDll.getDatasetX.restype = [ c_void_p ]
+	pMatrixX = myDll.getDatasetX(param, sizeImage, numberImage, 1)
 
-	#entrainement du modele
-	myDll.create_linear_model.argtypes = [ POINTER(ARRAY(c_double, len(arrayWeight))),  POINTER(ARRAY(c_double, len(trainX))), c_int, c_int, POINTER(ARRAY(c_double,len(trainY))) ]
-	myDll.fit_regression( (c_double*len(arrayWeight))(*arrayWeight) , (c_double*len(trainX))(*trainX), SampleCount, inputCountPerSample, (c_double*len(trainY))(*trainY))
-
-	#double* W, double* XToPredict, int inputCountPerSample
-
-#	for el in arrayWeight[0]:
-#		print(el)
+	myDll.getDatasetY.restype = [ c_void_p ]
+	myDll.getDatasetY.argtypes = [ c_char_p , c_uint ]
+	pMatrixY = myDll.getDatasetY(param, numberImage)
 	
-	#Dll.predict_regression.argtypes = [c_void_p, POINTER(ARRAY(c_double, 2)), c_int32]
-    
-	
-	#myDll.predict_regression.restype = c_double
-    #native_input = (c_double * 2)(*[0.0, 0.0])
-    #rslt = myDll.predict_regression(toto, native_input, 2)
-    #print(rslt)
-	print("\nend")
+	#changement de dimension pour le transfert
+	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
+
+	#	myDll.create_linear_model.argtypes = [c_int32]
+	#myDll.create_linear_model.restype = c_void_p
+	#arrayWeight = myDll.create_linear_model(inputCountPerSample)
+
+	#entrainement du modèle
+	myDll.fit_regression.argtypes = [ 	
+										#c_void_p,
+										POINTER(ARRAY(c_double, arrTrainXSize)), 
+										POINTER(ARRAY(c_double, sampleCount)), 
+										c_int, c_int 
+									]
+	myDll.fit_regression.restype = c_double								
+	error = myDll.fit_regression	( 	
+											#arrayWeight,
+											(c_double * arrTrainXSize) (*arrTrainX),
+											(c_double * sampleCount) (*trainY), 
+											sampleCount, inputCountPerSample
+										)
+
+	print ("----Prediction---")
+	#print("biais : %s a : %s" % (arrayWeight[0], arrayWeight[1]))
+	#faire une prediction
+	myDll.predict_regression.argtypes = [
+											c_void_p,
+											POINTER(ARRAY(c_double, XToPredictSize)),
+											c_int
+										]
+	myDll.predict_regression.restype = c_double
+	predict = myDll.predict_regression	(
+											arrayWeight,
+											(c_double * XToPredictSize) (*XToPredict),
+											inputCountPerSample
+										)
+
+	print("reponse : %s" % predict)
+
+	# nettoyage
+myDll.delete_linear_model.argtypes = [ c_void_p ]
+myDll.delete_linear_model( arrayWeight )
+

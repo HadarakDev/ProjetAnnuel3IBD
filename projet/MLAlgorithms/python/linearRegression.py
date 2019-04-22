@@ -4,56 +4,60 @@ import os
 from data import *
 from utils import *
 from params import *
+import random
 
 if __name__ == "__main__":
 
 	#chargemennt de la DLL
 	myDll = CDLL(pathDLL)
 
-	# #recuperer data from image
-	# files = os.listdir(pathDataset)
-	# for file in files:
-	# 	myDll.getPixelsFromImage.argtypes = 
-			
+	imagesPath = os.listdir(pathDataset)
+	
+	selectedImages = random.sample(imagesPath, numberImage)
+	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll)
 	
 	#changement de dimension pour le transfert
-	arrTrainX, arrTrainXSize = matrixToArray(trainX)
+	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
 
 	myDll.create_linear_model.argtypes = [c_int32]
 	myDll.create_linear_model.restype = c_void_p
-	arrayWeight = myDll.create_linear_model(inputCountPerSample)
+	pArrayWeight = myDll.create_linear_model(inputCountPerSample)
 
 	#entrainement du modèle
 	myDll.fit_regression.argtypes = [ 	
 										c_void_p,
-										POINTER(ARRAY(c_double, arrTrainXSize)), 
-										POINTER(ARRAY(c_double, sampleCount)), 
-										c_int, c_int 
+										c_void_p, 
+										c_void_p, 
+										c_int,
+										c_int 
 									]
 	myDll.fit_regression.restype = c_double								
 	error = myDll.fit_regression	( 	
-											arrayWeight,
-											(c_double * arrTrainXSize) (*arrTrainX),
-											(c_double * sampleCount) (*trainY), 
-											sampleCount, inputCountPerSample
-										)
-
-	print ("----Prediction---")
-	#print("biais : %s a : %s" % (arrayWeight[0], arrayWeight[1]))
-	#faire une prediction
-	myDll.predict_regression.argtypes = [
-											c_void_p,
-											POINTER(ARRAY(c_double, XToPredictSize)),
-											c_int
-										]
-	myDll.predict_regression.restype = c_double
-	predict = myDll.predict_regression	(
-											arrayWeight,
-											(c_double * XToPredictSize) (*XToPredict),
+											pArrayWeight,
+											pMatrixX,
+											pMatrixY, 
+											numberImage,
 											inputCountPerSample
 										)
 
-	print("reponse : %s" % predict)
+	print ("----Prediction---")
+	#faire une prediction
+	
+	# toPredictImage = random.sample(imagesPath, 1)
+	# pMatrixXPredict, pMatrixYPredict = prepareDataset(toPredictImage, myDll)
+	# myDll.predict_regression.argtypes = [
+	# 										c_void_p,
+	# 										c_void_p,
+	# 										c_int
+	# 									]
+	# myDll.predict_regression.restype = c_double
+	# predict = myDll.predict_regression	(
+	# 										pArrayWeight,
+	# 										pMatrixXPredict,
+	# 										inputCountPerSample
+	# 									)
+
+	# print("response : %s , image %s " % (predict, toPredictImage))
 
 	# nettoyage
 myDll.delete_linear_model.argtypes = [ c_void_p ]

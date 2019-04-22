@@ -1,30 +1,52 @@
-
+	
 
 #include "include.h"
 #include <Eigen/Dense>
 
 extern "C" {
-	SUPEREXPORT Eigen::MatrixXd *getDatasetX(char *str, unsigned int sizeImage, unsigned int numberImage)
+	SUPEREXPORT void *getDatasetY(char* str, unsigned int numberImage)
 	{
 		size_t pos = 0;
 		std::string token;
 		std::string s = str;
-		int imageIdx = 0;
-		unsigned int inputCountPerSample = sizeImage + 1;
-		Eigen::MatrixXd retMatrix(numberImage, sizeImage);
+
+		unsigned int imageIdx = 0;
+		Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(numberImage, 1);
+		while ((pos = s.find(",")) != std::string::npos) {
+			token = s.substr(0, pos);
+
+			size_t start = token.find_last_of("/") + 1;
+			string filename = token.erase(0, start);
+
+			size_t delim = filename.find("_");
+			string age = filename.substr(0, delim);
+
+			(*retMatrix)(imageIdx) = std::stoi(age);
+			s.erase(0, pos + 1);
+			imageIdx++;
+		}
+		return retMatrix;
+	}
+
+	SUPEREXPORT void *getDatasetX(char *str, unsigned int sizeImage, unsigned int numberImage, unsigned int component)
+	{
+		size_t pos = 0;
+		std::string token;
+		std::string s = str;
+		unsigned int imageIdx = 0;
+		unsigned int inputCountPerSample = (sizeImage * component) + 1;
+		Eigen::MatrixXd *retMatrix = new Eigen::MatrixXd(numberImage, inputCountPerSample);
 		while ((pos = s.find(",")) != std::string::npos) {
 			token = s.substr(0, pos);
 			
-			retMatrix(imageIdx, 0) = 1;
-
+			(*retMatrix)(imageIdx, 0) = 1;
+			getPixelsFromImage(token, component, retMatrix, imageIdx);
 
 
 			s.erase(0, pos + 1);
 			imageIdx++;
 		}
-		
-
-		return &retMatrix;
+		return retMatrix;
 	}
 }
 
@@ -43,18 +65,25 @@ Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, d
 	return (retMatrix);
 }
 
-void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr) {
-	int col = matrix.cols();
-	int row = matrix.rows();
+void convertMatrixToSimpleArray() { //Eigen::MatrixXd W, double *arr) {
+	cout << "coucoué" << endl;
+	//int col = W.cols();
+	//int row = W.rows();
 	int j = 0;
 
+	
+/*	cout << W.cols() << endl;
+	cout << W.rows() << endl;
 	for (int x = 0; x < row; x++)
 	{
 		for (int y = 0; y < col; y++)
 		{
-			arr[j++] = matrix(x,y);
+			arr[j] = W(x,y);
+			cout << arr[j] << endl;
+			j++;
+
 		}
-	}
+	*///}
 	
 }
 //bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB)

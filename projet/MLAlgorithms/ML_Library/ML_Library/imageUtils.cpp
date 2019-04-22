@@ -1,12 +1,11 @@
 #include "include.h"
+#include <Eigen/Dense>
 
-
-
-int* getPixelsFromImage(char* imagePath, int component)
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx)
 {
 	Mat image;
 	image = imread(imagePath, component);
-	int i = 0;
+	int i = 1;
 	int fullSize = image.rows * image.cols * component;
 	int* pixelArray = new int[fullSize];
 
@@ -17,11 +16,12 @@ int* getPixelsFromImage(char* imagePath, int component)
 			unsigned char* p = image.ptr(x, y); // order B G R 
 			for (int c = 0; c < component; c++)
 			{
-				pixelArray[i++] = p[c];
+				int tmp = p[c];
+				(*datasetX)(imageIdx, i) = tmp;
+				i++;
 			}
 		}
 	}
-	return (pixelArray);
 }
 
 
