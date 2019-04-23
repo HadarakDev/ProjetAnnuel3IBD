@@ -16,18 +16,15 @@ def matrixToArray(matrix):
 		ret.extend(el)
 	return ret, len(ret)
 
-def convertListToString(list):
+def convertListToString(myList, path):
 	ret = ""
-	for el in list:
-		ret += pathDataset + el
+	for el in myList:
+		ret += path + el
 		ret += ','
 	return ret
 
 def prepareDataset(imagePaths, myDll, numberImage):	
-	paths = convertListToString(imagePaths)
-	#paths = [x.replace("\\", "/") for x in paths]
-	param = paths.encode('utf-8')
-	
+	param = imagePaths.encode('utf-8')
 	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint]
 	myDll.getDatasetX.restype = c_void_p
 	pMatrixX = myDll.getDatasetX(param, sizeImage, numberImage, component)
@@ -57,16 +54,17 @@ def predict(myDll, function, path, pArrayWeight):
 
 	return predictResponse
 
-def	predictAverage(myDll, function, path, pArrayWeight, nbImage):
-
-	print("test")
-	res = 0
-	imagesPath = os.listdir(path)
-	selectedImages = random.sample(imagesPath, 1)
-
-	for image in selectedImages:
-		res += predict(myDll, function, image, pArrayWeight)
-	return res / len(selectedImages)
+def	predictAverage(myDll, function, tabSelectedImages, pArrayWeight, nbImage):
+	average = 0
+	
+	for image in tabSelectedImages:
+		imageName = image[image.rfind("/")+1:]
+		age = int(imageName[:imageName.find("_")])
+		res = predict(myDll, function, image, pArrayWeight)
+		average += (round(res) - age)**2
+		
+	average =  average / len(tabSelectedImages)
+	return average 
 	
 
 

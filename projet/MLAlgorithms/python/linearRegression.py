@@ -13,10 +13,12 @@ if __name__ == "__main__":
 	#chargemennt de la DLL
 	myDll = CDLL(pathDLL)
 
-	imagesPath = os.listdir(pathDataset)
+	imagesName = os.listdir(pathDatasetTrain)
 	
-	selectedImages = random.sample(imagesPath, numberImage)
-	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImage)
+	selectedImages = random.sample(imagesName, numberImageTrain)
+	selectedImages = convertListToString(selectedImages, pathDatasetTrain)
+
+	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImageTrain)
 	
 	#changement de dimension pour le transfert
 	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
@@ -38,22 +40,27 @@ if __name__ == "__main__":
 											pArrayWeight,
 											pMatrixX,
 											pMatrixY, 
-											numberImage,
+											numberImageTrain,
 											inputCountPerSample
 									)
 
 	
 	#faire une prediction
 	
-	for i in range(0, 50):
-		print ("----Prediction---")
-		toPredictImage = random.sample(imagesPath, 1)
-		predictResponse = predict(myDll, myDll.predict_regression, toPredictImage, pArrayWeight)
-		print("response : %s , image %s \n" % (predictResponse, toPredictImage))
-	print("--- %s seconds ---" % (time.time() - start_time))
+	# for i in range(0, 50):
+	# 	print ("----Prediction---")
+	# 	toPredictImage = random.sample(imagesName, 1)
+	# 	predictResponse = predict(myDll, myDll.predict_regression, toPredictImage, pArrayWeight)
+	# 	print("response : %s , image %s \n" % (predictResponse, toPredictImage))
+	# print("--- %s seconds ---" % (time.time() - start_time))
 	
-	#predictResponse = predictAverage(myDll, myDll.predict_regression, pathDataset, pArrayWeight, 10)
-	#print("res moyen %s" % predictResponse )
+	imagesName = os.listdir(pathDatasetPredict)	
+	selectedImages = random.sample(imagesName, numberImagePredict)
+	selectedImages = [pathDatasetPredict + el for el in selectedImages ]
+	print(selectedImages)
+
+	predictResponse = predictAverage(myDll, myDll.predict_regression, selectedImages , pArrayWeight, 10)
+	print("Moyenne erreurs² : %s" % predictResponse )
 
 	myDll.delete_linear_model.argtypes = [ c_void_p, c_void_p, c_void_p ]
 	myDll.delete_linear_model( pArrayWeight, pMatrixX, pMatrixY)
