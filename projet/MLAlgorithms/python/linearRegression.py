@@ -3,11 +3,13 @@ from numpy.ctypeslib import ndpointer
 import os
 from data import *
 from utils import *
+import time
 from params import *
 import random
 
 if __name__ == "__main__":
 
+	start_time = time.time()
 	#chargemennt de la DLL
 	myDll = CDLL(pathDLL)
 
@@ -22,7 +24,7 @@ if __name__ == "__main__":
 	myDll.create_linear_model.argtypes = [c_int32]
 	myDll.create_linear_model.restype = c_void_p
 	pArrayWeight = myDll.create_linear_model(inputCountPerSample)
-
+	print ("----Train---")
 	#entrainement du modèle
 	myDll.fit_regression.argtypes = [ 	
 										c_void_p,
@@ -38,28 +40,21 @@ if __name__ == "__main__":
 											pMatrixY, 
 											numberImage,
 											inputCountPerSample
-										)
+									)
 
-	print ("----Prediction---")
+	
 	#faire une prediction
 	
-	toPredictImage = random.sample(imagesPath, 1)
-	pMatrixXPredict, pMatrixYPredict = prepareDataset(toPredictImage, myDll, 1)
-	myDll.predict_regression.argtypes = [
-											c_void_p,
-											c_void_p,
-											c_int
-										]
-	myDll.predict_regression.restype = c_double
-	predict = myDll.predict_regression	(
-											pArrayWeight,
-											pMatrixXPredict,
-											inputCountPerSample
-										)
+	for i in range(0, 50):
+		print ("----Prediction---")
+		toPredictImage = random.sample(imagesPath, 1)
+		predictResponse = predict(myDll, myDll.predict_regression, toPredictImage, pArrayWeight)
+		print("response : %s , image %s \n" % (predictResponse, toPredictImage))
+	print("--- %s seconds ---" % (time.time() - start_time))
+	
+	#predictResponse = predictAverage(myDll, myDll.predict_regression, pathDataset, pArrayWeight, 10)
+	#print("res moyen %s" % predictResponse )
 
-	print("response : %s , image %s " % (predict, toPredictImage))
-
-	# nettoyage
-#myDll.delete_linear_model.argtypes = [ c_void_p ]
-#myDll.delete_linear_model( arrayWeight )
+	myDll.delete_linear_model.argtypes = [ c_void_p, c_void_p, c_void_p ]
+	myDll.delete_linear_model( pArrayWeight, pMatrixX, pMatrixY)
 

@@ -43,7 +43,7 @@ extern "C" {
 		std::cout << W << std::endl;
 		std::cout << "--" << std::endl;
 
-		convertMatrixToSimpleArray(W, arrayWeight);
+		//convertMatrixToSimpleArray(W, arrayWeight);
 
 
 		return 0.42;

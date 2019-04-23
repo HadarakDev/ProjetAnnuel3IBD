@@ -1,5 +1,7 @@
 from ctypes import *
 from params import *
+import os
+import random
 
 def printRes(tab):
 	for el in tab:
@@ -19,7 +21,6 @@ def convertListToString(list):
 	for el in list:
 		ret += pathDataset + el
 		ret += ','
-	#ret += '\0'
 	return ret
 
 def prepareDataset(imagePaths, myDll, numberImage):	
@@ -36,3 +37,37 @@ def prepareDataset(imagePaths, myDll, numberImage):
 	pMatrixY = myDll.getDatasetY(param, numberImage)
 
 	return pMatrixX, pMatrixY
+
+#tester
+def predict(myDll, function, path, pArrayWeight):
+	pMatrixXPredict, pMatrixYPredict = prepareDataset(path, myDll, 1)
+	function.argtypes = [
+							c_void_p,
+							c_void_p,
+							c_int
+						]
+	function.restype = c_double
+	predictResponse = function (
+							pArrayWeight,
+							pMatrixXPredict,
+							inputCountPerSample
+						)
+	myDll.delete_tmp_predict.argtypes =  [ c_void_p, c_void_p ]
+	myDll.delete_tmp_predict ( pMatrixXPredict, pMatrixYPredict )
+
+	return predictResponse
+
+def	predictAverage(myDll, function, path, pArrayWeight, nbImage):
+
+	print("test")
+	res = 0
+	imagesPath = os.listdir(path)
+	selectedImages = random.sample(imagesPath, 1)
+
+	for image in selectedImages:
+		res += predict(myDll, function, image, pArrayWeight)
+	return res / len(selectedImages)
+	
+
+
+

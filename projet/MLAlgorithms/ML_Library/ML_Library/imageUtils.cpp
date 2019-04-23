@@ -40,10 +40,9 @@ void displayPixelArray(int *pixelArray, int imageSize, int component)
 	}
 }
 
-void savePixelsInCSV(string path, int *pixelArray, int *imageSize, int component)
+void saveWeightsInCSV(string path, int *pixelArray, int *imageSize, int component)
 {
 	ofstream fd;
-	cout << "aa";
 
 	size_t start = path.find_last_of("/") + 1;
 	size_t end = path.find_last_of(".");
