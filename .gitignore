@@ -393,3 +393,6 @@ projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/ML_Library.tlog/ML_Library
 *.ide
 *.cache
 *.txt
+*.cache
+*.txt
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Debug/gradientDescent.obj
