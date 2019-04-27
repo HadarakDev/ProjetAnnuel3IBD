@@ -7,7 +7,7 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 	image = imread(imagePath, component);
 	int i = 1;
 	int fullSize = image.rows * image.cols * component;
-	int* pixelArray = new int[fullSize];
+	int *pixelArray = new int[fullSize];
 
 	for (int x = 0; x < image.rows; x++)
 	{

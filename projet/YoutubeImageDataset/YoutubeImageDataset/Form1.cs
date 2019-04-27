@@ -287,5 +287,30 @@ namespace YoutubeImageDataset
 
             }
         }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (checkError(0) == false)
+                return;
+            string sourcePath = SelectedSourceFolder.Text;
+            string destPath = SelectedDestinationFolder.Text;
+
+            var random = new Random();
+            string[] files = Directory.GetFiles(sourcePath);
+            var filesList = files.ToList();
+            var len = files.Length;
+            var lenToExtract = len * 0.2; // changer si besoin
+            for (int i = 0; i< lenToExtract;i++)
+            {
+                int index = random.Next(filesList.Count - 1);
+                string filename = Path.GetFileName(filesList[index]);
+                File.Move(filesList[index], destPath + filename);
+                filesList.RemoveAt(index);
+            }
+
+
+           
+
+        }
     }
 }

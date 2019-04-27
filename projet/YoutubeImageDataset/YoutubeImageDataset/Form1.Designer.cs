@@ -54,6 +54,7 @@ namespace YoutubeImageDataset
             this.WidthResize = new System.Windows.Forms.TextBox();
             this.WidthResizeLabel = new System.Windows.Forms.Label();
             this.ResizeImage = new System.Windows.Forms.Button();
+            this.SplitDataset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ConvertImages
@@ -288,11 +289,22 @@ namespace YoutubeImageDataset
             this.ResizeImage.UseVisualStyleBackColor = true;
             this.ResizeImage.Click += new System.EventHandler(this.ResizeImage_Click);
             // 
+            // SplitDataset
+            // 
+            this.SplitDataset.Location = new System.Drawing.Point(608, 407);
+            this.SplitDataset.Name = "SplitDataset";
+            this.SplitDataset.Size = new System.Drawing.Size(244, 72);
+            this.SplitDataset.TabIndex = 25;
+            this.SplitDataset.Text = "Split Dataset";
+            this.SplitDataset.UseVisualStyleBackColor = true;
+            this.SplitDataset.Click += new System.EventHandler(this.Button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1493, 1527);
+            this.ClientSize = new System.Drawing.Size(1490, 1527);
+            this.Controls.Add(this.SplitDataset);
             this.Controls.Add(this.ResizeImage);
             this.Controls.Add(this.WidthResizeLabel);
             this.Controls.Add(this.WidthResize);
@@ -350,6 +362,7 @@ namespace YoutubeImageDataset
         private TextBox WidthResize;
         private Label WidthResizeLabel;
         private Button ResizeImage;
+        private Button SplitDataset;
     }
 }
 

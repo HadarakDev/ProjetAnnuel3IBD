@@ -12,14 +12,15 @@ extern "C" {
 	// Initialisation random weight [-1,1]
 	SUPEREXPORT void* create_linear_model(int inputCountPerSample)
 	{
+
 		srand(time(NULL));
 
+		inputCountPerSample = inputCountPerSample + 1;
 		Eigen::MatrixXd *W = new Eigen::MatrixXd(inputCountPerSample, 1);
 
 		for (int i = 0; i < inputCountPerSample; i++) {
 			(*W)(i, 0) = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 		}
-		cout << (*W)(0, 0) << endl;
 		return W;
 	}
 
@@ -32,7 +33,7 @@ extern "C" {
 	)
 	{
 		try {
-			cout << "AA" << endl;
+			inputCountPerSample = inputCountPerSample + 1;
 			Eigen::MatrixXd Xtranspose(inputCountPerSample, SampleCount);
 
 			Xtranspose = (*X).transpose();

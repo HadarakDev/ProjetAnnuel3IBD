@@ -386,3 +386,10 @@ projet/MLAlgorithms/python/params.py
 projet/MLAlgorithms/python/params.py
 projet/MLAlgorithms/ML_Library/ML_Library/Debug/vc142.idb
 
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/ML_Library.tlog/ML_Library.lastbuildstate
+*.pdb
+*.dll
+*.tlog
+*.ide
+*.cache
+*.txt

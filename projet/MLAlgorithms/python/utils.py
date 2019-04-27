@@ -53,7 +53,7 @@ def predict(myDll, function, path, pArrayWeight):
 	myDll.delete_tmp_predict ( pMatrixXPredict, pMatrixYPredict )
 
 	return predictResponse
-
+#nb image not used
 def	predictAverage(myDll, function, tabSelectedImages, pArrayWeight, nbImage):
 	average = 0
 	

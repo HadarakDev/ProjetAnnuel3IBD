@@ -66,6 +66,7 @@ extern "C" {
 
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array)
 {
+	inputCountPerSample = inputCountPerSample + 1;
 	Eigen::MatrixXd retMatrix(SampleCount, inputCountPerSample);
 	int i = 0;
 	for (int x = 0; x < SampleCount; x++)
