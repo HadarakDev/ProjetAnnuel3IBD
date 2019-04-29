@@ -10,7 +10,7 @@ using namespace Eigen;
 extern "C" {
 
 	// Initialisation random weight [-1,1]
-	SUPEREXPORT void* create_linear_model(int inputCountPerSample)
+	SUPEREXPORT void* createLinearModel(int inputCountPerSample)
 	{
 
 		srand(time(NULL));
@@ -24,7 +24,7 @@ extern "C" {
 		return W;
 	}
 
-	SUPEREXPORT double fit_regression(
+	SUPEREXPORT double fitRegression(
 		Eigen::MatrixXd*  W,
 		Eigen::MatrixXd * X,
 		Eigen::MatrixXd * Y,
@@ -49,7 +49,7 @@ extern "C" {
 		return 0.42;
 	}
 
-	SUPEREXPORT double predict_regression(
+	SUPEREXPORT double predictRegression(
 		Eigen::MatrixXd* W,
 		Eigen::MatrixXd * X,
 		int inputCountPerSample
@@ -74,13 +74,13 @@ extern "C" {
 		}
 	}
 
-	SUPEREXPORT void delete_tmp_predict(Eigen::MatrixXd* pMatrixX, Eigen::MatrixXd* pMatrixY)
+	SUPEREXPORT void deleteTmpPredict(Eigen::MatrixXd* pMatrixX, Eigen::MatrixXd* pMatrixY)
 	{
 		delete pMatrixX;
 		delete pMatrixY;
 	}
 
-	SUPEREXPORT void delete_linear_model(double* arrayWeight, Eigen::MatrixXd *pMatrixX, Eigen::MatrixXd *pMatrixY)
+	SUPEREXPORT void deleteLinearModel(double* arrayWeight, Eigen::MatrixXd *pMatrixX, Eigen::MatrixXd *pMatrixY)
 	{
 		delete[] arrayWeight;
 		delete pMatrixX;

@@ -62,6 +62,22 @@ extern "C" {
 		}
 		return retMatrix;
 	}
+	SUPEREXPORT void saveWeightsInCSV(char *path, Eigen::MatrixXd *W)
+	{
+		ofstream fd;
+
+		fd.open(path);
+		
+		for (int x = 0; x < (*W).rows(); x++)
+		{
+			for (int y = 0; y < (*W).cols(); y++)
+			{
+				fd << (*W)(x, y);
+				fd << ";";
+			}
+		}
+		fd.close();
+	}
 }
 
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array)

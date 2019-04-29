@@ -49,8 +49,8 @@ def predict(myDll, function, path, pArrayWeight):
 							pMatrixXPredict,
 							inputCountPerSample
 						)
-	myDll.delete_tmp_predict.argtypes =  [ c_void_p, c_void_p ]
-	myDll.delete_tmp_predict ( pMatrixXPredict, pMatrixYPredict )
+	myDll.deleteTmpPredict.argtypes =  [ c_void_p, c_void_p ]
+	myDll.deleteTmpPredict ( pMatrixXPredict, pMatrixYPredict )
 
 	return predictResponse
 #nb image not used

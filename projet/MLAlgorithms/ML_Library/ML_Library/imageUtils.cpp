@@ -39,24 +39,3 @@ void displayPixelArray(int *pixelArray, int imageSize, int component)
 		}
 	}
 }
-
-void saveWeightsInCSV(string path, int *pixelArray, int *imageSize, int component)
-{
-	ofstream fd;
-
-	size_t start = path.find_last_of("/") + 1;
-	size_t end = path.find_last_of(".");
-	string csvPath = path.substr(start, end - start) + ".csv";
-	//cout << csvPath << endl;
-	fd.open("/home/hadarak/LotteCSV/" + csvPath);
-
-	int size = imageSize[0] * imageSize[1] * component;
-
-	for (int i = 0; i < size - 1; i++)
-	{
-		fd << pixelArray[i];
-		fd << ";";
-	}
-	fd.close();
-}
-//

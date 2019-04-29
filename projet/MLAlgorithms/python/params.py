@@ -13,10 +13,10 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 #nico
 
-pathDatasetTrain = "C:/Users/nico_/Documents/ConvertedImages/minusLotteSep/train/"
-pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/minusLotteSep/test/"
+pathDatasetTrain = "C:/Users/nico_/Documents/ConvertedImages/SplittedMinus/train/"
+pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/SplittedMinus/test/"
 
-
+pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/"
 
 # pathDatasetTrain = "C:/Users/nico_/Documents/ConvertedImages/ResizedLotte/"
 # pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/ResizedLotte/"
@@ -28,3 +28,4 @@ sizeImage = 100 * 50
 numberImageTrain = 400
 numberImagePredict = 40
 inputCountPerSample = (sizeImage * component)
+finalSaveWeights = pathSaveWeights + "weights_" + str(inputCountPerSample) + "_" + str(numberImageTrain) + ".csv"

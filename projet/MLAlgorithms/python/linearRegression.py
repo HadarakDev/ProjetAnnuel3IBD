@@ -16,6 +16,7 @@ if __name__ == "__main__":
 	imagesName = os.listdir(pathDatasetTrain)
 	
 	selectedImages = random.sample(imagesName, numberImageTrain)
+
 	selectedImages = convertListToString(selectedImages, pathDatasetTrain)
 
 	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImageTrain)
@@ -23,20 +24,20 @@ if __name__ == "__main__":
 	#changement de dimension pour le transfert
 	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
 
-	myDll.create_linear_model.argtypes = [c_int32]
-	myDll.create_linear_model.restype = c_void_p
-	pArrayWeight = myDll.create_linear_model(inputCountPerSample)
+	myDll.createLinearModel.argtypes = [c_int32]
+	myDll.createLinearModel.restype = c_void_p
+	pArrayWeight = myDll.createLinearModel(inputCountPerSample)
 	print ("----Train---")
 	#entrainement du modèle
-	myDll.fit_regression.argtypes = [ 	
+	myDll.fitRegression.argtypes = [ 	
 										c_void_p,
 										c_void_p, 
 										c_void_p, 
 										c_int,
 										c_int 
 									]
-	myDll.fit_regression.restype = c_double								
-	error = myDll.fit_regression	( 	
+	myDll.fitRegression.restype = c_double								
+	error = myDll.fitRegression	( 	
 											pArrayWeight,
 											pMatrixX,
 											pMatrixY, 
@@ -52,16 +53,25 @@ if __name__ == "__main__":
 	# 	toPredictImage = random.sample(imagesName, 1)
 	# 	predictResponse = predict(myDll, myDll.predict_regression, toPredictImage, pArrayWeight)
 	# 	print("response : %s , image %s \n" % (predictResponse, toPredictImage))
-	# print("--- %s seconds ---" % (time.time() - start_time))
+	#
 	
 	imagesName = os.listdir(pathDatasetPredict)	
 	selectedImages = random.sample(imagesName, numberImagePredict)
 	selectedImages = [pathDatasetPredict + el for el in selectedImages ]
-	print(selectedImages)
+	#print(selectedImages)
 
-	predictResponse = predictAverage(myDll, myDll.predict_regression, selectedImages , pArrayWeight, 10)
+	print ("----Prediction---")
+	predictResponse = predictAverage(myDll, myDll.predictRegression, selectedImages , pArrayWeight, 30)
 	print("Moyenne erreurs² : %s" % predictResponse )
+	print("Moyenne erreurs : %s" % predictResponse**0.5 )
 
-	myDll.delete_linear_model.argtypes = [ c_void_p, c_void_p, c_void_p ]
-	myDll.delete_linear_model( pArrayWeight, pMatrixX, pMatrixY)
+	myDll.saveWeightsInCSV.argtypes = [c_char_p, c_void_p]
+	myDll.saveWeightsInCSV(finalSaveWeights.encode('utf-8'), pArrayWeight)
+	myDll.deleteLinearModel.argtypes = [ c_void_p, c_void_p, c_void_p ]
+	myDll.deleteLinearModel( pArrayWeight, pMatrixX, pMatrixY)
+	print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+
 
