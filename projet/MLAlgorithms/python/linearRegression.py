@@ -24,6 +24,11 @@ if __name__ == "__main__":
 	#changement de dimension pour le transfert
 	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
 
+	myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
+	myDll.loadWeightsWithCSV.restype = c_void_p
+
+	myDll.loadWeightsWithCSV(weights.encode('utf-8'), inputCountPerSample)
+
 	myDll.createLinearModel.argtypes = [c_int32]
 	myDll.createLinearModel.restype = c_void_p
 	pArrayWeight = myDll.createLinearModel(inputCountPerSample)

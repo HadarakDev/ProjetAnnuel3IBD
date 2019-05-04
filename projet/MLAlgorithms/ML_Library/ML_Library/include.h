@@ -24,7 +24,8 @@ void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
 //bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB);
 
 // imageUtils.cpp
-void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx);
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
+	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
 
 #if _WIN32
 #define SUPEREXPORT __declspec(dllexport)

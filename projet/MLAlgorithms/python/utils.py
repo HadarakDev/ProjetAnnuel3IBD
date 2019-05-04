@@ -25,9 +25,9 @@ def convertListToString(myList, path):
 
 def prepareDataset(imagePaths, myDll, numberImage):	
 	param = imagePaths.encode('utf-8')
-	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint]
+	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
 	myDll.getDatasetX.restype = c_void_p
-	pMatrixX = myDll.getDatasetX(param, sizeImage, numberImage, component)
+	pMatrixX = myDll.getDatasetX(param, imageW, imageH, numberImage, component)
 
 	myDll.getDatasetY.restype = c_void_p
 	myDll.getDatasetY.argtypes = [c_char_p, c_uint]

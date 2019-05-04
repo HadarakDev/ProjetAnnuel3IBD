@@ -1,7 +1,7 @@
 #include "include.h"
 #include <Eigen/Dense>
 
-void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx)
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH)
 {
 	Mat image;
 	image = imread(imagePath, component);
@@ -9,6 +9,11 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 	int fullSize = image.rows * image.cols * component;
 	int *pixelArray = new int[fullSize];
 
+	if (sizeImageH != image.rows || sizeImageW != image.cols)
+	{
+		cout << "invalid image size" << endl;
+		return;
+	}
 	for (int x = 0; x < image.rows; x++)
 	{
 		for (int y = 0; y < image.cols; y++)

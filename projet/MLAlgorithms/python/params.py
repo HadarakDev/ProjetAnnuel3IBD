@@ -24,8 +24,12 @@ pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/"
 # pathDataset = "D:/Cours/3IBD/projetAnnuel/projet/tmp/train/"
 component  = 1
 # sizeImage = 490 * 357
-sizeImage = 100 * 50
+#sizeImage = 100 * 50
+imageW = 100
+imageH = 50  
 numberImageTrain = 400
 numberImagePredict = 40
-inputCountPerSample = (sizeImage * component)
-finalSaveWeights = pathSaveWeights + "weights_" + str(inputCountPerSample) + "_" + str(numberImageTrain) + ".csv"
+inputCountPerSample = (imageW * imageH * component)
+
+finalSaveWeights = pathSaveWeights + "weights_" + str(inputCountPerSample) + "_" + str(imageW) + "_" + str(imageH) + "_" + str(numberImageTrain) + ".csv"
+weights = pathSaveWeights + "weights_5000_100_50_400.csv"

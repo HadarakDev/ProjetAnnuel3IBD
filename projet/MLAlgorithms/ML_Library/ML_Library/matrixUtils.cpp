@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 
 extern "C" {
-	SUPEREXPORT void *getDatasetY(char* str, unsigned int numberImage)
+	SUPEREXPORT void* getDatasetY(char* str, unsigned int numberImage)
 	{
 		size_t pos = 0;
 		std::string token;
@@ -38,19 +38,19 @@ extern "C" {
 		return retMatrix;
 	}
 
-	SUPEREXPORT void *getDatasetX(char *str, unsigned int sizeImage, unsigned int numberImage, unsigned int component)
+	SUPEREXPORT void* getDatasetX(char* str, unsigned int sizeImageW, unsigned int sizeImageH, unsigned int numberImage, unsigned int component)
 	{
 		size_t pos = 0;
 		std::string token;
 		std::string s = str;
 		unsigned int imageIdx = 0;
-		unsigned int inputCountPerSample = (sizeImage * component) + 1;
-		Eigen::MatrixXd *retMatrix = new Eigen::MatrixXd(numberImage, inputCountPerSample);
+		unsigned int inputCountPerSample = (sizeImageW * sizeImageH * component) + 1;
+		Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(numberImage, inputCountPerSample);
 		while ((pos = s.find(",")) != std::string::npos) {
 			token = s.substr(0, pos);
-			
+
 			(*retMatrix)(imageIdx, 0) = 1;
-			getPixelsFromImage(token, component, retMatrix, imageIdx);
+			getPixelsFromImage(token, component, retMatrix, imageIdx, sizeImageW, sizeImageH);
 
 			s.erase(0, pos + 1);
 			imageIdx++;
@@ -58,16 +58,16 @@ extern "C" {
 		if (s.length() != 0)
 		{
 			(*retMatrix)(imageIdx, 0) = 1;
-			getPixelsFromImage(s, component, retMatrix, imageIdx);
+			getPixelsFromImage(s, component, retMatrix, imageIdx, sizeImageW, sizeImageH);
 		}
 		return retMatrix;
 	}
-	SUPEREXPORT void saveWeightsInCSV(char *path, Eigen::MatrixXd *W)
+	SUPEREXPORT void saveWeightsInCSV(char* path, Eigen::MatrixXd * W)
 	{
 		ofstream fd;
 
 		fd.open(path);
-		
+
 		for (int x = 0; x < (*W).rows(); x++)
 		{
 			for (int y = 0; y < (*W).cols(); y++)
@@ -77,6 +77,33 @@ extern "C" {
 			}
 		}
 		fd.close();
+	}
+
+	SUPEREXPORT void* loadWeightsWithCSV(char* path, unsigned int inputCountPerSample)
+	{
+		Eigen::MatrixXd* W = new Eigen::MatrixXd(inputCountPerSample + 1, 1);
+		double x;
+		size_t pos = 0;
+		std::string token;
+		unsigned int i = 0;
+
+		// get input count per sample (on filename)
+		std::ifstream fd(path);
+
+		if (!fd) {
+			cout << "Unable to open file";
+			exit(1);
+		}
+		std::string line = "";
+		getline(fd, line);
+		while ((pos = line.find(";")) != std::string::npos) {
+			token = line.substr(0, pos);
+			x = stod(token);
+			(*W)(i, 0) = x;
+			line.erase(0, pos + 1);
+			i++;
+		}
+		return (W);
 	}
 }
 
