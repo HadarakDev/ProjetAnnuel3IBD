@@ -41,13 +41,11 @@ def predict(myDll, function, path, pArrayWeight):
 	function.argtypes = [
 							c_void_p,
 							c_void_p,
-							c_int
 						]
 	function.restype = c_double
 	predictResponse = function (
 							pArrayWeight,
-							pMatrixXPredict,
-							inputCountPerSample
+							pMatrixXPredict
 						)
 	myDll.deleteTmpPredict.argtypes =  [ c_void_p, c_void_p ]
 	myDll.deleteTmpPredict ( pMatrixXPredict, pMatrixYPredict )

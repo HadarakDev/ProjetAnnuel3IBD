@@ -79,7 +79,7 @@ extern "C" {
 		fd.close();
 	}
 
-	SUPEREXPORT void* loadWeightsWithCSV(char* path, unsigned int inputCountPerSample)
+	SUPEREXPORT void *loadWeightsWithCSV(char* path, unsigned int inputCountPerSample)
 	{
 		Eigen::MatrixXd* W = new Eigen::MatrixXd(inputCountPerSample + 1, 1);
 		double x;
@@ -104,6 +104,24 @@ extern "C" {
 			i++;
 		}
 		return (W);
+	}
+	SUPEREXPORT void* loadTestCases(double *dataset, unsigned int nbRow, unsigned int nbCol)
+	{
+		nbCol = nbCol + 1;
+		
+		Eigen::MatrixXd *retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
+		int i = 0;
+		for (int x = 0; x < nbRow; x++)
+		{
+			(*retMatrix)(x, 0) = 1;
+			for (int y = 1; y < nbCol; y++)
+			{
+				(*retMatrix)(x, y) = dataset[i];
+				i++;
+			}
+		}
+		cout << (*retMatrix) << endl;
+		return retMatrix;
 	}
 }
 

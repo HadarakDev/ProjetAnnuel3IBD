@@ -51,8 +51,7 @@ extern "C" {
 
 	SUPEREXPORT double predictRegression(
 		Eigen::MatrixXd* W,
-		Eigen::MatrixXd * X,
-		int inputCountPerSample
+		Eigen::MatrixXd * X
 	)
 	{
 		try {
