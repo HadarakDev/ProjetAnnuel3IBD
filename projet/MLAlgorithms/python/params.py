@@ -13,8 +13,8 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 #nico
 
-pathDatasetTrain = "C:/Users/nico_/Documents/ConvertedImages/ResizedLotte/train/"
-pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/ResizedLotte/test/"
+pathDatasetTrain = "C:/Users/nico_/Documents/ConvertedImages/SplittedMinus/train/"
+pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/SplittedMinus/test/"
 
 pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/"
 
@@ -22,11 +22,11 @@ pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/"
 # pathDatasetPredict = "C:/Users/nico_/Documents/ConvertedImages/ResizedLotte/"
 #information dataset
 # pathDataset = "D:/Cours/3IBD/projetAnnuel/projet/tmp/train/"
-component  = 3
-# sizeImage = 490 * 357
-#sizeImage = 100 * 50
-imageW = 979
-imageH = 715 
+component  = 1
+imageW = 100
+imageH = 50
+# imageW = 490
+# imageH = 357 
 numberImageTrain = 400
 numberImagePredict = 40
 inputCountPerSample = (imageW * imageH * component)
@@ -35,7 +35,7 @@ finalSaveWeights = pathSaveWeights + "weights_" + str(inputCountPerSample) + "_"
 weights = pathSaveWeights + "weights_5000_100_50_400.csv"
 
 # EVALUATE
-startNumberImageTrain = 400
+startNumberImageTrain = 20
 evaluateFactor = 2
 pathLog = "C:/Users/nico_/Documents/ConvertedImages/EvaluateModels.txt"
 numberImagePredictEvaluate = 1388
