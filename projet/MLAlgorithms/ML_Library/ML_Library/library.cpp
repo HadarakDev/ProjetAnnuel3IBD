@@ -1,9 +1,4 @@
 #include "include.h"
-#include <exception>
-#include <typeinfo>
-#include <iomanip>
-#include <iostream>
-#include <stdexcept>
 
 using namespace Eigen;
 
@@ -24,10 +19,10 @@ extern "C" {
 		return W;
 	}
 
-	SUPEREXPORT double fitRegression(
-		Eigen::MatrixXd*  W,
-		Eigen::MatrixXd * X,
-		Eigen::MatrixXd * Y,
+	SUPEREXPORT double fitLinearRegression(
+		Eigen::MatrixXd *W,
+		Eigen::MatrixXd *X,
+		Eigen::MatrixXd *Y,
 		int SampleCount,
 		int inputCountPerSample
 	)
@@ -49,9 +44,9 @@ extern "C" {
 		return 0.42;
 	}
 
-	SUPEREXPORT double predictRegression(
-		Eigen::MatrixXd* W,
-		Eigen::MatrixXd * X
+	SUPEREXPORT double predictLinearRegression(
+		Eigen::MatrixXd *W,
+		Eigen::MatrixXd *X
 	)
 	{
 		try {

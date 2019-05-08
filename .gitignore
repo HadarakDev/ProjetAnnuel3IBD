@@ -420,3 +420,5 @@ projet/MLAlgorithms/ML_Library/ML_Library/x64/Debug/vc142.idb
 projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/imageUtils.obj
 projet/MLAlgorithms/ML_Library/.vs/ML_Library/v16/.suo
 projet/MLAlgorithms/python/__pycache__/params.cpython-37.pyc
+projet/MLAlgorithms/ML_Library/.vs/ML_Library/v16/Browse.VC.opendb
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/rosenblattPerceptron.obj

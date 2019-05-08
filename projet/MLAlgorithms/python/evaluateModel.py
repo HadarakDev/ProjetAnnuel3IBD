@@ -26,7 +26,7 @@ if __name__ == "__main__":
         myDll.createLinearModel.restype = c_void_p
         pArrayWeight = myDll.createLinearModel(inputCountPerSample)
         print ("----Train---")
-        myDll.fitRegression.argtypes = [ 	
+        myDll.fitLinearRegression.argtypes = [ 	
                                             c_void_p,
                                             c_void_p, 
                                             c_void_p, 
@@ -34,8 +34,8 @@ if __name__ == "__main__":
                                             c_int 
         ]
 
-        myDll.fitRegression.restype = c_double
-        error = myDll.fitRegression	(
+        myDll.fitLinearRegression.restype = c_double
+        error = myDll.fitLinearRegression	(
                                         pArrayWeight,
                                         pMatrixX,
                                         pMatrixY, 
