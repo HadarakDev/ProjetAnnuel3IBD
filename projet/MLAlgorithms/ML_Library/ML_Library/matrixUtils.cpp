@@ -105,23 +105,41 @@ extern "C" {
 		}
 		return (W);
 	}
-	SUPEREXPORT void* loadTestCases(double *dataset, unsigned int nbRow, unsigned int nbCol)
+	SUPEREXPORT void* loadTestCase(double *dataset, unsigned int nbRow, unsigned int nbCol, int bias)
 	{
-		nbCol = nbCol + 1;
-		
-		Eigen::MatrixXd *retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
-		int i = 0;
-		for (int x = 0; x < nbRow; x++)
+		if (bias == 1)
 		{
-			(*retMatrix)(x, 0) = 1;
-			for (int y = 1; y < nbCol; y++)
+			nbCol = nbCol + 1;
+			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
+			int i = 0;
+			for (int x = 0; x < nbRow; x++)
 			{
-				(*retMatrix)(x, y) = dataset[i];
-				i++;
+				if (bias == 1)
+				{
+					(*retMatrix)(x, 0) = 1;
+					for (int y = 1; y < nbCol; y++)
+					{
+						(*retMatrix)(x, y) = dataset[i];
+						i++;
+					}
+				}
 			}
+			return retMatrix;
 		}
-		cout << (*retMatrix) << endl;
-		return retMatrix;
+		else
+		{
+			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
+			int i = 0;
+			for (int x = 0; x < nbRow; x++)
+			{
+				for (int y = 0; y < nbCol; y++)
+				{
+					(*retMatrix)(x, y) = dataset[i];
+					i++;
+				}
+			}
+			return retMatrix;
+		}
 	}
 }
 

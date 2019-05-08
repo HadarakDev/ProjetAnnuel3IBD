@@ -6,7 +6,10 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
-
+#include <exception>
+#include <typeinfo>
+#include <iomanip>
+#include <stdexcept>
 
 //OpenCV 
 #include <opencv2/core/core.hpp>
@@ -16,8 +19,13 @@
 using namespace std;
 using namespace cv;
 
+#if _WIN32
+#define SUPEREXPORT __declspec(dllexport)
+#else
+#define SUPEREXPORT 
+#endif
 
-
+//SUPEREXPORT double predictLinearRegression(Eigen::MatrixXd*, Eigen::MatrixXd*);
 // matrixUtils.cpp
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array);
 void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
@@ -27,10 +35,6 @@ void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
 void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
 	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
 
-#if _WIN32
-#define SUPEREXPORT __declspec(dllexport)
-#else
-#define SUPEREXPORT 
-#endif
+
 
 #endif // !"INCLUDE_H"

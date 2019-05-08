@@ -34,15 +34,15 @@ if __name__ == "__main__":
 	pArrayWeight = myDll.createLinearModel(inputCountPerSample)
 	print ("----Train---")
 	#entrainement du modèle
-	myDll.fitRegression.argtypes = [ 	
+	myDll.fitLinearRegression.argtypes = [ 	
 										c_void_p,
 										c_void_p, 
 										c_void_p, 
 										c_int,
 										c_int 
 									]
-	myDll.fitRegression.restype = c_double								
-	error = myDll.fitRegression	( 	
+	myDll.fitLinearRegression.restype = c_double								
+	error = myDll.fitLinearRegression	( 	
 											pArrayWeight,
 											pMatrixX,
 											pMatrixY, 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 	#print(selectedImages)
 
 	print ("----Prediction---")
-	predictResponse = predictAverage(myDll, myDll.predictRegression, selectedImages , pArrayWeight, 30)
+	predictResponse = predictAverage(myDll, myDll.predictLinearRegression, selectedImages , pArrayWeight, 30)
 	print("Moyenne erreurs² : %s" % predictResponse )
 	print("Moyenne erreurs : %s" % predictResponse**0.5 )
 
