@@ -1,17 +1,17 @@
 # Linear Model : OK
 # MLP (1, 1)   : OK
 
+from utilsRegression import *
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-#recuperer les poids
-w1 = 1	#biais
-w2 = 1
-
 #datas des points a tester
 X = np.array([ [1], [2] ])
 Y = np.array([ 2, 3])
+
+#recuperer les poids
+w1, w2 = linearRegression(X,Y, "linearSimple2D.csv")
 
 #droite à tracer
 x = np.linspace(0, 4, 100)
