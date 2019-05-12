@@ -1,15 +1,15 @@
-# Linear Model    : OK
-# MLP (2, 1)      : OK
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 from utilsRegression import *
 
-#datas des points a tester
-X = np.array([ [1, 1], [2, 2], [3, 3] ])
-Y = np.array([ 1, 2, 3 ])
 
-w1, w2, w3 = linearRegression(X,Y, "linearTricky3D.csv")
+
+#datas des points a tester
+X = np.array([[1, 0], [0, 1], [0, 0], [1, 1]])
+Y = np.array([-1, -1,-1 , 1])
+
+w1, w2, w3 = linearRegression(X,Y, "and.csv")
 
 #plan à tracer
 x1 = np.linspace(0,5,40)

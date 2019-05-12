@@ -6,7 +6,7 @@ def readFileWeight(path):
 	with open(path, "r") as f:
 		lines = f.readline()
 		weight = lines.split(";")
-	weight = [int(x) for x in weight if x ]
+	weight = [float(x) for x in weight if x ]
 	return tuple(weight)
 
 def matrixToArray(matrix):

@@ -3,15 +3,14 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-#recuperer les poids
-w1 = 2	#biais
-w2 = 0.25
+from utilsRegression import *
 
 #datas des points a tester
 X = np.array([ [1], [2], [3] ])
 Y = np.array([ 2, 3, 2.5])
+
+w1, w2 = linearRegression(X,Y, "nonLinearSimple2D.csv")
+
 #droite à tracer
 x = np.linspace(0, 4, 100)
 y = 1 * w1 + x * w2

@@ -26,7 +26,6 @@ extern "C" {
 		Eigen::MatrixXd tmpX(1, inputCountPerSample);
 
 		try {
-			cout << (*X) << endl;
 			for (auto i = 0; i < epochs; i++)
 			{
 				for (auto k = 0; k < SampleCount; k++)

@@ -3,15 +3,15 @@
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
+from utilsRegression import *
 	
-#recuperer les poids
-w1 = 1	#biais
-w2 = 1
-w3 = 1
+
 
 #datas des points a tester
 X = np.array([ [1, 0], [0, 1], [1, 1], [0, 0] ])
 Y = np.array([ 1, 2, 3, 4 ])
+
+w1, w2, w3 = linearRegression(X,Y, "noLinearSimple3D.csv")
 
 #plan à tracer
 x1 = np.linspace(0,5,40)

@@ -3,10 +3,15 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from utilsClassification import *
+from ctypes import *
 
+pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+
+myDll = CDLL(pathDLL)
 #recupérer les poids
-w1 = 0		#biais
-w2 = 0
+
 
 #datas des points a tester
 X = np.random.random((500, 2)) * 2.0 - 1.0
