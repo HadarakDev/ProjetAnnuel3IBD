@@ -6,8 +6,8 @@ import numpy as np
 from utilsClassification import *
 from ctypes import *
 
-pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+# pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 #datas des points a tester
@@ -18,6 +18,7 @@ Y = Y.flatten()
 alpha = 0.05
 epochs = 1000
 pArrayWeight = linearClassification(X, Y, "linearMultiple.csv", alpha, epochs)
+
 #droite à tracer
 X1 = np.linspace(0, 4, 30)
 X2 = np.linspace(0, 4, 30)
