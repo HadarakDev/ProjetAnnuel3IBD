@@ -2,6 +2,8 @@
 
 #include "include.h"
 #include <Eigen/Dense>
+#include <cmath>
+#include <limits>
 
 extern "C" {
 	SUPEREXPORT void* getDatasetY(char* str, unsigned int numberImage)
@@ -141,6 +143,77 @@ extern "C" {
 			return retMatrix;
 		}
 	}
+}
+
+void fixColinearity(Eigen::MatrixXd *matrix)
+{
+	while (isColinear(matrix) == 1)
+		(*matrix)(0, 0) += 0.01;
+}
+
+int isColinear(Eigen::MatrixXd *matrix)
+{
+	if (isMatrixColColinear(matrix) == 1 || isMatrixLineColinear(matrix) == 1)
+		return 1;
+	return 0;
+}
+
+
+int isMatrixLineColinear(Eigen::MatrixXd *matrix)
+{
+	for (int i = 0; i < (*matrix).rows() - 1; i++)
+	{
+		double lineCoeff = 0;
+		double colCoeff = 0;
+		for (int j = 0; j < (*matrix).cols(); j++)
+		{
+			if ((*matrix)(i, j) == 0)
+			{
+				if ((*matrix)(i + 1, j) == 0)
+					continue;
+				else
+					return (-1);
+			}
+			if (j == 0)
+				lineCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
+			else
+			{
+				colCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
+				cout << lineCoeff << " " << colCoeff << endl;
+				if (fabs(colCoeff - lineCoeff) > std::numeric_limits<double>::epsilon())
+					return -1;
+			}
+		}
+	}
+	return 1;
+}
+int isMatrixColColinear(Eigen::MatrixXd *matrix)
+{
+	for (int i = 0; i < (*matrix).cols() - 1; i++)
+	{
+		double lineCoeff = 0;
+		double colCoeff = 0;
+		for (int j = 0; j < (*matrix).rows(); j++)
+		{
+			if ((*matrix)(i, j) == 0)
+			{
+				if ((*matrix)(i + 1, j) == 0)
+					continue;
+				else
+					return (-1);
+			}
+			if (j == 0)
+				lineCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
+			else
+			{
+				colCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
+				cout << lineCoeff << " " << colCoeff<<endl;
+				if (fabs(colCoeff - lineCoeff) > std::numeric_limits<double>::epsilon())
+					return -1;
+			}
+		}
+	}
+	return 1;
 }
 
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array)

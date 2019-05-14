@@ -17,7 +17,8 @@ extern "C" {
 		int SampleCount,
 		int inputCountPerSample,
 		double alpha, // Learning Rate
-		int epochs // Nombre d'itération
+		int epochs, // Nombre d'itération
+		int display // interval affichage
 	)
 	{
 		inputCountPerSample = inputCountPerSample + 1;
@@ -28,6 +29,8 @@ extern "C" {
 		try {
 			for (auto i = 0; i < epochs; i++)
 			{
+				if (epochs % display == 0)
+					cout << "current epochs  : " << i << "on" << epochs << endl;
 				for (auto k = 0; k < SampleCount; k++)
 				{	
 					tmpX = (*X).block(k, 0, 1, inputCountPerSample);

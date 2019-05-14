@@ -34,7 +34,9 @@ void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
 // imageUtils.cpp
 void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
 	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
-
-
+int isMatrixColColinear(Eigen::MatrixXd *matrix);
+int isMatrixLineColinear(Eigen::MatrixXd* matrix);
+void fixColinearity(Eigen::MatrixXd* matrix);
+int isColinear(Eigen::MatrixXd* matrix);
 
 #endif // !"INCLUDE_H"

@@ -28,6 +28,7 @@ extern "C" {
 	)
 	{
 		try {
+			fixColinearity(X);
 			inputCountPerSample = inputCountPerSample + 1;
 			Eigen::MatrixXd Xtranspose(inputCountPerSample, SampleCount);
 
