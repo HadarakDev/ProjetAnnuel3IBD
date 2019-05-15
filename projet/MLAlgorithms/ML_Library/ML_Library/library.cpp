@@ -5,7 +5,7 @@ using namespace Eigen;
 extern "C" {
 
 	// Initialisation random weight [-1,1]
-	SUPEREXPORT void* createLinearModel(int inputCountPerSample)
+	SUPEREXPORT void *createLinearModel(int inputCountPerSample)
 	{
 
 		srand(time(NULL));
