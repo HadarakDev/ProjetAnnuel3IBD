@@ -3,8 +3,8 @@
 extern "C" {
 	SUPEREXPORT double predictLinearRegression(Eigen::MatrixXd* W, Eigen::MatrixXd* X);
 	SUPEREXPORT double predictLinearClassification(
-		Eigen::MatrixXd* W,
-		Eigen::MatrixXd* X
+		Eigen::MatrixXd *W,
+		Eigen::MatrixXd *X
 	)
 	{
 		return predictLinearRegression(W, X) >= 0 ? 1.0 : -1.0;

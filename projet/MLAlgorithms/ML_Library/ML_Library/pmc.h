@@ -1,6 +1,7 @@
+#include <Eigen/Dense>
 typedef struct s_neurone
 {
-	double		*weights;
+	Eigen::VectorXd	*weights;
 }				t_neurone;
 
 typedef struct s_layer

@@ -30,15 +30,14 @@ extern "C" {
 						nbWeights = structure[idxLayer - 1];
 					nbWeights++; // ajout du biais
 
-					if ((pmcLayers[idxLayer].neurones[idxNeurone].weights = (double*)malloc(sizeof(double) * nbWeights)) == NULL)
-						return (NULL);
+					pmcLayers[idxLayer].neurones[idxNeurone].weights = new Eigen::VectorXd(nbWeights);
 					for (int idxWeights = 0; idxWeights < nbWeights; idxWeights++)
 					{
-						pmcLayers[idxLayer].neurones[idxNeurone].weights[idxWeights] = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
+						pmcLayers[idxLayer].neurones[idxNeurone].weights(idxWeights) = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 					}
 				}
 			}
-			cout << pmcLayers[0].neurones[0].weights[0] << endl;
+			cout << pmcLayers[2].neurones[1].weights[2] << endl;
 			return (pmcLayers);
 		}
 		catch (const std::exception & ex)
