@@ -50,9 +50,15 @@ extern "C" {
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 					cout << tmpVectorX << endl;
 					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					cout << predictOutput << endl;
-					//expectedOutput = (*Y)(k, 0);
-					//(*W) = (*W) + (alpha * (expectedOutput - predictOutput)) * tmpX.transpose();
+					cout << "predict = " << predictOutput << endl;
+					expectedOutput = (*Y)(k, 0);
+					cout << "expected =" << expectedOutput << endl;
+					double sigma = predictOutput - expectedOutput;
+					
+					//for (unsigned int idxWeight )
+					//{
+					//}
+					//	= 1 - (pow((*W).layers[1].neurones[idxNeurone].result))
 				}
 			}
 		}
@@ -115,6 +121,7 @@ void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned
 		(*neurone).result = tmp.sum();
 	else
 		(*neurone).result = tanh(tmp.sum());
+	cout << "KINDRED" << endl;
 }
 
 Eigen::VectorXd *getLayerOuptut(t_layer* layer)
@@ -139,7 +146,10 @@ double predictPMC(
 
 		for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
 		{
+			cout << "JE PLANTE APRES" << endl;
+			cout << (*X) << endl;
 			calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X, 0);
+			cout << "JE PLANTE AVANT" << endl;
 			cout << (*W).layers[0].neurones[idxNeurone].result << endl;
 		}
 		tmpLayerResult = getLayerOuptut(&(*W).layers[0]);

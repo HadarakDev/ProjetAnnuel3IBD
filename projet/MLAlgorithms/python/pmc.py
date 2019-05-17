@@ -28,7 +28,7 @@ if __name__ == "__main__":
     myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, 3)), c_uint, c_uint]
     myDll.createPMCModel.restype = c_void_p
 
-    W = myDll.createPMCModel(arr_struct, len(struct), len(X))
+    W = myDll.createPMCModel(arr_struct, len(struct), 2)
 
     c_double_p = POINTER(c_double)
     myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
