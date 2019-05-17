@@ -10,11 +10,16 @@
 #include <typeinfo>
 #include <iomanip>
 #include <stdexcept>
+#include <math.h>  
+
+
 
 //OpenCV 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <Eigen/Dense>
+
+#include "pmc.h"
 
 using namespace std;
 using namespace cv;
@@ -38,5 +43,10 @@ int isMatrixColColinear(Eigen::MatrixXd *matrix);
 int isMatrixLineColinear(Eigen::MatrixXd* matrix);
 void fixColinearity(Eigen::MatrixXd* matrix);
 int isColinear(Eigen::MatrixXd* matrix);
+
+//pmc.cpp
+Eigen::VectorXd* getLayerOuptut(t_layer* layer);
+void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
+double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
 
 #endif // !"INCLUDE_H"

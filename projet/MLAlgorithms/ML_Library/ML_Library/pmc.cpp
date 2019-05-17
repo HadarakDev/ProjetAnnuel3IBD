@@ -1,36 +1,68 @@
 #include "include.h"
-#include "pmc.h"
 #include <stdlib.h> 
 
 using namespace Eigen;
 
 extern "C" {
-
-	void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input);
 	SUPEREXPORT double predictPMCRegression(
-		t_pmc *W,
-		Eigen::VectorXd *X
+		t_pmc* W,
+		Eigen::VectorXd* X
 	)
 	{
+		return (predictPMC(W, X, 1));
+	}
+
+	SUPEREXPORT double predictPMCClassification(
+		t_pmc* W,
+		Eigen::VectorXd* X
+	)
+	{
+		return (predictPMC(W, X, 0));
+	}
+
+	SUPEREXPORT double fitPMCRegression(
+		t_pmc* W,
+		Eigen::MatrixXd* X,
+		Eigen::MatrixXd* Y,
+		int SampleCount,
+		int inputCountPerSample,
+		double alpha, // Learning Rate
+		int epochs, // Nombre d'itération
+		int display // interval affichage
+	)
+	{
+		cout << "START" << endl;
+		inputCountPerSample = inputCountPerSample + 1;
+		double predictOutput;
+		double expectedOutput;
+		Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
+		Eigen::VectorXd tmpVectorX(inputCountPerSample);
+
 		try {
-			//for (int idxLayer = 0; idxLayer < W->nbLayer; idxLayer++)
-			for (int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
+			for (int i = 0; i < epochs; i++)
 			{
-				calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X);
-				cout << (*W).layers[0].neurones[idxNeurone].result << endl;
+				if (epochs % display == 0)
+					cout << "current epochs  : " << i << " on " << epochs << endl;
+				for (int k = 0; k < SampleCount; k++)
+				{
+					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
+					cout << "TEST" << endl;
+					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+					cout << tmpVectorX << endl;
+					predictOutput = predictPMCRegression(W, &tmpVectorX);
+					cout << predictOutput << endl;
+					//expectedOutput = (*Y)(k, 0);
+					//(*W) = (*W) + (alpha * (expectedOutput - predictOutput)) * tmpX.transpose();
+				}
 			}
 		}
 		catch (const std::exception & ex)
 		{
 			std::cout << "Error occurred: " << ex.what() << std::endl;
-			return (-1);
-		}
-		catch (const runtime_error & error)
-		{
-			std::cout << "Error occurred: " << error.what() << std::endl;
-			return (-2);
+			return (0);
 		}
 	}
+
 	SUPEREXPORT void *createPMCModel(int *structure, int nbLayer, int inputCountPerSample)
 	{
 
@@ -65,7 +97,6 @@ extern "C" {
 					}
 				}
 			}
-			cout << (*pmc->layers[2].neurones[1].weights)(2) << endl;
 			return (pmc);
 		}
 		catch (const std::exception & ex)
@@ -75,14 +106,69 @@ extern "C" {
 	}
 }
 
-void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input)
+void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned int isLinear)
 {
 	Eigen::VectorXd tmp(input->size());
 
-	cout << "AA" << endl;
-	tmp = (*input) * (*neurone->weights);
-	(*neurone).result = tmp.sum();
-	cout << tmp.sum() << endl;
+	tmp = (*input).transpose() * (*neurone->weights);
+	if (isLinear == 1)
+		(*neurone).result = tmp.sum();
+	else
+		(*neurone).result = tanh(tmp.sum());
+}
 
+Eigen::VectorXd *getLayerOuptut(t_layer* layer)
+{
+	Eigen::VectorXd* layerResult = new Eigen::VectorXd((layer->nbNeurone + 1));
+	(*layerResult)(0) = 1;
+	for (int idxNeurone = 1; idxNeurone < layer->nbNeurone + 1; idxNeurone++)
+	{
+		(*layerResult)(idxNeurone) = (*layer).neurones[idxNeurone - 1].result;
+	}
+	return (layerResult);
+}
 
+double predictPMC(
+	t_pmc* W,
+	Eigen::VectorXd* X,
+	unsigned int isLinear
+)
+{
+	Eigen::VectorXd* tmpLayerResult;
+	try {
+
+		for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
+		{
+			calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X, 0);
+			cout << (*W).layers[0].neurones[idxNeurone].result << endl;
+		}
+		tmpLayerResult = getLayerOuptut(&(*W).layers[0]);
+		cout << (*tmpLayerResult) << endl;
+		for (unsigned int idxLayer = 1; idxLayer < W->nbLayer; idxLayer++)
+		{
+			for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[idxLayer].nbNeurone; idxNeurone++)
+			{
+				if (idxLayer == (*W).nbLayer - 1)
+					calculateNeuroneOutput(&(*W).layers[idxLayer].neurones[idxNeurone], tmpLayerResult, isLinear);
+				else
+					calculateNeuroneOutput(&(*W).layers[idxLayer].neurones[idxNeurone], tmpLayerResult, 0);
+				cout << (*W).layers[idxLayer].neurones[idxNeurone].result << endl;
+
+			}
+			tmpLayerResult = getLayerOuptut(&(*W).layers[idxLayer]);
+			cout << (*tmpLayerResult) << endl;
+		}
+		cout << ((*W).layers[(*W).nbLayer - 1].neurones[0].result) << endl;
+		return ((*W).layers[(*W).nbLayer - 1].neurones[0].result);
+	}
+	catch (const std::exception & ex)
+	{
+		std::cout << "Error occurred: " << ex.what() << std::endl;
+		return (-1);
+	}
+	catch (const runtime_error & error)
+	{
+		std::cout << "Error occurred: " << error.what() << std::endl;
+		return (-2);
+	}
 }

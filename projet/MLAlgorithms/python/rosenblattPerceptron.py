@@ -36,6 +36,7 @@ if __name__ == "__main__":
                                         c_int,
                                         c_double,
                                         c_int
+                                        c_int
 									]
     myDll.fitLinearClassification.restype = c_double								
     error = myDll.fitLinearClassification	( 	
@@ -45,7 +46,8 @@ if __name__ == "__main__":
 											4,
 											2,
                                             0.05,
-                                            50
+                                            50,
+                                            10
 									)
     myDll.saveWeightsInCSV.argtypes = [c_char_p, c_void_p]
     savePath = "C:/Users/nico_/Documents/ConvertedImages/testClassif.csv"
