@@ -54,11 +54,28 @@ extern "C" {
 					expectedOutput = (*Y)(k, 0);
 					cout << "expected =" << expectedOutput << endl;
 					double sigma = predictOutput - expectedOutput;
-					
-					//for (unsigned int idxWeight )
+
+					for () // stocker sigma dans chaque neurone de la couche L
+					for (unsigned int l = (*W).nbLayer - 2; l >= 0; l--)
+					{
+						for (unsigned int i = 0; i < (*W).layers[l].nbNeurone; i++)
+						{
+							double total = 0;
+							for (unsigned int j = 0; i < (*W).layers[l + 1].nbNeurone; j++)
+							{
+								total += (*W->layers[l + 1].neurones[j].weights)(i + 1) * (*W).layers[l + 1].neurones[j].sigma;
+							}
+							double sigmaBefore = (1 - pow((*W).layers[l - 1].neurones[i].result, 2)) * total;
+							(*W).layers[l].neurones[i].sigma = sigmaBefore;
+
+						}
+					}
+				
+					//for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[0].weights->size(); idxWeights++)
 					//{
+					//	(*W->layers[l - 1].neurones[i].weights * sigma;
 					//}
-					//	= 1 - (pow((*W).layers[1].neurones[idxNeurone].result))
+
 				}
 			}
 		}

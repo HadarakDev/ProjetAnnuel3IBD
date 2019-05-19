@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 typedef struct s_neurone
 {
+	double       sigma;
 	double		result;
 	Eigen::VectorXd	*weights;
 }				t_neurone;
