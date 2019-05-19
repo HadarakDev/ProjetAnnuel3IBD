@@ -46,36 +46,52 @@ extern "C" {
 				for (int k = 0; k < SampleCount; k++)
 				{
 					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
-					cout << "TEST" << endl;
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 					cout << tmpVectorX << endl;
 					predictOutput = predictPMCRegression(W, &tmpVectorX);
 					cout << "predict = " << predictOutput << endl;
 					expectedOutput = (*Y)(k, 0);
 					cout << "expected =" << expectedOutput << endl;
-					double sigma = predictOutput - expectedOutput;
 
-					for () // stocker sigma dans chaque neurone de la couche L
-					for (unsigned int l = (*W).nbLayer - 2; l >= 0; l--)
-					{
+					
+					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
+
+					cout << "nbLayer " << (*W).nbLayer << endl;
+					for (int l = (*W).nbLayer - 2; l >= 0; l--)
+					{	
+						cout << "parcours layer :  " << l <<  endl;
+						//calcul sigma
+
 						for (unsigned int i = 0; i < (*W).layers[l].nbNeurone; i++)
 						{
+							cout << "   parcours neurone :  " << i << endl;
 							double total = 0;
-							for (unsigned int j = 0; i < (*W).layers[l + 1].nbNeurone; j++)
+							for (unsigned int j = 0; j < (*W).layers[l + 1].nbNeurone; j++)
 							{
+								cout << "      parcours somme :  " << j << endl;
 								total += (*W->layers[l + 1].neurones[j].weights)(i + 1) * (*W).layers[l + 1].neurones[j].sigma;
 							}
-							double sigmaBefore = (1 - pow((*W).layers[l - 1].neurones[i].result, 2)) * total;
-							(*W).layers[l].neurones[i].sigma = sigmaBefore;
 
+							double sigmaBefore = (1 - pow((*W).layers[l].neurones[i].result, 2)) * total;
+							(*W).layers[l].neurones[i].sigma = sigmaBefore;
+						}			
+					}
+					cout << "debut correction poids" << endl;
+					// correction des poids
+					for (unsigned int l = 0; l < (*W).nbLayer - 1;l++)
+					{
+						cout << "layer: " << l << endl;
+						for (int idxNeurone = 0; idxNeurone < (*W).layers[l].nbNeurone - 1; idxNeurone++)
+						{
+							cout << "nb neurone " << (*W).layers[l].nbNeurone << endl;
+							cout << "   neurone: " << idxNeurone << endl;
+							for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size() - 1; idxWeights++)
+							{
+								cout << "      weights: " << idxWeights << endl;
+								(*W->layers[l].neurones[idxNeurone].weights)(idxWeights) -= alpha * (*W).layers[l].neurones[idxNeurone].result * (*W).layers[l].neurones[idxNeurone].sigma;
+							}
 						}
 					}
-				
-					//for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[0].weights->size(); idxWeights++)
-					//{
-					//	(*W->layers[l - 1].neurones[i].weights * sigma;
-					//}
-
 				}
 			}
 		}
@@ -138,7 +154,6 @@ void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned
 		(*neurone).result = tmp.sum();
 	else
 		(*neurone).result = tanh(tmp.sum());
-	cout << "KINDRED" << endl;
 }
 
 Eigen::VectorXd *getLayerOuptut(t_layer* layer)
