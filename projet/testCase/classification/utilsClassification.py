@@ -39,9 +39,10 @@ def linearClassification(Xnp,Ynp, filename, alpha, epochs):
     X = matrixToArray(Xnp.tolist())
     Y = Ynp.tolist()
 
+    pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
     # pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-    pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+    #pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
     myDll = CDLL(pathDLL)
     myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
@@ -55,9 +56,9 @@ def linearClassification(Xnp,Ynp, filename, alpha, epochs):
     myDll.createLinearModel.restype = c_void_p
     pArrayWeight = myDll.createLinearModel(Xnp.shape[1])
 
-    myDll.fitLinearClassification.argtypes = [ 	c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int ]
+    myDll.fitLinearClassification.argtypes = [ 	c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
     myDll.fitLinearClassification.restype = c_double								
-    error = myDll.fitLinearClassification	( 	pArrayWeight,pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs)
+    error = myDll.fitLinearClassification	( 	pArrayWeight,pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs, 10)
 
     #pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/" + filename
 

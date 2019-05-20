@@ -45,14 +45,14 @@ extern "C" {
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{
-					//cout << "sample = " << k << endl;
+					cout << "sample = " << k << endl;
 					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					//cout << tmpVectorX << endl;
+					cout << tmpVectorX << endl;
 					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					//cout << "predict = " << predictOutput << endl;
+					cout << "predict = " << predictOutput << endl;
 					expectedOutput = (*Y)(k, 0);
-					//cout << "expected =" << expectedOutput << endl;
+					cout << "expected =" << expectedOutput << endl;
 
 					
 					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
