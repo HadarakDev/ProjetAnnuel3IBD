@@ -41,34 +41,35 @@ extern "C" {
 		try {
 			for (int i = 0; i < epochs; i++)
 			{
-				if (epochs % display == 0)
+				if (i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{
+					//cout << "sample = " << k << endl;
 					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					cout << tmpVectorX << endl;
+					//cout << tmpVectorX << endl;
 					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					cout << "predict = " << predictOutput << endl;
+					//cout << "predict = " << predictOutput << endl;
 					expectedOutput = (*Y)(k, 0);
-					cout << "expected =" << expectedOutput << endl;
+					//cout << "expected =" << expectedOutput << endl;
 
 					
 					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
 
-					cout << "nbLayer " << (*W).nbLayer << endl;
+					//cout << "nbLayer " << (*W).nbLayer << endl;
 					for (int l = (*W).nbLayer - 2; l >= 0; l--)
 					{	
-						cout << "parcours layer :  " << l <<  endl;
+						//cout << "parcours layer :  " << l <<  endl;
 						//calcul sigma
 
 						for (unsigned int i = 0; i < (*W).layers[l].nbNeurone; i++)
 						{
-							cout << "   parcours neurone :  " << i << endl;
+							//cout << "   parcours neurone :  " << i << endl;
 							double total = 0;
 							for (unsigned int j = 0; j < (*W).layers[l + 1].nbNeurone; j++)
 							{
-								cout << "      parcours somme :  " << j << endl;
+								//cout << "      parcours somme :  " << j << endl;
 								total += (*W->layers[l + 1].neurones[j].weights)(i + 1) * (*W).layers[l + 1].neurones[j].sigma;
 							}
 
@@ -76,22 +77,27 @@ extern "C" {
 							(*W).layers[l].neurones[i].sigma = sigmaBefore;
 						}			
 					}
-					cout << "debut correction poids" << endl;
+					//cout << "debut correction poids" << endl;
 					// correction des poids
 					for (unsigned int l = 0; l < (*W).nbLayer - 1;l++)
 					{
-						cout << "layer: " << l << endl;
+						//cout << "layer: " << l << endl;
 						for (int idxNeurone = 0; idxNeurone < (*W).layers[l].nbNeurone - 1; idxNeurone++)
 						{
-							cout << "nb neurone " << (*W).layers[l].nbNeurone << endl;
-							cout << "   neurone: " << idxNeurone << endl;
-							for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size() - 1; idxWeights++)
+							//cout << "nb neurone " << (*W).layers[l].nbNeurone << endl;
+							//cout << "   neurone: " << idxNeurone << endl;
+							for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size(); idxWeights++)
 							{
-								cout << "      weights: " << idxWeights << endl;
+								//cout << "      weights: " << idxWeights << endl;
+								//cout << "res: "<< (*W).layers[l].neurones[idxNeurone].result << endl;
+								//cout << "sigma: " << (*W).layers[l].neurones[idxNeurone].sigma << endl;
+								//cout << (*W->layers[l].neurones[idxNeurone].weights)(idxWeights) << endl;
 								(*W->layers[l].neurones[idxNeurone].weights)(idxWeights) -= alpha * (*W).layers[l].neurones[idxNeurone].result * (*W).layers[l].neurones[idxNeurone].sigma;
+								//cout << "end" << endl;
 							}
 						}
 					}
+					//cout << "tat" << endl;
 				}
 			}
 		}
@@ -178,14 +184,14 @@ double predictPMC(
 
 		for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
 		{
-			cout << "JE PLANTE APRES" << endl;
-			cout << (*X) << endl;
+			//cout << "JE PLANTE APRES" << endl;
+			//cout << (*X) << endl;
 			calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X, 0);
-			cout << "JE PLANTE AVANT" << endl;
-			cout << (*W).layers[0].neurones[idxNeurone].result << endl;
+			//cout << "JE PLANTE AVANT" << endl;
+			//cout << (*W).layers[0].neurones[idxNeurone].result << endl;
 		}
 		tmpLayerResult = getLayerOuptut(&(*W).layers[0]);
-		cout << (*tmpLayerResult) << endl;
+		//cout << (*tmpLayerResult) << endl;
 		for (unsigned int idxLayer = 1; idxLayer < W->nbLayer; idxLayer++)
 		{
 			for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[idxLayer].nbNeurone; idxNeurone++)
@@ -194,13 +200,13 @@ double predictPMC(
 					calculateNeuroneOutput(&(*W).layers[idxLayer].neurones[idxNeurone], tmpLayerResult, isLinear);
 				else
 					calculateNeuroneOutput(&(*W).layers[idxLayer].neurones[idxNeurone], tmpLayerResult, 0);
-				cout << (*W).layers[idxLayer].neurones[idxNeurone].result << endl;
+				//cout << (*W).layers[idxLayer].neurones[idxNeurone].result << endl;
 
 			}
 			tmpLayerResult = getLayerOuptut(&(*W).layers[idxLayer]);
-			cout << (*tmpLayerResult) << endl;
+			//cout << (*tmpLayerResult) << endl;
 		}
-		cout << ((*W).layers[(*W).nbLayer - 1].neurones[0].result) << endl;
+		//cout << ((*W).layers[(*W).nbLayer - 1].neurones[0].result) << endl;
 		return ((*W).layers[(*W).nbLayer - 1].neurones[0].result);
 	}
 	catch (const std::exception & ex)

@@ -6,7 +6,7 @@ extern "C" {
 		if (bias == 1)
 		{
 			size = size + 1;
-			cout << size << endl;
+			//cout << size << endl;
 			Eigen::VectorXd* retVector = new Eigen::VectorXd(size);
 			(*retVector)(0) = 1;
 			for (int x = 1; x < size; x++)

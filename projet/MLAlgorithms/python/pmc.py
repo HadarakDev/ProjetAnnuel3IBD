@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
     myDll.fitPMCRegression.restype = c_double								
-    error = myDll.fitPMCRegression( W, pMatrixX, pMatrixY, 4, 2, 0.05, 50, 10)
+    error = myDll.fitPMCRegression( W, pMatrixX, pMatrixY, 3, 2, 0.1, 100000, 10)
 
     c_double_p = POINTER(c_double)
     myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
