@@ -48,5 +48,7 @@ int isColinear(Eigen::MatrixXd* matrix);
 Eigen::VectorXd* getLayerOuptut(t_layer* layer);
 void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
 double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
+void displayPmc(t_pmc* W);
+void fillFirstLayerWithInputs(t_pmc* W, Eigen::VectorXd* input);
 
 #endif // !"INCLUDE_H"

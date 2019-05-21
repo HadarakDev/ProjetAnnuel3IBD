@@ -45,16 +45,15 @@ extern "C" {
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{
-					cout << "sample = " << k << endl;
+					//cout << "sample = " << k << endl;
 					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					cout << tmpVectorX << endl;
-					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					cout << "predict = " << predictOutput << endl;
-					expectedOutput = (*Y)(k, 0);
-					cout << "expected =" << expectedOutput << endl;
-
 					
+					predictOutput = predictPMCRegression(W, &tmpVectorX);
+					//cout << "predict = " << predictOutput << endl;
+					expectedOutput = (*Y)(k, 0);
+					//cout << "expected =" << expectedOutput << endl;
+
 					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
 
 					//cout << "nbLayer " << (*W).nbLayer << endl;
@@ -114,25 +113,33 @@ extern "C" {
 		srand(time(NULL));
 		try
 		{	
+			nbLayer += 1;
+			inputCountPerSample += 1;
 			t_pmc *pmc = NULL;
 			if ((pmc = (t_pmc*)malloc(sizeof(t_pmc) * 1)) == NULL)
 				return (NULL); // if == null throws exception
 			pmc->nbLayer = nbLayer;
 			if ((pmc->layers = (t_layer*)malloc(sizeof(t_layer) * nbLayer)) == NULL)
 				return (NULL); // if == null throws exception
-			for (int idxLayer = 0; idxLayer < nbLayer; idxLayer++)
+
+
+			//initialisation de la couche 0 (inputs)
+			if ((pmc->layers[0].neurones = (t_neurone*)malloc(sizeof(t_neurone) * inputCountPerSample)) == NULL)
+				return (NULL);
+			pmc->layers[0].nbNeurone = inputCountPerSample;
+
+			for (int idxLayer = 1; idxLayer < nbLayer; idxLayer++)
 			{
-				if ((pmc->layers[idxLayer].neurones = (t_neurone*)malloc(sizeof(t_neurone) * structure[idxLayer])) == NULL)
+				if ((pmc->layers[idxLayer].neurones = (t_neurone*)malloc(sizeof(t_neurone) * structure[idxLayer - 1])) == NULL)
 					return (NULL);
-				pmc->layers[idxLayer].nbNeurone = structure[idxLayer];
-				for (int idxNeurone = 0; idxNeurone < structure[idxLayer]; idxNeurone++)
+				pmc->layers[idxLayer].nbNeurone = structure[idxLayer - 1];
+				for (int idxNeurone = 0; idxNeurone < structure[idxLayer - 1]; idxNeurone++)
 				{
 					int nbWeights;
-					if (idxLayer == 0)
-						nbWeights = inputCountPerSample;
+					if (idxLayer == 1)
+						nbWeights = inputCountPerSample + 1;
 					else
-						nbWeights = structure[idxLayer - 1];
-					nbWeights++; // ajout du biais
+						nbWeights = structure[idxLayer - 2] + 1; // ajout du biais
 
 					pmc->layers[idxLayer].neurones[idxNeurone].weights = new Eigen::VectorXd(nbWeights);
 					for (int idxWeights = 0; idxWeights < nbWeights; idxWeights++)
@@ -142,6 +149,7 @@ extern "C" {
 					}
 				}
 			}
+			displayPmc(pmc);
 			return (pmc);
 		}
 		catch (const std::exception & ex)
@@ -151,11 +159,26 @@ extern "C" {
 	}
 }
 
+void fillFirstLayerWithInputs(t_pmc *W, Eigen::VectorXd *input)
+{
+	for (int i = 0; i < input->size(); i++)
+	{
+		W->layers[0].neurones[i].result = (*input)(i);
+	}
+}
+
 void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned int isLinear)
 {
 	Eigen::VectorXd tmp(input->size());
-
+	
+	//cout << "AA" << endl;
+	//cout << (*input).transpose() << endl;
+	//cout << "BB" << endl;
+	//cout << (*neurone->weights) << endl;
+	//cout << "CC" << endl;
 	tmp = (*input).transpose() * (*neurone->weights);
+	//cout << "DD" << endl;
+	cout << "sum" << tmp.sum() << endl;
 	if (isLinear == 1)
 		(*neurone).result = tmp.sum();
 	else
@@ -173,27 +196,26 @@ Eigen::VectorXd *getLayerOuptut(t_layer* layer)
 	return (layerResult);
 }
 
-double predictPMC(
-	t_pmc* W,
-	Eigen::VectorXd* X,
-	unsigned int isLinear
-)
+double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
 {
 	Eigen::VectorXd* tmpLayerResult;
 	try {
-
-		for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
-		{
-			//cout << "JE PLANTE APRES" << endl;
-			//cout << (*X) << endl;
-			calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X, 0);
-			//cout << "JE PLANTE AVANT" << endl;
-			//cout << (*W).layers[0].neurones[idxNeurone].result << endl;
-		}
-		tmpLayerResult = getLayerOuptut(&(*W).layers[0]);
+		fillFirstLayerWithInputs(W, X);
+		//displayPmc(W);
+		//for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[0].nbNeurone; idxNeurone++)
+		//{
+		//	//cout << "JE PLANTE APRES" << endl;
+		//	//cout << (*X) << endl;
+		//	calculateNeuroneOutput(&(*W).layers[0].neurones[idxNeurone], X, 0);
+		//	//cout << "JE PLANTE AVANT" << endl;
+		//	//cout << (*W).layers[0].neurones[idxNeurone].result << endl;
+		//}
+		//cout << "TEST" << endl;
+		//tmpLayerResult = getLayerOuptut(&(*W).layers[0]);
 		//cout << (*tmpLayerResult) << endl;
 		for (unsigned int idxLayer = 1; idxLayer < W->nbLayer; idxLayer++)
 		{
+			tmpLayerResult = getLayerOuptut(&(*W).layers[idxLayer - 1]);
 			for (unsigned int idxNeurone = 0; idxNeurone < (*W).layers[idxLayer].nbNeurone; idxNeurone++)
 			{
 				if (idxLayer == (*W).nbLayer - 1)
@@ -203,10 +225,10 @@ double predictPMC(
 				//cout << (*W).layers[idxLayer].neurones[idxNeurone].result << endl;
 
 			}
-			tmpLayerResult = getLayerOuptut(&(*W).layers[idxLayer]);
 			//cout << (*tmpLayerResult) << endl;
 		}
 		//cout << ((*W).layers[(*W).nbLayer - 1].neurones[0].result) << endl;
+		displayPmc(W);
 		return ((*W).layers[(*W).nbLayer - 1].neurones[0].result);
 	}
 	catch (const std::exception & ex)
@@ -218,5 +240,25 @@ double predictPMC(
 	{
 		std::cout << "Error occurred: " << error.what() << std::endl;
 		return (-2);
+	}
+}
+
+void displayPmc(t_pmc* W)
+{
+	for (int l = 0; l < W->nbLayer; l++)
+	{
+		
+		cout << "Layer : " << l << " contains : " << W->layers[l].nbNeurone << " neurones" << endl;
+		for (int n = 0; n < W->layers[l].nbNeurone; n++)
+		{
+			cout << "	neurone : " << n << " result : " << W->layers[l].neurones[n].result << endl;
+			if (l >= 1)
+			{
+				for (int w = 0; w < W->layers[l].neurones[n].weights->size(); w++)
+				{
+					cout << "		  weight : " << w << " value : " << (*W->layers[l].neurones[n].weights)(w) << endl;
+				}
+			}
+		}
 	}
 }

@@ -13,6 +13,7 @@ extern "C" {
 			{
 				(*retVector)(x) = dataset[x - 1];
 			}
+			//cout << (*retVector) << endl;
 			return retVector;
 		}
 		else
