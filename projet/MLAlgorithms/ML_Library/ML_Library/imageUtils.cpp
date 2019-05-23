@@ -29,7 +29,6 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 	}
 }
 
-
 void displayPixelArray(int *pixelArray, int imageSize, int component)
 {
 	for (int k = 0; k < imageSize; k = k + component)

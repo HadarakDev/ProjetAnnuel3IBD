@@ -30,22 +30,21 @@ using namespace cv;
 #define SUPEREXPORT 
 #endif
 
-//SUPEREXPORT double predictLinearRegression(Eigen::MatrixXd*, Eigen::MatrixXd*);
-// matrixUtils.cpp
+
+////	matrixUtils.cpp
 Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, double *Array);
 void convertMatrixToSimpleArray(Eigen::MatrixXd matrix, double *arr);
-//bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB);
-
-// imageUtils.cpp
-void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
-	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
-int isMatrixColColinear(Eigen::MatrixXd *matrix);
+int isMatrixColColinear(Eigen::MatrixXd* matrix);
 int isMatrixLineColinear(Eigen::MatrixXd* matrix);
 void fixColinearity(Eigen::MatrixXd* matrix);
 int isColinear(Eigen::MatrixXd* matrix);
 
-//pmc.cpp
-Eigen::VectorXd* getLayerOuptut(t_layer* layer);
+////	imageUtils.cpp
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
+	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
+
+////	pmc.cpp
+Eigen::VectorXd* getLayerOuptut(t_layer* layer, int bias);
 void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
 double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
 void displayPmc(t_pmc* W);

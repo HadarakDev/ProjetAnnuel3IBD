@@ -4,6 +4,26 @@
 using namespace Eigen;
 
 extern "C" {
+
+	SUPEREXPORT void deletePMC(t_pmc* W)
+	{
+		for (int l = 0; l < W->nbLayer; l++)
+		{
+			for (int n = 0; n < W->layers[l].nbNeurone; n++)
+			{
+				if (l >= 1)
+				{
+					delete W->layers[l].neurones[n].weights;
+				}
+				
+			}
+			free((t_neurone*)(W->layers[l].neurones));
+		}
+		if (W->layers != NULL)
+			free((t_layer*)(W->layers));
+		if (W != NULL)
+			free(W);
+	}
 	SUPEREXPORT double predictPMCRegression(
 		t_pmc* W,
 		Eigen::VectorXd* X
@@ -46,18 +66,13 @@ extern "C" {
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{
-					//cout << "sample = " << k << endl;
 					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 					
 					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					//cout << "predict = " << predictOutput << endl;
 					expectedOutput = (*Y)(k, 0);
-					//cout << "expected =" << expectedOutput << endl;
 
 					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
-					//cout << predictOutput << endl;
-					//cout << "sigma: " << predictOutput - expectedOutput << endl;
 
 					for (int l = (*W).nbLayer - 1; l > 1; l--)
 					{	
@@ -72,29 +87,22 @@ extern "C" {
 							(*W).layers[l - 1].neurones[i].sigma = sigmaBefore;
 						}			
 					}
-					//cout << "debut correction poids" << endl;
-					// correction des poids
+
 					for (unsigned int l = 1; l < (*W).nbLayer;l++)
 					{
-						//cout << "layer: " << l << endl;
 						for (int idxNeurone = 0; idxNeurone < (*W).layers[l].nbNeurone; idxNeurone++)
 						{
-							//cout << "nb neurone " << (*W).layers[l].nbNeurone << endl;
-							//cout << "   neurone: " << idxNeurone << endl;
+
 							for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size(); idxWeights++)
 							{
-								//cout << "      weights: " << idxWeights << endl;
-								//cout << "res: "<< (*W).layers[l].neurones[idxNeurone].result << endl;
-								//cout << "sigma: " << (*W).layers[l].neurones[idxNeurone].sigma << endl;
-								//cout << (*W->layers[l].neurones[idxNeurone].weights)(idxWeights) << endl;
 								(*W->layers[l].neurones[idxNeurone].weights)(idxWeights) -= alpha * (*W).layers[l - 1].neurones[idxWeights].result * (*W).layers[l].neurones[idxNeurone].sigma;
-								//cout << "end" << endl;
 							}
 						}
 					}
-					//displayPmc(W);
-					//cout << "tat" << endl;
 				}
+				//ask tatane precision
+				if (i % display == 0)
+					cout << "current error  : " << (*W).layers[(*W).nbLayer - 1].neurones[0].sigma << endl;
 			}
 		}
 		catch (const std::exception & ex)
@@ -114,10 +122,10 @@ extern "C" {
 			inputCountPerSample += 1;
 			t_pmc *pmc = NULL;
 			if ((pmc = (t_pmc*)malloc(sizeof(t_pmc) * 1)) == NULL)
-				return (NULL); // if == null throws exception
+				throw std::bad_alloc();
 			pmc->nbLayer = nbLayer;
 			if ((pmc->layers = (t_layer*)malloc(sizeof(t_layer) * nbLayer)) == NULL)
-				return (NULL); // if == null throws exception
+				throw std::bad_alloc();
 
 
 			//initialisation de la couche 0 (inputs)
@@ -136,8 +144,7 @@ extern "C" {
 					if (idxLayer == 1)
 						nbWeights = inputCountPerSample;
 					else
-						nbWeights = structure[idxLayer - 2] + 1; // ajout du biais
-
+						nbWeights = structure[idxLayer - 2] + 1;
 					pmc->layers[idxLayer].neurones[idxNeurone].weights = new Eigen::VectorXd(nbWeights);
 					for (int idxWeights = 0; idxWeights < nbWeights; idxWeights++)
 					{
@@ -146,12 +153,12 @@ extern "C" {
 					}
 				}
 			}
-			//displayPmc(pmc);
 			return (pmc);
 		}
 		catch (const std::exception & ex)
 		{
 			std::cout << "Error occurred: " << ex.what() << std::endl;
+			return NULL;
 		}
 	}
 }
@@ -168,14 +175,7 @@ void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned
 {
 	Eigen::VectorXd tmp(input->size());
 	
-	//cout << "AA" << endl;
-	//cout << (*input).transpose() << endl;
-	//cout << "BB" << endl;
-	//cout << (*neurone->weights) << endl;
-	//cout << "CC" << endl;
 	tmp = (*input).transpose() * (*neurone->weights);
-	//cout << "DD" << endl;
-	//cout << "sum" << tmp.sum() << endl;
 	if (isLinear == 1)
 		(*neurone).result = tmp.sum();
 	else

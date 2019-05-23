@@ -158,7 +158,6 @@ int isColinear(Eigen::MatrixXd *matrix)
 	return 0;
 }
 
-
 int isMatrixLineColinear(Eigen::MatrixXd *matrix)
 {
 	for (int i = 0; i < (*matrix).rows() - 1; i++)
@@ -187,6 +186,7 @@ int isMatrixLineColinear(Eigen::MatrixXd *matrix)
 	}
 	return 1;
 }
+
 int isMatrixColColinear(Eigen::MatrixXd *matrix)
 {
 	for (int i = 0; i < (*matrix).cols() - 1; i++)

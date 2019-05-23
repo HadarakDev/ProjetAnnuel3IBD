@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
     myDll.fitPMCRegression.restype = c_double								
-    error = myDll.fitPMCRegression( W, pMatrixX, pMatrixY, 2, 1, 0.1, 100000, 10)
+    error = myDll.fitPMCRegression( W, pMatrixX, pMatrixY, 2, 1, 0.1, 1000, 10)
 
     myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
     myDll.datasetToVector.restype = c_void_p
@@ -72,10 +72,12 @@ if __name__ == "__main__":
     res = np.array([allResults])
 
 
-
+myDll.deletePMC.argtypes = [ c_void_p ]
+myDll.deletePMC(W)
 plt.scatter(Xnp, Ynp, color='blue')
 plt.show()
 plt.clf()
+
 
 
 

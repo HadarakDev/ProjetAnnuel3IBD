@@ -56,7 +56,6 @@ if __name__ == "__main__":
         f.write("--- %s seconds --- \n" % (time.time() - start_time))
         myDll.deleteLinearModel.argtypes = [ c_void_p, c_void_p, c_void_p ]
         myDll.deleteLinearModel( pArrayWeight, pMatrixX, pMatrixY)
-        #print("--- %s seconds ---" % (time.time() - start_time))
         nb = nb * evaluateFactor
         if done == 1:
             break

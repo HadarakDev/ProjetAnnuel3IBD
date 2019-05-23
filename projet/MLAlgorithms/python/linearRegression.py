@@ -50,7 +50,7 @@ if __name__ == "__main__":
 											inputCountPerSample
 									)
 
-	
+
 	#faire une prediction
 	
 	# for i in range(0, 50):
