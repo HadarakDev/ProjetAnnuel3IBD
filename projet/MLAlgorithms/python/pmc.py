@@ -8,6 +8,7 @@ from params import *
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.ctypeslib import ndpointer
 
 if __name__ == "__main__":
 
@@ -51,24 +52,18 @@ if __name__ == "__main__":
 
     allResults = []
     colors = []
+    ret = []
     myDll.predictPMCRegression.argtypes = [c_void_p, c_void_p ]
-    myDll.predictPMCRegression.restype = c_double
-    for x1 in range(0, 300):
+    myDll.predictPMCRegression.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+    for x1 in range(0,300):
         x1 *= 0.01 
         tmpArray = [x1]
         arr_tmp = (c_double * 1)(*tmpArray)
         datasetTmp = myDll.datasetToVector(arr_tmp, len(tmpArray), 1)
-        ret =myDll.predictPMCRegression(W, datasetTmp)
-        tmpArray.append(ret)
+        ret = myDll.predictPMCRegression(W, datasetTmp)
+        tmpArray.append(ret[0])
         allResults.append(tmpArray)
-        #print( "x:%s, y:%s" % (x1,ret) )
-        plt.scatter(x1, ret, color="green")
-
-        #if maxNb is None or ret > maxNb:
-         #   maxNb = ret
-        #if minNb is None or ret < minNb:
-         #   minNb = ret
-
+        plt.scatter(x1, ret[0], color="green")
     res = np.array([allResults])
 
 

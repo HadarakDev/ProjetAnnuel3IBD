@@ -15,6 +15,7 @@ w1, w2 = linearRegression(X,Y, "linearSimple2D.csv")
 
 #droite à tracer
 x = np.linspace(0, 4, 100)
+print (w1, w2)
 y = 1 * w1 + x * w2
 
 #affichage

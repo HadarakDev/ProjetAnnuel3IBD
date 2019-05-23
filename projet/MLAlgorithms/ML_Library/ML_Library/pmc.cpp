@@ -24,7 +24,7 @@ extern "C" {
 		if (W != NULL)
 			free(W);
 	}
-	SUPEREXPORT double predictPMCRegression(
+	SUPEREXPORT double *predictPMCRegression(
 		t_pmc* W,
 		Eigen::VectorXd* X
 	)
@@ -32,7 +32,7 @@ extern "C" {
 		return (predictPMC(W, X, 1));
 	}
 
-	SUPEREXPORT double predictPMCClassification(
+	SUPEREXPORT double *predictPMCClassification(
 		t_pmc* W,
 		Eigen::VectorXd* X
 	)
@@ -51,65 +51,21 @@ extern "C" {
 		int display // interval affichage
 	)
 	{
-		cout << "START" << endl;
-		inputCountPerSample = inputCountPerSample + 1;
-		double predictOutput;
-		double expectedOutput;
-		Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
-		Eigen::VectorXd tmpVectorX(inputCountPerSample);
 
-		try {
-			//displayPmc(W);
-			for (int i = 0; i < epochs; i++)
-			{
-				if (i % display == 0)
-					cout << "current epochs  : " << i << " on " << epochs << endl;
-				for (int k = 0; k < SampleCount; k++)
-				{
-					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
-					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					
-					predictOutput = predictPMCRegression(W, &tmpVectorX);
-					expectedOutput = (*Y)(k, 0);
+	}
 
-					(*W).layers[(*W).nbLayer - 1].neurones[0].sigma = predictOutput - expectedOutput;
+	SUPEREXPORT double fitPMCClassification(
+		t_pmc* W,
+		Eigen::MatrixXd* X,
+		Eigen::MatrixXd* Y,
+		int SampleCount,
+		int inputCountPerSample,
+		double alpha, // Learning Rate
+		int epochs, // Nombre d'itération
+		int display // interval affichage
+	)
+	{
 
-					for (int l = (*W).nbLayer - 1; l > 1; l--)
-					{	
-						for (unsigned int i = 0; i < (*W).layers[l - 1].nbNeurone; i++)
-						{
-							double total = 0;
-							for (unsigned int j = 0; j < (*W).layers[l].nbNeurone; j++)
-							{
-								total += (*W->layers[l].neurones[j].weights)((int)i + 1) * (*W).layers[l].neurones[j].sigma;
-							}
-							double sigmaBefore = (1 - pow((*W).layers[l - 1].neurones[i].result, 2)) * total;
-							(*W).layers[l - 1].neurones[i].sigma = sigmaBefore;
-						}			
-					}
-
-					for (unsigned int l = 1; l < (*W).nbLayer;l++)
-					{
-						for (int idxNeurone = 0; idxNeurone < (*W).layers[l].nbNeurone; idxNeurone++)
-						{
-
-							for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size(); idxWeights++)
-							{
-								(*W->layers[l].neurones[idxNeurone].weights)(idxWeights) -= alpha * (*W).layers[l - 1].neurones[idxWeights].result * (*W).layers[l].neurones[idxNeurone].sigma;
-							}
-						}
-					}
-				}
-				//ask tatane precision
-				if (i % display == 0)
-					cout << "current error  : " << (*W).layers[(*W).nbLayer - 1].neurones[0].sigma << endl;
-			}
-		}
-		catch (const std::exception & ex)
-		{
-			std::cout << "Error occurred: " << ex.what() << std::endl;
-			return (0);
-		}
 	}
 
 	SUPEREXPORT void *createPMCModel(int *structure, int nbLayer, int inputCountPerSample)
@@ -205,7 +161,7 @@ Eigen::VectorXd *getLayerOuptut(t_layer* layer, int bias)
 	}
 }
 
-double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
+double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
 {
 	Eigen::VectorXd* tmpLayerResult;
 	try {
@@ -224,17 +180,101 @@ double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
 					calculateNeuroneOutput(&(*W).layers[idxLayer].neurones[idxNeurone], tmpLayerResult, 0);
 			}
 		}
-		return ((*W).layers[(*W).nbLayer - 1].neurones[0].result);
+		double* ret = new double(W->layers[(*W).nbLayer - 1].nbNeurone);
+
+		for (int i = 0; i < W->layers[(*W).nbLayer - 1].nbNeurone; i++)
+		{
+			ret[i] = (*W).layers[(*W).nbLayer - 1].neurones[i].result;
+		}
+		return (ret);
 	}
 	catch (const std::exception & ex)
 	{
 		std::cout << "Error occurred: " << ex.what() << std::endl;
-		return (-1);
+		return (NULL);
 	}
 	catch (const runtime_error & error)
 	{
 		std::cout << "Error occurred: " << error.what() << std::endl;
-		return (-2);
+		return (NULL);
+	}
+}
+
+double fitPMC(
+	t_pmc* W,
+	Eigen::MatrixXd* X,
+	Eigen::MatrixXd* Y,
+	int SampleCount,
+	int inputCountPerSample,
+	double alpha, // Learning Rate
+	int epochs, // Nombre d'itération
+	int display, // interval affichage
+	int isLinear
+)
+{
+	cout << "START" << endl;
+	inputCountPerSample = inputCountPerSample + 1;
+	double* predictOutput;
+	double* expectedOutput;
+	Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
+	Eigen::VectorXd tmpVectorX(inputCountPerSample);
+	Eigen::VectorXd expectedOutputVector((*Y).cols());
+
+	try {
+		//displayPmc(W);
+		cout << (*Y).cols() << (*W).layers[(*W).nbLayer - 1].nbNeurone << endl;
+		if ((*Y).cols() != (*W).layers[(*W).nbLayer - 1].nbNeurone)
+			throw std::exception("erreur Y n'est pas de la meme taille que les neurones");
+		for (int i = 0; i < epochs; i++)
+		{
+			if (i % display == 0)
+				cout << "current epochs  : " << i << " on " << epochs << endl;
+			for (int k = 0; k < SampleCount; k++)
+			{
+				tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
+				tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+
+				if (isLinear == 0)
+					predictOutput = predictPMCRegression(W, &tmpVectorX);
+				else
+					predictOutput = predictPMCClassification(W, &tmpVectorX);
+				expectedOutputVector = (*Y).block(k, 0, 1, (*Y).cols());
+
+				for (int idxOutput = 0; idxOutput < expectedOutputVector.size(); idxOutput++)
+					(*W).layers[(*W).nbLayer - 1].neurones[idxOutput].sigma = predictOutput[idxOutput] - expectedOutputVector(idxOutput);
+
+				for (int l = (*W).nbLayer - 1; l > 1; l--)
+				{
+					for (unsigned int i = 0; i < (*W).layers[l - 1].nbNeurone; i++)
+					{
+						double total = 0;
+						for (unsigned int j = 0; j < (*W).layers[l].nbNeurone; j++)
+						{
+							total += (*W->layers[l].neurones[j].weights)((int)i + 1) * (*W).layers[l].neurones[j].sigma;
+						}
+						double sigmaBefore = (1 - pow((*W).layers[l - 1].neurones[i].result, 2)) * total;
+						(*W).layers[l - 1].neurones[i].sigma = sigmaBefore;
+					}
+				}
+
+				for (unsigned int l = 1; l < (*W).nbLayer; l++)
+				{
+					for (int idxNeurone = 0; idxNeurone < (*W).layers[l].nbNeurone; idxNeurone++)
+					{
+
+						for (unsigned int idxWeights = 0; idxWeights < (*W).layers[l].neurones[idxNeurone].weights->size(); idxWeights++)
+						{
+							(*W->layers[l].neurones[idxNeurone].weights)(idxWeights) -= alpha * (*W).layers[l - 1].neurones[idxWeights].result * (*W).layers[l].neurones[idxNeurone].sigma;
+						}
+					}
+				}
+			}
+		}
+	}
+	catch (const std::exception & ex)
+	{
+		std::cout << "Error occurred: " << ex.what() << std::endl;
+		return (0);
 	}
 }
 

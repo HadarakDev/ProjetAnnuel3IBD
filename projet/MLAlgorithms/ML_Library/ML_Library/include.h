@@ -46,7 +46,7 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 ////	pmc.cpp
 Eigen::VectorXd* getLayerOuptut(t_layer* layer, int bias);
 void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
-double predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
+double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
 void displayPmc(t_pmc* W);
 void fillFirstLayerWithInputs(t_pmc* W, Eigen::VectorXd* input);
 
