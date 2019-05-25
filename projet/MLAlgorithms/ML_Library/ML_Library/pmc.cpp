@@ -51,7 +51,7 @@ extern "C" {
 		int display // interval affichage
 	)
 	{
-
+		return (fitPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 1));
 	}
 
 	SUPEREXPORT double fitPMCClassification(
@@ -65,7 +65,7 @@ extern "C" {
 		int display // interval affichage
 	)
 	{
-
+		return (fitPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 0));
 	}
 
 	SUPEREXPORT void *createPMCModel(int *structure, int nbLayer, int inputCountPerSample)
@@ -234,15 +234,19 @@ double fitPMC(
 				tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 				tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 
-				if (isLinear == 0)
-					predictOutput = predictPMCRegression(W, &tmpVectorX);
-				else
-					predictOutput = predictPMCClassification(W, &tmpVectorX);
+				predictOutput = predictPMC(W, &tmpVectorX, isLinear);
 				expectedOutputVector = (*Y).block(k, 0, 1, (*Y).cols());
 
-				for (int idxOutput = 0; idxOutput < expectedOutputVector.size(); idxOutput++)
-					(*W).layers[(*W).nbLayer - 1].neurones[idxOutput].sigma = predictOutput[idxOutput] - expectedOutputVector(idxOutput);
-
+				if (isLinear == 0)
+				{
+					for (int idxOutput = 0; idxOutput < expectedOutputVector.size(); idxOutput++)
+						(*W).layers[(*W).nbLayer - 1].neurones[idxOutput].sigma = (1 - pow(predictOutput[idxOutput], 2)) * (predictOutput[idxOutput] - expectedOutputVector(idxOutput));
+				}
+				else
+				{
+					for (int idxOutput = 0; idxOutput < expectedOutputVector.size(); idxOutput++)
+						(*W).layers[(*W).nbLayer - 1].neurones[idxOutput].sigma = predictOutput[idxOutput] - expectedOutputVector(idxOutput);
+				}
 				for (int l = (*W).nbLayer - 1; l > 1; l--)
 				{
 					for (unsigned int i = 0; i < (*W).layers[l - 1].nbNeurone; i++)

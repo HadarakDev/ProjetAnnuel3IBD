@@ -17,11 +17,15 @@ if __name__ == "__main__":
     K = [4]
     # X = [1, 1, 2, 2, 3, 1]
     # Y = [2, 3, 2.5]
-    X = [ 1, 2 ]
-    Y = [ 2, 3 ]
-    Xnp = np.array([ [1], [2] ])
-    Ynp = np.array([ 2, 3])
-
+    X = [ 1, 2, 3, 4 , 5 , 6 ]
+    Y = [ -1, 1, -1, 1, -1, 1]
+    Xnp = np.array([ [1], [2], [3], [4] , [5] , [6]  ])
+    Ynp = np.array([  [-1], [1], [-1], [1], [-1], [1]])
+    
+    Xnp = np.random.random((500, 2)) * 2.0 - 1.0
+    Ynp = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in X])
+    X = Xnp.tolist()
+    Y = Ynp.tolist()
     myDll = CDLL(pathDLL)
     
     myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
@@ -36,9 +40,9 @@ if __name__ == "__main__":
 
     W = myDll.createPMCModel(arrStruct, len(pmcStruct), 1)
 
-    myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
-    myDll.fitPMCRegression.restype = c_double								
-    error = myDll.fitPMCRegression( W, pMatrixX, pMatrixY, 2, 1, 0.1, 1000, 10)
+    myDll.fitPMCClassification.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
+    myDll.fitPMCClassification.restype = c_double								
+    error = myDll.fitPMCClassification( W, pMatrixX, pMatrixY, 2, 1, 0.1, 1000, 10)
 
     myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
     myDll.datasetToVector.restype = c_void_p
@@ -53,14 +57,14 @@ if __name__ == "__main__":
     allResults = []
     colors = []
     ret = []
-    myDll.predictPMCRegression.argtypes = [c_void_p, c_void_p ]
-    myDll.predictPMCRegression.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+    myDll.predictPMCClassification.argtypes = [c_void_p, c_void_p ]
+    myDll.predictPMCClassification.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
     for x1 in range(0,300):
         x1 *= 0.01 
         tmpArray = [x1]
         arr_tmp = (c_double * 1)(*tmpArray)
         datasetTmp = myDll.datasetToVector(arr_tmp, len(tmpArray), 1)
-        ret = myDll.predictPMCRegression(W, datasetTmp)
+        ret = myDll.predictPMCClassification(W, datasetTmp)
         tmpArray.append(ret[0])
         allResults.append(tmpArray)
         plt.scatter(x1, ret[0], color="green")

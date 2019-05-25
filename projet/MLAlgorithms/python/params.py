@@ -23,7 +23,7 @@ pathLog = "C:/Users/nico_/Documents/ConvertedImages/EvaluateModels.txt"
 
 ##### PMC ####
 
-pmcStruct = [2, 1]
+pmcStruct = [2, 4, 1]
 arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
 
 #### CTYPES ####
