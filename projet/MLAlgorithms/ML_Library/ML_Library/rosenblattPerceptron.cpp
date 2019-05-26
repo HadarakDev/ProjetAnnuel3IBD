@@ -29,8 +29,8 @@ extern "C" {
 		try {
 			for (int i = 0; i < epochs; i++)
 			{
-				if (epochs % display == 0)
-					cout << "current epochs  : " << i << "on" << epochs << endl;
+				if (i % display == 0)
+					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{	
 					tmpX = (*X).block(k, 0, 1, inputCountPerSample);

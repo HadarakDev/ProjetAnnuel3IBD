@@ -2,7 +2,7 @@
 
 
 // Constantes
-define('TARGET', '/volume1/web/testedPicture/');    // Repertoire cible
+define('TARGET', './img/');    // Repertoire cible
 define('MAX_SIZE', 100000);    // Taille max en octets du fichier
 define('WIDTH_MAX', 1000);    // Largeur max de l'image en pixels
 define('HEIGHT_MAX', 1000);    // Hauteur max de l'image en pixels

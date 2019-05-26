@@ -15,34 +15,47 @@ def matrixToArray(matrix):
 		ret.extend(el)
 	return ret
 
-def linearRegression(Xnp,Ynp, filename):
+def linearRegression(myDll, Xnp,Ynp):
 	X = matrixToArray(Xnp.tolist())
 	Y = Ynp.tolist()
-	
 
-	pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
-	#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-
-	myDll = CDLL(pathDLL)
-	myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
 	myDll.loadTestCase.restype = c_void_p
 
+	# charger X
+	myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
 	pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), Xnp.shape[0],  Xnp.shape[1], 1)
+
+	#  charger Y
 	myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(Y))), c_uint, c_uint, c_uint]
 	pMatrixY = myDll.loadTestCase((c_double * len(Y))(*Y), Ynp.shape[0], 1, 0)
 
+	# Creer modele
 	myDll.createLinearModel.argtypes = [c_int32]
 	myDll.createLinearModel.restype = c_void_p
 	pArrayWeight = myDll.createLinearModel(Xnp.shape[1])
 
+	# Entrainement
 	myDll.fitLinearRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int ]
 	myDll.fitLinearRegression.restype = c_double								
 	error = myDll.fitLinearRegression	( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1] )
-	
-	pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/" + filename
 
-	myDll.saveWeightsInCSV.argtypes = [c_char_p, c_void_p]
-	myDll.saveWeightsInCSV(pathSaveWeights.encode('utf-8'), pArrayWeight)
+	return pArrayWeight
 
-	return readFileWeight(pathSaveWeights)
+def predict(myDll, function, Xnp, ArrayWeight):
+    X = Xnp.tolist()
+    myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
+    myDll.loadTestCase.restype = c_void_p
+
+    pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), 1,  len(X), 1)
+    function.argtypes = [
+                            c_void_p,
+                            c_void_p,
+                        ]
+    function.restype = c_double
+    predictResponse = function (
+                            ArrayWeight,
+                            pMatrixX
+                        )
+
+    return predictResponse

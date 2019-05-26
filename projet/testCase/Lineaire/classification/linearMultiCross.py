@@ -1,38 +1,37 @@
-# Linear Model x3 : OK
-# MLP (2, 3)      : OK
+# Linear Model x3 : KO
+# MLP (2, ?, ?, 3): OK
 
 import matplotlib.pyplot as plt
 import numpy as np
 from utilsClassification import *
 from ctypes import *
 
+
 # pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
-#recupérer les poids
+
+#Parametre
 alpha = 0.05
-epochs = 100000
+epochs = 1000
+display = 100
 
 #datas des points a tester
-X = np.random.random((500, 2)) * 2.0 - 1.0
-Y = np.array([[1, 0, 0] if -p[0] - p[1] - 0.5 > 0 and p[1] < 0 and p[0] - p[1] - 0.5 < 0 else #A
-              [0, 1, 0] if -p[0] - p[1] - 0.5 < 0 and p[1] > 0 and p[0] - p[1] - 0.5 < 0 else #B
-              [0, 0, 1] if -p[0] - p[1] - 0.5 < 0 and p[1] < 0 and p[0] - p[1] - 0.5 > 0 else #C
-              [0, 0, 0] for p in X])
-
+X = np.random.random((1000, 2)) * 2.0 - 1.0
+Y = np.array([[1, 0, 0] if abs(p[0] % 0.5) <= 0.25 and abs(p[1] % 0.5) > 0.25 else [0, 1, 0] if abs(p[0] % 0.5) > 0.25 and abs(p[1] % 0.5) <= 0.25 else [0, 0, 1] for p in X])
 
 #A = 1
 Y1 = [ 1 if y == [1, 0, 0] else -1 for y in Y.tolist()  ]
-pArrayWeight1 = linearClassification(X, np.array(Y1), "linearMultiple.csv", alpha, epochs)
+pArrayWeight1 = linearClassification(myDll, X, np.array(Y1), alpha, epochs, display)
 
 #B = 1
 Y2 = [ 1 if y == [0, 1, 0] else -1 for y in Y.tolist()  ]
-pArrayWeight2 = linearClassification(X, np.array(Y2), "linearMultiple.csv", alpha, epochs)
+pArrayWeight2 = linearClassification(myDll, X, np.array(Y2), alpha, epochs, display)
 
 #A = 1
 Y3 = [ 1 if y == [0, 0, 1] else -1 for y in Y.tolist()  ]
-pArrayWeight3 = linearClassification(X, np.array(Y3), "linearMultiple.csv", alpha, epochs)
+pArrayWeight3 = linearClassification(myDll, X, np.array(Y3), alpha, epochs, display)
 
 
 #droite à tracer
@@ -54,9 +53,9 @@ for x1 in X1:
 		else:
 			plt.scatter(x1, x2, color='#eeeeee')
 
-#affichage
 plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][0] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][0] == 1, enumerate(X)))))[:,1], color='blue')
 plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][1] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][1] == 1, enumerate(X)))))[:,1], color='red')
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,1], color='green')
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,1], color='grey')
 plt.show()
 plt.clf()
+
