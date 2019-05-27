@@ -19,7 +19,6 @@ Y = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in X])
 alpha = 0.05
 epochs = 1000
 display = 10
-print(Y)
 pArrayWeight = linearClassification(myDll, X, Y, alpha, epochs, display)
 
 
