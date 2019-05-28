@@ -1,4 +1,4 @@
-#include "include.h"
+ï»¿#include "include.h"
 #include <stdlib.h> 
 
 using namespace Eigen;
@@ -15,7 +15,7 @@ extern "C" {
 				{
 					delete W->layers[l].neurones[n].weights;
 				}
-				
+
 			}
 			free((t_neurone*)(W->layers[l].neurones));
 		}
@@ -24,30 +24,30 @@ extern "C" {
 		if (W != NULL)
 			free(W);
 	}
-	SUPEREXPORT double *predictPMCRegression(
-		t_pmc* W,
-		Eigen::VectorXd* X
+	SUPEREXPORT double* predictPMCRegression(
+		t_pmc * W,
+		Eigen::VectorXd * X
 	)
 	{
 		return (predictPMC(W, X, 1));
 	}
 
-	SUPEREXPORT double *predictPMCClassification(
-		t_pmc* W,
-		Eigen::VectorXd* X
+	SUPEREXPORT double* predictPMCClassification(
+		t_pmc * W,
+		Eigen::VectorXd * X
 	)
 	{
 		return (predictPMC(W, X, 0));
 	}
 
 	SUPEREXPORT double fitPMCRegression(
-		t_pmc* W,
-		Eigen::MatrixXd* X,
-		Eigen::MatrixXd* Y,
+		t_pmc * W,
+		Eigen::MatrixXd * X,
+		Eigen::MatrixXd * Y,
 		int SampleCount,
 		int inputCountPerSample,
 		double alpha, // Learning Rate
-		int epochs, // Nombre d'itération
+		int epochs, // Nombre d'iteration
 		int display // interval affichage
 	)
 	{
@@ -55,28 +55,28 @@ extern "C" {
 	}
 
 	SUPEREXPORT double fitPMCClassification(
-		t_pmc* W,
-		Eigen::MatrixXd* X,
-		Eigen::MatrixXd* Y,
+		t_pmc * W,
+		Eigen::MatrixXd * X,
+		Eigen::MatrixXd * Y,
 		int SampleCount,
 		int inputCountPerSample,
 		double alpha, // Learning Rate
-		int epochs, // Nombre d'itération
+		int epochs, // Nombre d'iteration
 		int display // interval affichage
 	)
 	{
 		return (fitPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 0));
 	}
 
-	SUPEREXPORT void *createPMCModel(int *structure, int nbLayer, int inputCountPerSample)
+	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer, int inputCountPerSample)
 	{
 
 		srand(time(NULL));
 		try
-		{	
+		{
 			nbLayer += 1;
 			inputCountPerSample += 1;
-			t_pmc *pmc = NULL;
+			t_pmc* pmc = NULL;
 			if ((pmc = (t_pmc*)malloc(sizeof(t_pmc) * 1)) == NULL)
 				throw std::bad_alloc();
 			pmc->nbLayer = nbLayer;
@@ -105,6 +105,7 @@ extern "C" {
 					for (int idxWeights = 0; idxWeights < nbWeights; idxWeights++)
 					{
 						(*pmc->layers[idxLayer].neurones[idxNeurone].weights)(idxWeights) = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
+						//(*pmc->layers[idxLayer].neurones[idxNeurone].weights)(idxWeights) = 0.5;
 					}
 				}
 			}
@@ -118,7 +119,7 @@ extern "C" {
 	}
 }
 
-void fillFirstLayerWithInputs(t_pmc *W, Eigen::VectorXd *input)
+void fillFirstLayerWithInputs(t_pmc * W, Eigen::VectorXd * input)
 {
 	for (int i = 0; i < input->size(); i++)
 	{
@@ -126,10 +127,10 @@ void fillFirstLayerWithInputs(t_pmc *W, Eigen::VectorXd *input)
 	}
 }
 
-void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned int isLinear)
+void calculateNeuroneOutput(t_neurone * neurone, Eigen::VectorXd * input, unsigned int isLinear)
 {
 	Eigen::VectorXd tmp(input->size());
-	
+
 	tmp = (*input).transpose() * (*neurone->weights);
 	if (isLinear == 1)
 		(*neurone).result = tmp.sum();
@@ -137,7 +138,7 @@ void calculateNeuroneOutput(t_neurone *neurone, Eigen::VectorXd *input, unsigned
 		(*neurone).result = tanh(tmp.sum());
 }
 
-Eigen::VectorXd *getLayerOuptut(t_layer* layer, int bias)
+Eigen::VectorXd* getLayerOuptut(t_layer * layer, int bias)
 {
 	if (bias == 1)
 	{
@@ -160,7 +161,7 @@ Eigen::VectorXd *getLayerOuptut(t_layer* layer, int bias)
 	}
 }
 
-double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
+double* predictPMC(t_pmc * W, Eigen::VectorXd * X, unsigned int isLinear)
 {
 	Eigen::VectorXd* tmpLayerResult;
 	try {
@@ -183,7 +184,10 @@ double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
 
 		for (int i = 0; i < W->layers[(*W).nbLayer - 1].nbNeurone; i++)
 		{
+			
 			ret[i] = (*W).layers[(*W).nbLayer - 1].neurones[i].result;
+			//if (isLinear == 0)
+			//	ret[i] = ret[i] >= 0 ? 1.0 : -1.0;
 		}
 		return (ret);
 	}
@@ -200,13 +204,13 @@ double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear)
 }
 
 double fitPMC(
-	t_pmc* W,
-	Eigen::MatrixXd* X,
-	Eigen::MatrixXd* Y,
+	t_pmc * W,
+	Eigen::MatrixXd * X,
+	Eigen::MatrixXd * Y,
 	int SampleCount,
 	int inputCountPerSample,
 	double alpha, // Learning Rate
-	int epochs, // Nombre d'itération
+	int epochs, // Nombre d'itï¿½ration
 	int display, // interval affichage
 	int isLinear
 )
@@ -234,12 +238,18 @@ double fitPMC(
 				tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 
 				predictOutput = predictPMC(W, &tmpVectorX, isLinear);
+				//cout << "sampl" << k << endl;
 				expectedOutputVector = (*Y).block(k, 0, 1, (*Y).cols());
-
+				//cout << "vecto" << expectedOutputVector << endl;
 				if (isLinear == 0)
 				{
 					for (int idxOutput = 0; idxOutput < expectedOutputVector.size(); idxOutput++)
+					{
 						(*W).layers[(*W).nbLayer - 1].neurones[idxOutput].sigma = (1 - pow(predictOutput[idxOutput], 2)) * (predictOutput[idxOutput] - expectedOutputVector(idxOutput));
+						//cout << "res sigma" << (1 - pow(predictOutput[idxOutput], 2)) * (predictOutput[idxOutput] - expectedOutputVector(idxOutput)) << endl;
+						//cout << "predict Out " << predictOutput[idxOutput] << endl;
+						//cout << "expetct Out " << expectedOutputVector(idxOutput) << endl;
+					}
 				}
 				else
 				{
@@ -248,7 +258,9 @@ double fitPMC(
 				}
 				for (int l = (*W).nbLayer - 1; l > 1; l--)
 				{
-					for (unsigned int i = 0; i < (*W).layers[l - 1].nbNeurone; i++)
+
+					int i = 0;
+					while (i < (*W).layers[l - 1].nbNeurone)
 					{
 						double total = 0;
 						for (unsigned int j = 0; j < (*W).layers[l].nbNeurone; j++)
@@ -256,7 +268,11 @@ double fitPMC(
 							total += (*W->layers[l].neurones[j].weights)((int)i + 1) * (*W).layers[l].neurones[j].sigma;
 						}
 						double sigmaBefore = (1 - pow((*W).layers[l - 1].neurones[i].result, 2)) * total;
+						//cout << "total " << total << endl;
+						//cout << "res" << (*W).layers[l - 1].neurones[i].result << endl;
+
 						(*W).layers[l - 1].neurones[i].sigma = sigmaBefore;
+						i++;
 					}
 				}
 
@@ -272,6 +288,7 @@ double fitPMC(
 					}
 				}
 			}
+			
 		}
 	}
 	catch (const std::exception & ex)
@@ -281,21 +298,21 @@ double fitPMC(
 	}
 }
 
-void displayPmc(t_pmc* W)
+void displayPmc(t_pmc * W)
 {
 	for (int l = 0; l < W->nbLayer; l++)
 	{
-		
+
 		cout << "Layer : " << l << " contains : " << W->layers[l].nbNeurone << " neurones" << endl;
 		for (int n = 0; n < W->layers[l].nbNeurone; n++)
 		{
-			cout << "	neurone : " << n << " result : "  << std::setprecision(9) << W->layers[l].neurones[n].result << endl;
+			cout << "	neurone : " << n << " result : " << std::setprecision(9) << W->layers[l].neurones[n].result << endl;
 			if (l >= 1)
 			{
 				cout << "	neurone : " << n << " sigma : " << std::setprecision(9) << W->layers[l].neurones[n].sigma << endl;
 				for (int w = 0; w < W->layers[l].neurones[n].weights->size(); w++)
 				{
-					cout << "		  weight : " << w << " value : "  << std::setprecision(9) << (*W->layers[l].neurones[n].weights)(w) << endl;
+					cout << "		  weight : " << w << " value : " << std::setprecision(9) << (*W->layers[l].neurones[n].weights)(w) << endl;
 				}
 			}
 		}
