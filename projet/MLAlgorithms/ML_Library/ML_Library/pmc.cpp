@@ -104,8 +104,7 @@ extern "C" {
 					pmc->layers[idxLayer].neurones[idxNeurone].weights = new Eigen::VectorXd(nbWeights);
 					for (int idxWeights = 0; idxWeights < nbWeights; idxWeights++)
 					{
-						//(*pmc->layers[idxLayer].neurones[idxNeurone].weights)(idxWeights) = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
-						(*pmc->layers[idxLayer].neurones[idxNeurone].weights)(idxWeights) = 1;
+						(*pmc->layers[idxLayer].neurones[idxNeurone].weights)(idxWeights) = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
 					}
 				}
 			}
