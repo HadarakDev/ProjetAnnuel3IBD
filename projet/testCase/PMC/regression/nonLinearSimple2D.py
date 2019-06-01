@@ -1,5 +1,6 @@
 # Linear Model : KO
 # MLP (1, 1)   : KO
+# avec autre OK
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,7 +16,7 @@ myDll = CDLL(pathDLL)
 alpha = 0.1
 epochs = 100000
 display = int(epochs / 10)
-pmcStruct = [2, 3,  1]
+pmcStruct = [1]
 arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
 c_double_p = POINTER(c_double)
 
@@ -56,6 +57,7 @@ for x1 in X1:
 	arr_tmp = (c_double * 1)(*predictX)
 	datasetTmp = myDll.datasetToVector(arr_tmp, len(predictX), 1)
 	value = myDll.predictPMCRegression(pArrayWeight, datasetTmp)
+	print(value[0])
 	plt.scatter(x1, value[0], color='#bbdefb')
       
 

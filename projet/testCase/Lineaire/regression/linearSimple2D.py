@@ -6,14 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
 #datas des points a tester
-X = np.array([ [1], [2] ])
-Y = np.array([ 2, 3])
+X = np.array([ [-2], [2] ])
+Y = np.array([ 2, -3])
 
 #recuperer les poids
 pArrayWeight = linearRegression(myDll, X,Y)

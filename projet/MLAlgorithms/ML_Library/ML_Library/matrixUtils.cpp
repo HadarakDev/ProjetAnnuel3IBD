@@ -178,7 +178,6 @@ int isMatrixLineColinear(Eigen::MatrixXd *matrix)
 			else
 			{
 				colCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
-				cout << lineCoeff << " " << colCoeff << endl;
 				if (fabs(colCoeff - lineCoeff) > std::numeric_limits<double>::epsilon())
 					return -1;
 			}
@@ -207,7 +206,6 @@ int isMatrixColColinear(Eigen::MatrixXd *matrix)
 			else
 			{
 				colCoeff = (*matrix)(i + 1, j) / (*matrix)(i, j);
-				cout << lineCoeff << " " << colCoeff<<endl;
 				if (fabs(colCoeff - lineCoeff) > std::numeric_limits<double>::epsilon())
 					return -1;
 			}

@@ -6,17 +6,17 @@ import numpy as np
 from utilsClassification import *
 from ctypes import *
 
-# pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
 #datas des points a tester
-X = np.array([ [1, 1], [2, 3], [3, 3] ])
+X = np.array([ [1, 5], [2, 3], [3, 3] ])
 Y = np.array([ 1, -1, -1 ])
 
 #parametre
-alpha = 0.05
+alpha = 0.1
 epochs = 1000
 display = 100		#a debuger
 

@@ -6,15 +6,15 @@ import numpy as np
 from utilsClassification import *
 from ctypes import *
 
-# pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
 #Parametre
-alpha = 0.05
-epochs = 1000
-display = 100
+alpha = 0.001
+epochs = 100000
+display = 10000
 
 #datas des points a tester
 X = np.random.random((500, 2)) * 2.0 - 1.0
@@ -47,12 +47,12 @@ for x1 in X1:
 		value2 = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight2)
 		value3 = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight3)
 
-		if value1 > value2 and value1 > value3:
+		if value1 > 0:# and value1 >= value3:
 			plt.scatter(x1, x2, color='#bbdefb')
-		elif value2 > value1 and value2 > value3:
-		    plt.scatter(x1, x2, color='#ffcdd2')
-		elif value3 > value1 and value3 > value2:
-			plt.scatter(x1, x2, color='#c8e6c9')
+		# elif value2 >= value1 and value2 >= value3:
+		#     plt.scatter(x1, x2, color='#ffcdd2')
+		# elif value3 >= value1 and value3 >= value2:
+		# 	plt.scatter(x1, x2, color='#c8e6c9')
 		else:
 			plt.scatter(x1, x2, color='#eeeeee')
 

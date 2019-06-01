@@ -14,20 +14,20 @@ if __name__ == "__main__":
 	myDll = CDLL(pathDLL)
 
 	imagesName = os.listdir(pathDatasetTrain)
-	
+
 	selectedImages = random.sample(imagesName, numberImageTrain)
 
 	selectedImages = convertListToString(selectedImages, pathDatasetTrain)
 
 	pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImageTrain)
-	
+
 	#changement de dimension pour le transfert
 	#arrTrainX, arrTrainXSize = matrixToArray(trainX)
 
-	myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
-	myDll.loadWeightsWithCSV.restype = c_void_p
+	# myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
+	# myDll.loadWeightsWithCSV.restype = c_void_p
 
-	myDll.loadWeightsWithCSV(weights.encode('utf-8'), inputCountPerSample)
+	# myDll.loadWeightsWithCSV(weights.encode('utf-8'), inputCountPerSample)
 
 	myDll.createLinearModel.argtypes = [c_int32]
 	myDll.createLinearModel.restype = c_void_p
@@ -52,21 +52,21 @@ if __name__ == "__main__":
 
 
 	#faire une prediction
-	
+
 	# for i in range(0, 50):
 	# 	print ("----Prediction---")
 	# 	toPredictImage = random.sample(imagesName, 1)
 	# 	predictResponse = predict(myDll, myDll.predict_regression, toPredictImage, pArrayWeight)
 	# 	print("response : %s , image %s \n" % (predictResponse, toPredictImage))
 	#
-	
+
 	imagesName = os.listdir(pathDatasetPredict)	
 	selectedImages = random.sample(imagesName, numberImagePredict)
 	selectedImages = [pathDatasetPredict + el for el in selectedImages ]
 	#print(selectedImages)
 
 	print ("----Prediction---")
-	predictResponse = predictAverage(myDll, myDll.predictLinearRegression, selectedImages , pArrayWeight, 30)
+	predictResponse = predictAverage(myDll, myDll.predictLinearRegression, selectedImages , pArrayWeight)
 	print("Moyenne erreurs² : %s" % predictResponse )
 	print("Moyenne erreurs : %s" % predictResponse**0.5 )
 

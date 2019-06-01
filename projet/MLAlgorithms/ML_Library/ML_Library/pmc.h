@@ -18,4 +18,12 @@ typedef struct s_pmc
 	t_layer		*layers;
 }				t_pmc;
 
+typedef struct s_pmcData
+{
+	double	***W;
+	int		*structure;
+	int		lenStructure;
+	double  **output;
+	double  **sigma;
+}				t_pmcData;
 

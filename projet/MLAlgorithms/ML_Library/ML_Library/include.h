@@ -46,9 +46,14 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 ////	pmc.cpp
 Eigen::VectorXd* getLayerOuptut(t_layer* layer, int bias);
 void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
-double *predictPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
-double fitPMC(t_pmc* W, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, int inputCountPerSample, double alpha, int epochs, int display, int isLinear);
-void displayPmc(t_pmc* W);
+double* predictStructPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
+double fitStructPMC(t_pmc* W, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, int inputCountPerSample, double alpha, int epochs, int display, int isLinear);
+void displayStructPmc(t_pmc* W);
 void fillFirstLayerWithInputs(t_pmc* W, Eigen::VectorXd* input);
 
+void displaySigmas(t_pmcData* PMC);
+void displayPmcModel(t_pmcData* PMC);
+void displayOutput(t_pmcData* PMC);
+void addInputsInPMC(t_pmcData* PMC, Eigen::VectorXd* input);
+void allocate(t_pmcData* PMC);
 #endif // !"INCLUDE_H"

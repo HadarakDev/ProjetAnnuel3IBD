@@ -23,8 +23,9 @@ pathLog = "C:/Users/nico_/Documents/ConvertedImages/EvaluateModels.txt"
 
 ##### PMC ####
 
-pmcStruct = [2, 4, 1]
-arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
+pmcStruct = [2, 2, 1]
+pmcArray = (c_int * len(pmcStruct))(*pmcStruct)
+lenPMC = len(pmcStruct)
 
 #### CTYPES ####
 c_double_p = POINTER(c_double)

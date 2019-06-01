@@ -2,6 +2,9 @@ from ctypes import *
 from params import *
 import os
 import random
+import numpy as np
+from numpy.ctypeslib import ndpointer
+
 
 def printRes(tab):
 	for el in tab:
@@ -64,6 +67,34 @@ def	predictAverage(myDll, function, tabSelectedImages, pArrayWeight):
 	average =  average / len(tabSelectedImages)
 	return average 
 	
+def predictPMC(myDll, function, path, pArrayWeight):
+	pMatrixXPredict, pMatrixYPredict = prepareDataset(path, myDll, 1)
+
+	myDll.matrixToVector.argtypes = [ c_void_p, c_uint, c_uint]
+	myDll.matrixToVector.restype = c_void_p
+	pVectorXPredict = myDll.matrixToVector(pMatrixXPredict)
+	function.argtypes = [
+							c_void_p,
+							c_void_p,
+						]
+	function.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+	predictResponse = function (
+							pArrayWeight,
+							pVectorXPredict
+						)
+	return predictResponse
+
+def	predictPMCAverage(myDll, function, tabSelectedImages, pArrayWeight):
+	average = 0
+	
+	for image in tabSelectedImages:
+		imageName = image[image.rfind("/")+1:]
+		age = int(imageName[:imageName.find("_")])
+		res = predictPMC(myDll, function, image, pArrayWeight)
+		average += (round(res[0]) - age)**2
+		
+	average =  average / len(tabSelectedImages)
+	return average 
 
 
 

@@ -29,7 +29,7 @@ extern "C" {
 		Eigen::VectorXd * X
 	)
 	{
-		return (predictPMC(W, X, 1));
+		return (predictStructPMC(W, X, 1));
 	}
 
 	SUPEREXPORT double* predictPMCClassification(
@@ -37,10 +37,10 @@ extern "C" {
 		Eigen::VectorXd * X
 	)
 	{
-		return (predictPMC(W, X, 0));
+		return (predictStructPMC(W, X, 0));
 	}
 
-	SUPEREXPORT double fitPMCRegression(
+	SUPEREXPORT double fitStructPMCRegression(
 		t_pmc * W,
 		Eigen::MatrixXd * X,
 		Eigen::MatrixXd * Y,
@@ -51,10 +51,10 @@ extern "C" {
 		int display // interval affichage
 	)
 	{
-		return (fitPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 1));
+		return (fitStructPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 1));
 	}
 
-	SUPEREXPORT double fitPMCClassification(
+	SUPEREXPORT double fitStructPMCClassification(
 		t_pmc * W,
 		Eigen::MatrixXd * X,
 		Eigen::MatrixXd * Y,
@@ -65,10 +65,10 @@ extern "C" {
 		int display // interval affichage
 	)
 	{
-		return (fitPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 0));
+		return (fitStructPMC(W, X, Y, SampleCount, inputCountPerSample, alpha, epochs, display, 0));
 	}
 
-	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer, int inputCountPerSample)
+	SUPEREXPORT void* createStructPMCModel(int* structure, int nbLayer, int inputCountPerSample)
 	{
 
 		srand(time(NULL));
@@ -77,22 +77,20 @@ extern "C" {
 			nbLayer += 1;
 			inputCountPerSample += 1;
 			t_pmc* pmc = NULL;
-			if ((pmc = (t_pmc*)malloc(sizeof(t_pmc) * 1)) == NULL)
-				throw std::bad_alloc();
-			pmc->nbLayer = nbLayer;
-			if ((pmc->layers = (t_layer*)malloc(sizeof(t_layer) * nbLayer)) == NULL)
-				throw std::bad_alloc();
+			pmc = new t_pmc[1];
 
+			pmc->nbLayer = nbLayer;
+			pmc->layers = new t_layer[nbLayer];
 
 			//initialisation de la couche 0 (inputs)
-			if ((pmc->layers[0].neurones = (t_neurone*)malloc(sizeof(t_neurone) * inputCountPerSample)) == NULL)
-				return (NULL);
+			pmc->layers[0].neurones = new t_neurone[inputCountPerSample];
+
 			pmc->layers[0].nbNeurone = inputCountPerSample;
 
 			for (int idxLayer = 1; idxLayer < nbLayer; idxLayer++)
 			{
-				if ((pmc->layers[idxLayer].neurones = (t_neurone*)malloc(sizeof(t_neurone) * structure[idxLayer - 1])) == NULL)
-					return (NULL);
+				pmc->layers[idxLayer].neurones = new t_neurone [structure[idxLayer - 1]];
+
 				pmc->layers[idxLayer].nbNeurone = structure[idxLayer - 1];
 				for (int idxNeurone = 0; idxNeurone < structure[idxLayer - 1]; idxNeurone++)
 				{
@@ -161,7 +159,7 @@ Eigen::VectorXd* getLayerOuptut(t_layer * layer, int bias)
 	}
 }
 
-double* predictPMC(t_pmc * W, Eigen::VectorXd * X, unsigned int isLinear)
+double* predictStructPMC(t_pmc * W, Eigen::VectorXd * X, unsigned int isLinear)
 {
 	Eigen::VectorXd* tmpLayerResult;
 	try {
@@ -203,7 +201,7 @@ double* predictPMC(t_pmc * W, Eigen::VectorXd * X, unsigned int isLinear)
 	}
 }
 
-double fitPMC(
+double fitStructPMC(
 	t_pmc * W,
 	Eigen::MatrixXd * X,
 	Eigen::MatrixXd * Y,
@@ -237,7 +235,7 @@ double fitPMC(
 				tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
 				tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 
-				predictOutput = predictPMC(W, &tmpVectorX, isLinear);
+				predictOutput = predictStructPMC(W, &tmpVectorX, isLinear);
 				//cout << "sampl" << k << endl;
 				expectedOutputVector = (*Y).block(k, 0, 1, (*Y).cols());
 				//cout << "vecto" << expectedOutputVector << endl;
@@ -298,7 +296,7 @@ double fitPMC(
 	}
 }
 
-void displayPmc(t_pmc * W)
+void displayStructPmc(t_pmc * W)
 {
 	for (int l = 0; l < W->nbLayer; l++)
 	{

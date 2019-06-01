@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from utilsRegression import *
 
-# pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
-pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
@@ -21,8 +21,8 @@ Y = np.array([ 1, 2, 3 ])
 pArrayWeight = linearRegression(myDll, X,Y)
 
 #plan à tracer
-X1 = np.linspace(0,5,25)
-X2 = np.linspace(0,5,25)
+X1 = np.linspace(0,5,10)
+X2 = np.linspace(0,5,10)
 # X1, X2 = np.meshgrid(X1, X2)
 
 for x1 in X1:

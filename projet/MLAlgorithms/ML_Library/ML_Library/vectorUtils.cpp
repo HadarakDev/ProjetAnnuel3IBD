@@ -1,4 +1,5 @@
 #include "include.h"
+using namespace Eigen;
 
 extern "C" {
 	SUPEREXPORT void *datasetToVector(double *dataset, unsigned int size, unsigned int bias)
@@ -24,5 +25,18 @@ extern "C" {
 			}
 			return retVector;
 		}
+	}
+
+	SUPEREXPORT void* matrixToVector(Eigen::MatrixXd* X, unsigned int inputCountPerSample, unsigned int bias)
+	{
+		if (bias == 1)
+			inputCountPerSample++;
+		Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
+		Eigen::VectorXd* retVector = new Eigen::VectorXd(inputCountPerSample);
+
+		tmpMatrixX = (*X).block(0, 0, 1, inputCountPerSample);
+		*retVector = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+
+		return retVector;
 	}
 }

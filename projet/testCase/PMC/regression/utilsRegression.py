@@ -15,49 +15,44 @@ def matrixToArray(matrix):
 		ret.extend(el)
 	return ret
 
-
 def pmcRegression(myDll, Xnp,Ynp, alpha, epochs, display, pmcStruct):
-    X = matrixToArray(Xnp.tolist())
-    Y = Ynp.tolist()
+	X = matrixToArray(Xnp.tolist())
+	Y = Ynp.tolist()
 
-    
-    myDll.loadTestCase.restype = c_void_p
-    
-    #charger X 
-    myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
-    pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), Xnp.shape[0],  Xnp.shape[1], 1)
+	myDll.loadTestCase.restype = c_void_p
 
-    #charger Y
-    myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(Y))), c_uint, c_uint, c_uint]
-    pMatrixY = myDll.loadTestCase((c_double * len(Y))(*Y), Ynp.shape[0], 1, 0)
+	#charger X 
+	myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
+	pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), Xnp.shape[0],  Xnp.shape[1], 1)
 
-    # Creer modele
-    arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
-    myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, len(pmcStruct))), c_uint, c_uint]
-    myDll.createPMCModel.restype = c_void_p
-    pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct), Xnp.shape[1])
+	#charger Y
+	myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(Y))), c_uint, c_uint, c_uint]
+	pMatrixY = myDll.loadTestCase((c_double * len(Y))(*Y), Ynp.shape[0], 1, 0)
 
-    # Entrainement
-    myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
-    myDll.fitPMCRegression.restype = c_double								
-    error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs, display)
+	# Creer modele
+	pmcStruct = [1, 1]
+	arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
 
-    return pArrayWeight
+	myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, len(pmcStruct))), c_uint, c_uint]
+	myDll.createPMCModel.restype = c_void_p
+	pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct), Xnp.shape[1])
 
-def predict(myDll, function, Xnp, ArrayWeight):
-    X = Xnp.tolist()
-    myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
-    myDll.loadTestCase.restype = c_void_p
+	# Entrainement
+	myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
+	myDll.fitPMCRegression.restype = c_double								
+	error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs, display)
 
-    pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), 1,  len(X), 1)
-    function.argtypes = [
-                            c_void_p,
-                            c_void_p,
-                        ]
-    function.restype = c_double
-    predictResponse = function (
-                            ArrayWeight,
-                            pMatrixX
-                        )
+	return pArrayWeight
 
-    return predictResponse
+def predictPMC(myDll, function, X, ArrayWeight):
+	function.argtypes = [
+							c_void_p,
+							c_void_p,
+						]
+	function.restype = c_double
+	predictResponse = function (
+							ArrayWeight,
+							X
+						)
+
+	return predictResponse
