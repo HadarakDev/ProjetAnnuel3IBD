@@ -21,7 +21,7 @@ Ynp = np.array([ 1, 2, 3 ])
 X = matrixToArray(Xnp.tolist())
 Y = Ynp.tolist()
 #parametre
-alpha = 0.01
+alpha = 0.001
 epochs = 100000
 display = int(epochs / 10)
 pmcStruct = [2, 1]
@@ -36,30 +36,29 @@ myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(Y))), c_uint, c_uint,
 pMatrixY = myDll.loadTestCase((c_double * len(Y))(*Y), Ynp.shape[0], 1, 0)
 
 
-myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, len(pmcStruct))), c_uint, c_uint]
+myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, len(pmcStruct))), c_uint]
 myDll.createPMCModel.restype = c_void_p
 
-pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct), Xnp.shape[1])
+pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct))
 
-myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int, c_double, c_int, c_int ]
-myDll.fitPMCRegression.restype = c_double								
-error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs, display)
-
-myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
-myDll.datasetToVector.restype = c_void_p
+myDll.fitPMC.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_double, c_int, c_int ]
+myDll.fitPMC.restype = c_double								
+error = myDll.fitPMC( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0],  alpha, epochs, display)
 
 #plan à tracer
 X1 = np.linspace(0.5,3.5,25)
 X2 = np.linspace(0.5,3.5,25)
 
-myDll.predictPMCRegression.argtypes = [c_void_p, c_void_p ]
-myDll.predictPMCRegression.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+myDll.predictPMC.argtypes = [c_void_p, c_void_p ]
+myDll.predictPMC.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+print("OK")
 for x1 in X1:
 	for x2 in X2:	
 		predictX = np.array([x1, x2])
 		arr_tmp = (c_double * 2)(*predictX)
+		print(predictX)
 		datasetTmp = myDll.datasetToVector(arr_tmp, len(predictX), 1)
-		value = myDll.predictPMCRegression(pArrayWeight, datasetTmp)
+		value = myDll.predictPMC(pArrayWeight, datasetTmp)
 		ax.scatter(x1, x2, value[0], color="blue")
 
 
@@ -70,5 +69,5 @@ ax.set(xlabel="X1", ylabel="X2", zlabel="Y")
 # ax.plot_surface(x1, x2, z, color='#bbdefb')
 plt.show()
 plt.clf()
-myDll.deletePMC.argtypes = [ c_void_p ]
-myDll.deletePMC(pArrayWeight)
+# myDll.deletePMC.argtypes = [ c_void_p ]
+# myDll.deletePMC(pArrayWeight)

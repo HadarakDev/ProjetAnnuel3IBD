@@ -16,13 +16,13 @@ ax = Axes3D(fig)
 
 #datas des points a tester
 Xnp = np.array([ [1, 0], [0, 1], [1, 1], [0, 0] ])
-Ynp = np.array([ 1, 2, 3, 4 ])
+Ynp = np.array([ 2, 1, -2, -1 ])
 
 X = matrixToArray(Xnp.tolist())
 Y = Ynp.tolist()
 #parametre
-alpha = 0.1
-epochs = 1000000
+alpha = 0.01
+epochs = 100000
 display = int(epochs / 10)
 pmcStruct = [2, 2, 1]
 arrStruct = (c_int * len(pmcStruct))(*pmcStruct)

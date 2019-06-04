@@ -15,7 +15,7 @@ myDll = CDLL(pathDLL)
 #parametre
 alpha = 0.1
 epochs = 1000
-display = 1#int(epochs / 10)
+display = int(epochs / 10)
 pmcStruct = [1, 1]
 arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
 c_double_p = POINTER(c_double)
@@ -39,9 +39,9 @@ myDll.createPMCModel.restype = c_void_p
 
 pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct))
 
-myDll.fitPMC.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_double, c_int, c_int ]
-myDll.fitPMC.restype = c_double								
-error = myDll.fitPMC( pArrayWeight, pMatrixX, pMatrixY, 2, alpha, epochs, display)
+myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_double, c_int, c_int ]
+myDll.fitPMCRegression.restype = c_double								
+error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, 2, alpha, epochs, display)
 
 myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
 myDll.datasetToVector.restype = c_void_p
@@ -49,13 +49,13 @@ myDll.datasetToVector.restype = c_void_p
 
 #affichage des points
 X1 = np.linspace(0, 4, 60)
-myDll.predictPMC.argtypes = [c_void_p, c_void_p ]
+myDll.predictPMC.argtypes = [c_void_p, c_void_p, c_int ]
 myDll.predictPMC.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
 for x1 in X1:
 	predictX = np.array([x1])
 	arr_tmp = (c_double * 1)(*predictX)
 	datasetTmp = myDll.datasetToVector(arr_tmp, len(predictX), 1)
-	value = myDll.predictPMC(pArrayWeight, datasetTmp)  
+	value = myDll.predictPMC(pArrayWeight, datasetTmp, 1)  
 	plt.scatter(x1, value[0], color='#bbdefb')
 
 # myDll.deletePMC.argtypes = [ c_void_p ]
