@@ -1,9 +1,85 @@
 #include "include.h"
 #include <stdlib.h> 
+#include <vector>
 
 using namespace Eigen;
 
 extern "C" {
+
+	SUPEREXPORT void savePMCInCSV(char *path, t_pmcData* PMC)
+	{
+		ofstream fd;
+
+		fd.open(path);
+
+		// save structure
+		for (int k = 0; k < PMC->lenStructure; k++)
+		{
+			fd << PMC->structure[k]  << ";";
+		}
+		fd << endl;
+
+		// save weights
+		for (int l = 1; l < PMC->lenStructure; l++)
+		{
+			for (int j = 1; j < PMC->structure[l] + 1; j++)
+			{
+				for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+				{
+					fd << PMC->W[l][j][i] << endl;
+					fd << ";";
+				}
+			}
+			fd << endl;
+		}
+		fd.close();
+	}
+
+	SUPEREXPORT t_pmcData* loadPMCWithCSV(char *path)
+	{
+		t_pmcData* PMC;
+		size_t pos = 0;
+		std::string token;
+		unsigned int i = 0;
+
+		// get input count per sample (on filename)
+		std::ifstream fd(path);
+		std::vector<int> v;
+
+		if (!fd) {
+			cout << "Unable to open file";
+			exit(1);
+		}
+		std::string line = "";
+		getline(fd, line);
+
+		while ((pos = line.find(";")) != std::string::npos) {
+			token = line.substr(0, pos);
+			v.push_back(stoi(token));
+			line.erase(0, pos + 1);
+		}
+		for (int i = 0; i < (int)v.size(); i++)
+			cout << v.at(i) << endl;
+		//createPMCModel()
+		int* a = &v[0];
+		//PMC = (t_pmcData*)createPMCModel(a, v.size());
+		
+		
+		//for (int l = 1; l < PMC->lenStructure; l++)
+		//{
+		//	for (int j = 1; j < PMC->structure[l] + 1; j++)
+		//	{
+		//		for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+		//		{
+		//			fd << PMC->W[l][j][i] << endl;
+		//			fd << ";";
+		//		}
+		//		fd << ";";
+		//	}
+		//	fd << endl;
+		//}
+		fd.close();
+	}
 	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer)
 	{
 		t_pmcData* PMC;
@@ -41,78 +117,95 @@ extern "C" {
 
 	SUPEREXPORT double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
 	{
-		addInputsInPMC(PMC, X);
-		for (int l = 1; l < PMC->lenStructure; l++)
-		{
-			for (int j = 1; j < PMC->structure[l] + 1; j++)
+		try {		
+			addInputsInPMC(PMC, X);
+			for (int l = 1; l < PMC->lenStructure; l++)
 			{
-				double tmpTotal = 0;
-				for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+				for (int j = 1; j < PMC->structure[l] + 1; j++)
 				{
-					tmpTotal += PMC->W[l][j][i] * PMC->output[l - 1][i];
-				}
-				if (l == PMC->lenStructure - 1 && isLinear == 1)
-					PMC->output[l][j] = tmpTotal;
-				else
-					PMC->output[l][j] = tanh(tmpTotal);
+					double tmpTotal = 0;
+					for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+					{
+						tmpTotal += PMC->W[l][j][i] * PMC->output[l - 1][i];
+					}
+					if (l == PMC->lenStructure - 1 && isLinear == 1)
+						PMC->output[l][j] = tmpTotal;
+					else
+						PMC->output[l][j] = tanh(tmpTotal);
 
+				}
 			}
-		}
-		if (res == 1)
-		{
-			double* ret = new double(PMC->structure[PMC->lenStructure - 1]);
-			for (int i = 1; i < PMC->structure[PMC->lenStructure - 1] + 1; i++)
+			if (res == 1)
 			{
-				ret[i - 1] = PMC->output[PMC->lenStructure - 1][i];
+				double* ret = new double[PMC->structure[PMC->lenStructure - 1]];
+				for (int i = 1; i < PMC->structure[PMC->lenStructure - 1] + 1; i++)
+				{
+					ret[i - 1] =  (double)PMC->output[PMC->lenStructure - 1][i];
+				}
+				
+				return (ret);
 			}
-			return (ret);
+			return (NULL);
 		}
-		return (NULL);
+		catch (const runtime_error & error)
+		{
+			std::cout << "Error occurred: " << error.what() << std::endl;
+			return (NULL);
+		}
+		catch (const std::exception & ex)
+		{
+			std::cout << "Error occurred: " << ex.what() << std::endl;
+			return (NULL);
+		}
 	}
 
 	SUPEREXPORT double fitPMCRegression(t_pmcData* PMC, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, double alpha, int epochs, int display)
 	{
-		double* predictOutput;
-		double* expectedOutput;
 		int inputCountPerSample = PMC->structure[0] + 1;
 		Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
+		Eigen::MatrixXd tmpMatrixY(1, (*Y).cols());
 		Eigen::VectorXd tmpVectorX(inputCountPerSample);
 		Eigen::VectorXd expectedOutputVector((*Y).cols());
 
-		try {
 
+		try {
 			if ((*Y).cols() != PMC->structure[PMC->lenStructure - 1])
 				throw std::exception("erreur Y n'est pas de la meme taille que les neurones");
-			
+
 
 			for (int i = 0; i < epochs; i++)
 			{
 				if (i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
+
 				for (int k = 0; k < SampleCount; k++)
 				{
-					//random ligne du dataset
-					tmpMatrixX = (*X).block(k, 0, 1, inputCountPerSample);
+					int nb = rand() % SampleCount;
+
+					tmpMatrixX = (*X).block(nb, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					predictOutput = predictPMC(PMC, &tmpVectorX, 1, 0);
-					expectedOutputVector = (*Y).block(k, 0, 1, (*Y).cols());
+
+					predictPMC(PMC, &tmpVectorX, 1, 0);
+
+					tmpMatrixY = (*Y).block(nb, 0, 1, (*Y).cols());
+					expectedOutputVector = (Map<VectorXd>(tmpMatrixY.data(), tmpMatrixY.cols()));
+
 					for (int n = 1; n < PMC->structure[PMC->lenStructure - 1] + 1; n++)
 					{
-						PMC->sigma[PMC->lenStructure - 1][n] = predictOutput[n - 1] - expectedOutputVector[n - 1];
+						PMC->sigma[PMC->lenStructure - 1][n] = (PMC->output[PMC->lenStructure - 1][n] - expectedOutputVector[n - 1]);
 					}
-
 					//update sigmas
-					for (int l = PMC->lenStructure - 1; l > 1; l--)
+					for (int l = PMC->lenStructure - 1; l > 1; l--) // voir 1 
 					{
-						for (int j = 1; j < PMC->structure[l] + 1; j++)
+						for (int i = 1; i < PMC->structure[l - 1] + 1; i++)
 						{
 							double res = 0;
-							for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+							for (int j = 1; j < PMC->structure[l] + 1; j++)
 							{
-								res += PMC->W[l][j][i] * PMC->sigma[l][i];
+								res += PMC->W[l][j][i] * PMC->sigma[l][j];
 							}
-							double newSigma = (1 - pow(PMC->output[l - 1][j], 2)) * res;
-							PMC->sigma[l - 1][j] = newSigma;
+							double newSigma = (1 - pow(PMC->output[l - 1][i], 2)) * res;
+							PMC->sigma[l - 1][i] = newSigma;
 						}
 					}
 					// update poids
@@ -128,6 +221,12 @@ extern "C" {
 					}
 				}
 			}
+			return (0);
+		}
+		catch (const runtime_error & error)
+		{
+			std::cout << "Error occurred: " << error.what() << std::endl;
+			return (NULL);
 		}
 		catch (const std::exception & ex)
 		{
@@ -137,8 +236,6 @@ extern "C" {
 	}
 	SUPEREXPORT double fitPMCClassification(t_pmcData* PMC, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, double alpha, int epochs, int display)
 	{
-		//double* predictOutput;
-		double* expectedOutput;
 		int inputCountPerSample = PMC->structure[0] + 1;
 		Eigen::MatrixXd tmpMatrixX(1, inputCountPerSample);
 		Eigen::MatrixXd tmpMatrixY(1, (*Y).cols());
@@ -159,19 +256,13 @@ extern "C" {
 				for (int k = 0; k < SampleCount; k++)
 				{
 					int nb = rand() % SampleCount;
-					//random ligne du dataset
 					tmpMatrixX = (*X).block(nb, 0, 1, inputCountPerSample);
 					tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-					//cout << "ZZ" << endl;
 					predictPMC(PMC, &tmpVectorX, 0, 0);
-					//cout << "XX" << (*Y).cols() <<  endl;
 
-					/*cout << "Y: " << (*Y) << endl;*/
 					tmpMatrixY = (*Y).block(nb, 0, 1, (*Y).cols());
 					expectedOutputVector = (Map<VectorXd>(tmpMatrixY.data(), tmpMatrixY.cols()));
 
-					//cout << "YY: " << expectedOutputVector << endl;
-					//return (0);
 					for (int n = 1; n < PMC->structure[PMC->lenStructure - 1] + 1; n++)
 					{
 						PMC->sigma[PMC->lenStructure - 1][n] = (double)((1 - pow(PMC->output[PMC->lenStructure - 1][n], 2)) * (PMC->output[PMC->lenStructure - 1][n] - expectedOutputVector[n - 1]));
@@ -203,6 +294,7 @@ extern "C" {
 					}
 				}
 			}
+			return (0);
 		}
 		catch (const std::exception & ex)
 		{

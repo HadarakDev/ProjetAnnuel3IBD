@@ -7,15 +7,15 @@ import numpy as np
 from utilsRegression import *
 from numpy.ctypeslib import ndpointer
 
-#pathDLL = "C:/Users/WT57/Documents/ProjetAnnuel3IBD-master/projet/MLAlgorithms/ML_Library/Release/ML_Library.dll"
 pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
+#pathDLL = "C:/Users/WT57/Documents/ProjetAnnuel3IBD-master/projet/MLAlgorithms/ML_Library/Release/ML_Library.dll"
 #pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
 # Points Data
-Xnp = np.array([ [1, 1], [2, 2], [3, 3] ])
-Ynp = np.array([ 1, 2, 3 ])
+Xnp = np.array([ [1, 1], [2, 2], [3, 1] ])
+Ynp = np.array([ 2, 3, 2.5 ])
 X = matrixToArray(Xnp.tolist())
 Y = Ynp.tolist()
 
@@ -23,7 +23,7 @@ Y = Ynp.tolist()
 alpha = 0.01
 epochs = 10000
 display = int(epochs / 10)
-pmcStruct = [2, 1]
+pmcStruct = [2,  1]
 arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
 c_double_p = POINTER(c_double)
 
@@ -49,7 +49,7 @@ error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], 
 							
 
 # Prototyping the method Dataset to Vector ( double * => vectorXd)
-myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
+myDll.datasetToVector.argtypes = [ c_double_p, c_uint, c_uint ]
 myDll.datasetToVector.restype = c_void_p
 
 # Prototyping the method predict PMC 
@@ -61,8 +61,8 @@ ax = Axes3D(fig)
 ax.scatter(Xnp[:,0], Xnp[:,1], Y, color="red")
 XX, YY, ZZ = [], [], []
 
-for x1 in range(0, 800, 10):
-	for x2 in range(0, 800, 10):
+for x1 in range(0, 500, 10):
+	for x2 in range(0, 500, 10):
 		x1 /= 100
 		x2 /= 100
 		XX.append(x1)
@@ -75,3 +75,4 @@ for x1 in range(0, 800, 10):
 
 ax.plot_trisurf(XX, YY, ZZ, lw=0, color="grey", alpha=0.5)
 plt.show()
+

@@ -5,57 +5,99 @@ import matplotlib.pyplot as plt
 import numpy as np
 from utilsClassification import *
 from ctypes import *
+from numpy.ctypeslib import ndpointer
 
-
+#pathDLL = "C:/Users/WT57/Documents/ProjetAnnuel3IBD-master/projet/MLAlgorithms/ML_Library/Release/ML_Library.dll"
 pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 #pathDLL = "D:/CloudStation/Cours/3IBD/projetAnnuel/projet/MLAlgorithms/ML_Library/x64/Release/ML_Library.dll"
 
 myDll = CDLL(pathDLL)
 
-#Parametre
-alpha = 0.05
-epochs = 1000
-display = 100
+# Points Data
+Xnp = np.random.random((1000, 2)) * 2.0 - 1.0
+Ynp = np.array([[1, 0, 0] if abs(p[0] % 0.5) <= 0.25 and abs(p[1] % 0.5) > 0.25 else 
+              [0, 1, 0] if abs(p[0] % 0.5) > 0.25 and abs(p[1] % 0.5) <= 0.25 else 
+              [0, 0, 1] for p in Xnp])
+X = matrixToArray(Xnp.tolist())
+Y = matrixToArray(Ynp.tolist())
 
-#datas des points a tester
-X = np.random.random((1000, 2)) * 2.0 - 1.0
-Y = np.array([[1, 0, 0] if abs(p[0] % 0.5) <= 0.25 and abs(p[1] % 0.5) > 0.25 else [0, 1, 0] if abs(p[0] % 0.5) > 0.25 and abs(p[1] % 0.5) <= 0.25 else [0, 0, 1] for p in X])
+# Parameters
+alpha = 0.001
+epochs = 10000
+display = int(epochs / 10)
+pmcStruct = [2, 24, 24, 3]
+arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
+c_double_p = POINTER(c_double)
 
-#A = 1
-Y1 = [ 1 if y == [1, 0, 0] else -1 for y in Y.tolist()  ]
-pArrayWeight1 = linearClassification(myDll, X, np.array(Y1), alpha, epochs, display)
+# Load Matrix X
+myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
+myDll.loadTestCase.restype = c_void_p
+pMatrixX = myDll.loadTestCase((c_double * len(X))(*X), Xnp.shape[0], Xnp.shape[1], 1)
 
-#B = 1
-Y2 = [ 1 if y == [0, 1, 0] else -1 for y in Y.tolist()  ]
-pArrayWeight2 = linearClassification(myDll, X, np.array(Y2), alpha, epochs, display)
+# Load Matrix Y
+myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(Y))), c_uint, c_uint, c_uint]
+pMatrixY = myDll.loadTestCase((c_double * len(Y))(*Y), Ynp.shape[0], Ynp.shape[1], 0)
 
-#A = 1
-Y3 = [ 1 if y == [0, 0, 1] else -1 for y in Y.tolist()  ]
-pArrayWeight3 = linearClassification(myDll, X, np.array(Y3), alpha, epochs, display)
+# Create & Allocate PMC Model using pmcStruct [2, 3]
+myDll.createPMCModel.argtypes = [POINTER(ARRAY(c_int, len(pmcStruct))), c_uint]
+myDll.createPMCModel.restype = c_void_p
+pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct))
 
+# Fit PMC with classification version
+myDll.fitPMCClassification.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_double, c_int, c_int ]
+myDll.fitPMCClassification.restype = c_double								
+error = myDll.fitPMCClassification( pArrayWeight, pMatrixX, pMatrixY, Xnp.shape[0], alpha, epochs, display)
 
-#droite à tracer
-X1 = np.linspace(-1, 1, 65)
-X2 = np.linspace(-1, 1, 65)
+# Prototyping the method Dataset to Vector ( double * => vectorXd)
+myDll.datasetToVector.argtypes = [c_double_p, c_uint, c_uint]
+myDll.datasetToVector.restype = c_void_p
+
+# Prototyping the method predict PMC 
+myDll.predictPMC.argtypes = [c_void_p, c_void_p, c_int, c_int ]
+myDll.predictPMC.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
+
+# Python Function to get coordinates
+def get(i, l):
+    return [z[i] for z in l]
+
+X1 = np.linspace(-1, 1, 35)
+X2 = np.linspace(-1, 1, 35)
+classA = []
+classB = []
+classC = []
+
 for x1 in X1:
 	for x2 in X2: 
 		predictX = np.array([x1, x2])
-		value1 = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight1)
-		value2 = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight2)
-		value3 = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight3)
+		arr_tmp = (c_double * 2)(*predictX)
+		datasetTmp = myDll.datasetToVector(arr_tmp, len(predictX), 1)
+		value = myDll.predictPMC(pArrayWeight, datasetTmp, 0, 1)
+		if value[0] > value[1] and value[0] > value[2]:
+			classA.append(tuple([x1, x2]))
+		elif value[1] > value[0] and value[1] > value[2]:
+		    classB.append(tuple([x1, x2]))
+		elif value[2] > value[0] and value[2] > value[1]:
+			classC.append(tuple([x1, x2]))
 
-		if value1 > value2 and value1 > value3:
-			plt.scatter(x1, x2, color='#bbdefb')
-		elif value2 > value1 and value2 > value3:
-		    plt.scatter(x1, x2, color='#ffcdd2')
-		elif value3 > value1 and value3 > value2:
-			plt.scatter(x1, x2, color='#c8e6c9')
-		else:
-			plt.scatter(x1, x2, color='#eeeeee')
-
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][0] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][0] == 1, enumerate(X)))))[:,1], color='blue')
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][1] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][1] == 1, enumerate(X)))))[:,1], color='red')
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]][2] == 1, enumerate(X)))))[:,1], color='grey')
+# Display points for each class
+plt.scatter(
+	get(0, classA),
+	get(1, classA),
+	color="#bbdefb"
+)
+plt.scatter(
+	get(0, classB),
+	get(1, classB),
+	color="#ffcdd2"
+)
+plt.scatter(
+	get(0, classC),
+	get(1, classC),
+	color="#c8e6c9"
+)
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][0] == 1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][0] == 1, enumerate(Xnp)))))[:,1], color='blue')
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][1] == 1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][1] == 1, enumerate(Xnp)))))[:,1], color='red')
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][2] == 1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][2] == 1, enumerate(Xnp)))))[:,1], color='grey')
 plt.show()
 plt.clf()
 
