@@ -427,3 +427,13 @@ projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/pmc.obj
 projet/MLAlgorithms/python/__pycache__/data.cpython-37.pyc
 projet/MLAlgorithms/python/__pycache__/data.cpython-37.pyc
 projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/vectorUtils.obj
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/pmcWithoutStruc.obj
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/pmcWithStruct.obj
+projet/YoutubeImageDataset/YoutubeImageDataset/App.config
+projet/YoutubeImageDataset/YoutubeImageDataset/bin/Debug/YoutubeImageDataset.exe.config
+projet/YoutubeImageDataset/YoutubeImageDataset/Properties/AssemblyInfo.cs
+projet/YoutubeImageDataset/YoutubeImageDataset/Properties/Resources.Designer.cs
+projet/YoutubeImageDataset/YoutubeImageDataset/Properties/Resources.resx
+projet/YoutubeImageDataset/YoutubeImageDataset/Properties/Settings.Designer.cs
+projet/YoutubeImageDataset/YoutubeImageDataset/Properties/Settings.settings
+projet/YoutubeImageDataset/YoutubeImageDataset/YoutubeImageDataset.csproj
