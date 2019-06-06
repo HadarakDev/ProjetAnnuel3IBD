@@ -37,3 +37,7 @@ for x1 in range(0, 500, 10):
 
 ax.plot_trisurf(XX, YY, ZZ, lw=0, color="grey", alpha=0.5)
 plt.show()
+
+# delete linear Model (free)
+myDll.deleteLinearModel.argtypes = [ c_void_p ]
+myDll.deleteLinearModel( pArrayWeight )

@@ -39,23 +39,17 @@ def prepareDataset(imagePaths, myDll, numberImage):
 	return pMatrixX, pMatrixY
 
 #tester
-def predict(myDll, function, path, pArrayWeight):
+def predictLinear(myDll, function, path, pArrayWeight):
 	pMatrixXPredict, pMatrixYPredict = prepareDataset(path, myDll, 1)
-	function.argtypes = [
-							c_void_p,
-							c_void_p,
-						]
+	function.argtypes = [ c_void_p, c_void_p ]
 	function.restype = c_double
-	predictResponse = function (
-							pArrayWeight,
-							pMatrixXPredict
-						)
+	predictResponse = function (pArrayWeight, pMatrixXPredict)
 	myDll.deleteTmpPredict.argtypes =  [ c_void_p, c_void_p ]
-	myDll.deleteTmpPredict ( pMatrixXPredict, pMatrixYPredict )
+	myDll.deleteTmpPredict (pMatrixXPredict, pMatrixYPredict)
 
 	return predictResponse
 
-def	predictAverage(myDll, function, tabSelectedImages, pArrayWeight):
+def	predictLinearRegressionAverage(myDll, function, tabSelectedImages, pArrayWeight):
 	average = 0
 	
 	for image in tabSelectedImages:
@@ -72,19 +66,13 @@ def predictPMC(myDll, function, path, pArrayWeight):
 
 	myDll.matrixToVector.argtypes = [ c_void_p, c_uint, c_uint]
 	myDll.matrixToVector.restype = c_void_p
-	pVectorXPredict = myDll.matrixToVector(pMatrixXPredict)
-	function.argtypes = [
-							c_void_p,
-							c_void_p,
-						]
+	pVectorXPredict = myDll.matrixToVector(pMatrixXPredict, inputCountPerSample, 1)
+	function.argtypes = [ c_void_p, c_void_p, c_int, c_int ]
 	function.restype = ndpointer(dtype=c_double, shape=(pmcStruct[-1],))
-	predictResponse = function (
-							pArrayWeight,
-							pVectorXPredict
-						)
+	predictResponse = function (pArrayWeight, pVectorXPredict, 1, 1)
 	return predictResponse
 
-def	predictPMCAverage(myDll, function, tabSelectedImages, pArrayWeight):
+def	predictPMCRegressionAverage(myDll, function, tabSelectedImages, pArrayWeight):
 	average = 0
 	
 	for image in tabSelectedImages:

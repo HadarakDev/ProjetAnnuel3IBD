@@ -26,29 +26,21 @@ if __name__ == "__main__":
 
 	# myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
 	# myDll.loadWeightsWithCSV.restype = c_void_p
-
 	# myDll.loadWeightsWithCSV(weights.encode('utf-8'), inputCountPerSample)
+
+	myDll.saveWeightsInCSV.argtypes = [c_char_p, c_void_p]
+	myDll.saveWeightsInCSV(pathSaveLinear.encode('utf-8'), pArrayWeight)
+
 
 	myDll.createLinearModel.argtypes = [c_int32]
 	myDll.createLinearModel.restype = c_void_p
-	pArrayWeight = myDll.createLinearModel(inputCountPerSample)
+	pArrayWeight = myDll.createLinearModel( inputCountPerSample )
+
 	print ("----Train---")
 	#entrainement du modèle
-	myDll.fitLinearRegression.argtypes = [ 	
-										c_void_p,
-										c_void_p, 
-										c_void_p, 
-										c_int,
-										c_int 
-									]
+	myDll.fitLinearRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_int ]
 	myDll.fitLinearRegression.restype = c_double								
-	error = myDll.fitLinearRegression	( 	
-											pArrayWeight,
-											pMatrixX,
-											pMatrixY, 
-											numberImageTrain,
-											inputCountPerSample
-									)
+	error = myDll.fitLinearRegression	( pArrayWeight, pMatrixX, pMatrixY, numberImageTrain, inputCountPerSample )
 
 
 	#faire une prediction
@@ -70,8 +62,6 @@ if __name__ == "__main__":
 	print("Moyenne erreurs² : %s" % predictResponse )
 	print("Moyenne erreurs : %s" % predictResponse**0.5 )
 
-	myDll.saveWeightsInCSV.argtypes = [c_char_p, c_void_p]
-	myDll.saveWeightsInCSV(finalSaveWeights.encode('utf-8'), pArrayWeight)
 	myDll.deleteLinearModel.argtypes = [ c_void_p, c_void_p, c_void_p ]
 	myDll.deleteLinearModel( pArrayWeight, pMatrixX, pMatrixY)
 	print("--- %s seconds ---" % (time.time() - start_time))

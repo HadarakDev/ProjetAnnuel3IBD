@@ -86,3 +86,9 @@ plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][1]
 plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][2] == 1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]][2] == 1, enumerate(Xnp)))))[:,1], color='grey')
 plt.show()
 plt.clf()
+
+# delete linear Model (free)
+myDll.deleteLinearModel.argtypes = [ c_void_p ]
+myDll.deleteLinearModel( pArrayWeight1 )
+myDll.deleteLinearModel( pArrayWeight2 )
+myDll.deleteLinearModel( pArrayWeight3 )

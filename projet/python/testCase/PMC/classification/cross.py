@@ -91,3 +91,6 @@ plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]] ==
 plt.show()
 plt.clf()
 
+# delete / free PMC Model
+myDll.deletePMCModel.argtypes = [ c_void_p ]
+myDll.deletePMCModel( pArrayWeight )

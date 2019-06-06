@@ -92,3 +92,7 @@ plt.scatter(Xnp[0, 0], Xnp[0, 1], color='blue')
 plt.scatter(Xnp[1:3,0], Xnp[1:3,1], color='red')
 plt.show()
 plt.clf()
+
+# delete / free PMC Model
+myDll.deletePMCModel.argtypes = [ c_void_p ]
+myDll.deletePMCModel( pArrayWeight )

@@ -6,13 +6,13 @@ from ctypes import *
 component  = 1
 imageW = 100
 imageH = 50
-numberImageTrain = 400
+numberImageTrain = 1
 numberImagePredict = 40
 inputCountPerSample = (imageW * imageH * component)
+alpha = 0.01
+epochs = 10000
+display = int(epochs / 10)
 
-#### SAVE ####
-pathSaveWeights = "C:/Users/nico_/Documents/ConvertedImages/"
-finalSaveWeights = pathSaveWeights + "weights_" + str(inputCountPerSample) + "_" + str(imageW) + "_" + str(imageH) + "_" + str(numberImageTrain) + ".csv"
 
 #### EVALUATE  ####
 
@@ -23,12 +23,17 @@ pathLog = "C:/Users/nico_/Documents/ConvertedImages/EvaluateModels.txt"
 
 ##### PMC ####
 
-pmcStruct = [2, 2, 1]
+pmcStruct = [int(inputCountPerSample), 2,  1]
 pmcArray = (c_int * len(pmcStruct))(*pmcStruct)
 lenPMC = len(pmcStruct)
 
 #### CTYPES ####
 c_double_p = POINTER(c_double)
+
+#### SAVE ####
+folderSave = "C:/Users/nico_/Documents/ConvertedImages/"
+pathSaveLinear = folderSave + "weights_" + str(inputCountPerSample) + "_" + str(imageW) + "_" + str(imageH) + "_" + str(numberImageTrain) + ".csv"
+pathSavePMC = folderSave + "weights_PMC_" + str(pmcStruct) + "_" + str(imageW) + "_" + str(imageH) + "_" + str(numberImageTrain) + ".csv"
 
 #### DLL PATHS ####
 #nico

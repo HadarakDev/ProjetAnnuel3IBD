@@ -58,5 +58,4 @@ def linearClassification(myDll, Xnp,Ynp, alpha, epochs, display):
     myDll.fitLinearClassification.restype = c_double								
     error = myDll.fitLinearClassification	( 	pArrayWeight,pMatrixX, pMatrixY, Xnp.shape[0], Xnp.shape[1], alpha, epochs, display)
 
-
     return pArrayWeight

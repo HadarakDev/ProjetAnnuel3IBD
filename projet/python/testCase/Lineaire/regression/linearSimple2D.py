@@ -30,3 +30,8 @@ for x1 in X1:
 plt.scatter(X, Y, color='red')
 plt.show()
 plt.clf()
+
+# delete linear Model (free)
+myDll.deleteLinearModel.argtypes = [ c_void_p ]
+myDll.deleteLinearModel( pArrayWeight )
+

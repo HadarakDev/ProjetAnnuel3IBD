@@ -62,3 +62,7 @@ plt.scatter(Xnp[0:2, 0], Xnp[0:2, 1], color='blue')
 plt.scatter(Xnp[2:4,0], Xnp[2:4,1], color='red')
 plt.show()
 plt.clf()
+
+# delete linear Model (free)
+myDll.deleteLinearModel.argtypes = [ c_void_p ]
+myDll.deleteLinearModel( pArrayWeight )

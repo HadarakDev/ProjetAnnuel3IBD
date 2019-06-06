@@ -5,6 +5,24 @@
 using namespace Eigen;
 
 extern "C" {
+	SUPEREXPORT void *createPMCModel(int* structure, int nbLayer);
+
+	SUPEREXPORT void deletePMCModel(t_pmcData* PMC)
+	{
+		
+		delete[] PMC->output;
+		delete[] PMC->sigma;
+
+		for (int l = 1; l < PMC->lenStructure; l++)
+		{
+			for (int j = 1; j < PMC->structure[l] + 1; j++)
+			{
+				delete PMC->W[l][j];
+			}
+			delete PMC->W[l];
+		}
+		delete PMC;
+	}
 
 	SUPEREXPORT void savePMCInCSV(char *path, t_pmcData* PMC)
 	{
@@ -26,8 +44,7 @@ extern "C" {
 			{
 				for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
 				{
-					fd << PMC->W[l][j][i] << endl;
-					fd << ";";
+					fd << PMC->W[l][j][i] << ";";
 				}
 			}
 			fd << endl;
@@ -37,7 +54,7 @@ extern "C" {
 
 	SUPEREXPORT t_pmcData* loadPMCWithCSV(char *path)
 	{
-		t_pmcData* PMC;
+		t_pmcData *PMC;
 		size_t pos = 0;
 		std::string token;
 		unsigned int i = 0;
@@ -58,27 +75,29 @@ extern "C" {
 			v.push_back(stoi(token));
 			line.erase(0, pos + 1);
 		}
-		for (int i = 0; i < (int)v.size(); i++)
-			cout << v.at(i) << endl;
-		//createPMCModel()
+
 		int* a = &v[0];
-		//PMC = (t_pmcData*)createPMCModel(a, v.size());
+		PMC = (t_pmcData*)createPMCModel(a, v.size());
 		
-		
-		//for (int l = 1; l < PMC->lenStructure; l++)
-		//{
-		//	for (int j = 1; j < PMC->structure[l] + 1; j++)
-		//	{
-		//		for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
-		//		{
-		//			fd << PMC->W[l][j][i] << endl;
-		//			fd << ";";
-		//		}
-		//		fd << ";";
-		//	}
-		//	fd << endl;
-		//}
+		for (int l = 1; l < PMC->lenStructure; l++)
+		{
+			std::string line = "";
+			getline(fd, line);
+			for (int j = 1; j < PMC->structure[l] + 1; j++)
+			{
+
+				for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+				{
+					pos = line.find(";");
+					token = line.substr(0, pos);
+					PMC->W[l][j][i] = stod(token);
+					line.erase(0, pos + 1);
+				}
+			}
+		}
+
 		fd.close();
+		return (PMC);
 	}
 	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer)
 	{
@@ -166,7 +185,6 @@ extern "C" {
 		Eigen::MatrixXd tmpMatrixY(1, (*Y).cols());
 		Eigen::VectorXd tmpVectorX(inputCountPerSample);
 		Eigen::VectorXd expectedOutputVector((*Y).cols());
-
 
 		try {
 			if ((*Y).cols() != PMC->structure[PMC->lenStructure - 1])
@@ -354,14 +372,13 @@ void displayPmcModel(t_pmcData* PMC)
 	cout << "PMC :" << endl;
 	for (int l = 1; l < PMC->lenStructure; l++)
 	{
-		//cout << "layer " << l << endl;
+		cout << "layer " << l << endl;
 		for (int j = 1; j < PMC->structure[l] + 1; j++)
 		{
-			//cout << "	neurones " << j << endl;
+			cout << "	neurones " << j << endl;
 			for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
 			{
-				cout << PMC->W[l][j][i] << endl;
-				//cout << "		weights " << PMC->W[l][j][i] << endl;
+				cout << "		weights " << PMC->W[l][j][i] << endl;
 			}
 		}
 	}
