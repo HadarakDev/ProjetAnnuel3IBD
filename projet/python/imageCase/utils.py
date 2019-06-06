@@ -44,8 +44,8 @@ def predictLinear(myDll, function, path, pArrayWeight):
 	function.argtypes = [ c_void_p, c_void_p ]
 	function.restype = c_double
 	predictResponse = function (pArrayWeight, pMatrixXPredict)
-	myDll.deleteTmpPredict.argtypes =  [ c_void_p, c_void_p ]
-	myDll.deleteTmpPredict (pMatrixXPredict, pMatrixYPredict)
+	myDll.deleteDatasetMatrix.argtypes =  [ c_void_p, c_void_p ]
+	myDll.deleteDatasetMatrix (pMatrixXPredict, pMatrixYPredict)
 
 	return predictResponse
 
