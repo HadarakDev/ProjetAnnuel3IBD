@@ -62,8 +62,6 @@ for x1 in X1:
 	value = myDll.predictPMC(pArrayWeight, datasetTmp, 1, 1)  
 	plt.scatter(x1, value[0], color='#bbdefb')
 
-# myDll.deletePMC.argtypes = [ c_void_p ]
-# myDll.deletePMC(pArrayWeight)
 plt.scatter(X, Y, color='red')
 plt.show()
 plt.clf()

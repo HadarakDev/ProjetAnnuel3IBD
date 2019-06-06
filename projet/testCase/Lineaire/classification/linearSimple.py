@@ -11,30 +11,52 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 myDll = CDLL(pathDLL)
 
-#datas des points a tester
-X = np.array([ [1, 5], [2, 3], [3, 3] ])
-Y = np.array([ 1, -1, -1 ])
+# Points Data
+Xnp = np.array([ [1, 5], [2, 3], [3, 3] ])
+Ynp = np.array([ 1, -1, -1 ])
+X = matrixToArray(Xnp.tolist())
+Y = Ynp.tolist()
 
-#parametre
-alpha = 0.1
-epochs = 1000
-display = 100		#a debuger
+# Parameters
+alpha = 0.01
+epochs = 10000
+display = int(epochs / 10)
 
-pArrayWeight = linearClassification(myDll, X, Y, alpha, epochs, display)
+pArrayWeight = linearClassification(myDll, Xnp, Ynp, alpha, epochs, display)
 
-#affichage des points
-X1 = np.linspace(0, 4, 30)
-X2 = np.linspace(0, 4, 30)
+# Python Function to get coordinates
+def get(i, l):
+    return [z[i] for z in l]
+
+X1 = np.linspace(0, 5, 30)
+X2 = np.linspace(0, 5, 30)
+classA = []
+classB = []
+
+# Predict points to test if Model is working 
 for x1 in X1:
     for x2 in X2: 
         predictX = np.array([x1, x2])
         value = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight)
-        if value == 1:
-            plt.scatter(x1, x2, color='#bbdefb')
+        if value > 0:
+            classA.append(tuple([x1, x2]))
         else:
-            plt.scatter(x1, x2, color='#ffcdd2')
+            classB.append(tuple([x1, x2]))
 
-plt.scatter(X[0, 0], X[0, 1], color='blue')
-plt.scatter(X[1:3,0], X[1:3,1], color='red')
+# Display points for each class
+plt.scatter(
+    get(0, classA),
+    get(1, classA),
+    color="#bbdefb"
+)
+plt.scatter(
+    get(0, classB),
+    get(1, classB),
+    color="#ffcdd2"
+)
+
+# Display data points
+plt.scatter(Xnp[0, 0], Xnp[0, 1], color='blue')
+plt.scatter(Xnp[1:3,0], Xnp[1:3,1], color='red')
 plt.show()
 plt.clf()

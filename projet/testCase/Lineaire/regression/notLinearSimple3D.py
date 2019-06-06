@@ -1,5 +1,5 @@
-# Linear Model    : OK
-# MLP (2, 1)      : OK
+# Linear Model       : KO
+# MLP (2, 2, 1)      : OK
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,8 +11,8 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 myDll = CDLL(pathDLL)
 
 # Points Data
-Xnp = np.array([ [1, 1], [2, 2], [3, 3] ])
-Ynp = np.array([ 1, 2, 3 ])
+Xnp = np.array([ [1, 0], [0, 1], [1, 1], [0, 0] ])
+Ynp = np.array([ 1, 2, 3, 4 ])
 Y = Ynp.tolist()
 
 # Get Weights
@@ -24,8 +24,8 @@ ax.scatter(Xnp[:,0], Xnp[:,1], Y, color="red")
 XX, YY, ZZ = [], [], []
 
 # Predict points to test if Model is working 
-for x1 in range(0, 800, 10):
-	for x2 in range(0, 800, 10):
+for x1 in range(0, 500, 10):
+	for x2 in range(0, 500, 10):
 		x1 /= 100
 		x2 /= 100
 		XX.append(x1)

@@ -1,5 +1,6 @@
 # Linear Model    : OK
 # MLP (2, 1)      : OK
+
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,32 +11,29 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 myDll = CDLL(pathDLL)
 
+# Points Data
+Xnp = np.array([ [1, 1], [2, 2], [3, 1] ])
+Ynp = np.array([ 7, 3, 2.5 ])
+Y = Ynp.tolist()
+
+# Get Weights
+pArrayWeight = linearRegression(myDll, Xnp,Ynp)
+
 fig = plt.figure()
 ax = Axes3D(fig)
+ax.scatter(Xnp[:,0], Xnp[:,1], Y, color="red")
+XX, YY, ZZ = [], [], []
 
-#datas des points a tester
-X = np.array([ [1, 1], [2, 2], [3, 1] ])
-Y = np.array([ 7, 3, 2.5 ])
-
-#recuperer les poids
-pArrayWeight = linearRegression(myDll, X,Y)
-
-#plan à tracer
-X1 = np.linspace(0,5,10)
-X2 = np.linspace(0,5,10)
-# X1, X2 = np.meshgrid(X1, X2)
-
-for x1 in X1:
-	for x2 in X2:	
+# Predict points to test if Model is working 
+for x1 in range(0, 500, 10):
+	for x2 in range(0, 500, 10):
+		x1 /= 100
+		x2 /= 100
+		XX.append(x1)
+		YY.append(x2)
 		predictX = np.array([x1, x2])
-		value = predict(myDll, myDll.predictLinearRegression, predictX, pArrayWeight)
-		ax.scatter(x1, x2, value, color="blue")
+		zz = predict(myDll, myDll.predictLinearRegression, predictX, pArrayWeight)
+		ZZ.append(zz)
 
-
-#affichage
-
-ax.scatter(X[:,0],X[:,1],Y, color="red")
-ax.set(xlabel="X1", ylabel="X2", zlabel="Y")
-# ax.plot_surface(x1, x2, z, color='#bbdefb')
+ax.plot_trisurf(XX, YY, ZZ, lw=0, color="grey", alpha=0.5)
 plt.show()
-plt.clf()

@@ -11,31 +11,49 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 myDll = CDLL(pathDLL)
 
-#datas des points a tester
-X = np.random.random((500, 2)) * 2.0 - 1.0
-Y = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in X])
+# Points Data
+Xnp = np.random.random((500, 2)) * 2.0 - 1.0
+Ynp = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in Xnp])
+X = matrixToArray(Xnp.tolist())
+Y = Ynp.tolist()
 
-# Parametres
-alpha = 0.05
-epochs = 1000
-display = 10
-pArrayWeight = linearClassification(myDll, X, Y, alpha, epochs, display)
+# Parameters
+alpha = 0.001
+epochs = 10000
+display = int(epochs / 10)
+pArrayWeight = linearClassification(myDll, Xnp, Ynp, alpha, epochs, display)
 
+# Python Function to get coordinates
+def get(i, l):
+    return [z[i] for z in l]
 
-#affichage des points
 X1 = np.linspace(-1, 1, 30)
 X2 = np.linspace(-1, 1, 30)
+classA = []
+classB = []
+
+# Predict points to test if Model is working 
 for x1 in X1:
     for x2 in X2: 
         predictX = np.array([x1, x2])
         value = predict(myDll, myDll.predictLinearClassification, predictX, pArrayWeight)
-        if value == 1:
-            plt.scatter(x1, x2, color='#bbdefb')
+        if value > 0:
+            classA.append(tuple([x1, x2]))
         else:
-            plt.scatter(x1, x2, color='#ffcdd2')
+            classB.append(tuple([x1, x2]))
 
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]] == 1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]] == 1, enumerate(X)))))[:,1], color='blue')
-plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]] == -1, enumerate(X)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Y[c[0]] == -1, enumerate(X)))))[:,1], color='red')
+# Display points for each class
+plt.scatter(
+    get(0, classA),
+    get(1, classA),
+    color="#bbdefb"
+)
+plt.scatter(
+    get(0, classB),
+    get(1, classB),
+    color="#ffcdd2"
+)
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]] == 1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]] == 1, enumerate(Xnp)))))[:,1], color='blue')
+plt.scatter(np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]] == -1, enumerate(Xnp)))))[:,0], np.array(list(map(lambda elt : elt[1], filter(lambda c: Ynp[c[0]] == -1, enumerate(Xnp)))))[:,1], color='red')
 plt.show()
 plt.clf()
-

@@ -11,15 +11,15 @@ pathDLL = "C:/Users/nico_/Documents/GitHub/ProjetAnnuel3IBD/projet/MLAlgorithms/
 
 myDll = CDLL(pathDLL)
 
-#datas des points a tester
-X = np.array([ [-2], [2] ])
-Y = np.array([ 2, -3])
+# Points Data
+X = np.array([ [1], [2] ])
+Y = np.array([ 2, 3])
 
-#recuperer les poids
+# Get Weights
 pArrayWeight = linearRegression(myDll, X,Y)
 
-#affichage des points
-X1 = np.linspace(0, 4, 60)
+# Predict points to test if Model is working 
+X1 = np.linspace(0, 4, 40)
 for x1 in X1:
    
 	predictX = np.array([x1])
