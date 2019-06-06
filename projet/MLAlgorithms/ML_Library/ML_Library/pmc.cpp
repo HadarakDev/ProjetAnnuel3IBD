@@ -94,11 +94,11 @@ extern "C" {
 			PMC->lenStructure = nbLayer;
 			for (int l = 1; l < nbLayer; l++)
 			{
-				PMC->W[l] = new double* [structure[l] + 1.0]; // neurones ajout biais
+				PMC->W[l] = new double* [(size_t)structure[l] + 1]; // neurones ajout biais
 
 				for (int j = 1; j < structure[l] + 1; j++)
 				{
-					PMC->W[l][j] = new double[structure[l - 1] + 1.0]; // poids
+					PMC->W[l][j] = new double[(size_t)structure[l - 1] + 1]; // poids
 					for (int i = 0; i < structure[l - 1] + 1; i++)
 					{
 						PMC->W[l][j][i] =  (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;

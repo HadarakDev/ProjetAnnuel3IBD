@@ -113,12 +113,12 @@ extern "C" {
 			nbCol = nbCol + 1;
 			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
 			int i = 0;
-			for (int x = 0; x < nbRow; x++)
+			for (unsigned int x = 0; x < nbRow; x++)
 			{
 				if (bias == 1)
 				{
 					(*retMatrix)(x, 0) = 1;
-					for (int y = 1; y < nbCol; y++)
+					for (unsigned int y = 1; y < nbCol; y++)
 					{
 						(*retMatrix)(x, y) = dataset[i];
 						i++;
@@ -131,9 +131,9 @@ extern "C" {
 		{
 			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
 			int i = 0;
-			for (int x = 0; x < nbRow; x++)
+			for (unsigned int x = 0; x < nbRow; x++)
 			{
-				for (int y = 0; y < nbCol; y++)
+				for (unsigned int y = 0; y < nbCol; y++)
 				{
 					(*retMatrix)(x, y) = dataset[i];
 					i++;
