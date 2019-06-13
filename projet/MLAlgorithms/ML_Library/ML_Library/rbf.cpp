@@ -13,7 +13,7 @@ extern "C" {
 		delete RBF;
 
 	}
-	SUPEREXPORT void* createLinearModel(int inputCountPerSample)
+	SUPEREXPORT void* createRBFModel(int inputCountPerSample)
 	{
 
 		srand(time(NULL));
@@ -25,9 +25,9 @@ extern "C" {
 		RBF->W = NULL;
 		RBF->X = NULL;
 		return (RBF);
-		
+
 	}
-	SUPEREXPORT t_rbfData fitRBFRegression(t_rbfData *RBF, MatrixXd *X, MatrixXd *Y, double gamma)
+	SUPEREXPORT t_rbfData fitRBFRegression(t_rbfData * RBF, MatrixXd * X, MatrixXd * Y, double gamma)
 	{
 		RBF->W = new Eigen::MatrixXd(RBF->inputCountPerSample, 1);
 		RBF->X = new Eigen::MatrixXd(X->rows(), X->cols());
@@ -48,7 +48,15 @@ extern "C" {
 		(*RBF->W) = phiInv * (*Y);
 	}
 
-	SUPEREXPORT double predictRBFRegression(t_rbfData *RBF, )
+	SUPEREXPORT double predictRBFRegression(t_rbfData * RBF, VectorXd * XPredict)
 	{
-		
+		MatrixXd gauss(1, RBF->X->cols());
+		for (int i = 0; i < RBF->X->rows(); i++)
+		{
+			Eigen::MatrixXd tmp(1, RBF->X->cols());
+			tmp = (*RBF->X).block(i, 0, 1, RBF->X->cols()) - (*XPredict);
+			gauss(i) = exp(-RBF->gamma * pow(tmp.norm(), 2));
+		}
+		return (gauss * (*RBF->W)).sum();
 	}
+}
