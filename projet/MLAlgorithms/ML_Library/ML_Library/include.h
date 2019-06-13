@@ -20,6 +20,7 @@
 #include <Eigen/Dense>
 
 #include "pmc.h"
+#include "rbf.h"
 
 using namespace std;
 using namespace cv;
