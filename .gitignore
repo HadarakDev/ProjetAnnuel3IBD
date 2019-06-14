@@ -439,3 +439,6 @@ projet/YoutubeImageDataset/YoutubeImageDataset/Properties/Settings.settings
 projet/YoutubeImageDataset/YoutubeImageDataset/YoutubeImageDataset.csproj
 projet/python/.vscode/settings.json
 
+*.crt
+*.key
+*.zip

@@ -49,7 +49,7 @@
             }
         }; 
  
-   xhr.open("GET", "http://192.168.1.20:1111/results/",  true); 
+   xhr.open("GET", "http://boudeville.fr:4000/results/",  true); 
    xhr.send(); 
 } 
 
@@ -84,7 +84,7 @@
             });
 
             // Configurez la requête
-            XHR.open("POST", "/src/sections/checkPicture.php" );
+            XHR.open("POST", "http://boudeville.fr:80/src/sections/checkPicture.php" );
 
             // Les données envoyées sont ce que l'utilisateur a mis dans le formulaire
             XHR.send(FD);

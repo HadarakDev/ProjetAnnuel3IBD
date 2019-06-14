@@ -14,7 +14,7 @@ CORS(app, supports_credentials=True)
 def dataset():
 	datas = {}
 	try:
-		with open('/volume1/web/api/queries.json', 'r') as file:
+		with open('queries.json', 'r') as file:
 			queries = json.load(file)
 		print(type(queries))
 	except:
