@@ -20,6 +20,7 @@
 #include <Eigen/Dense>
 
 #include "pmc.h"
+#include "rbf.h"
 
 using namespace std;
 using namespace cv;
@@ -42,14 +43,6 @@ int isColinear(Eigen::MatrixXd* matrix);
 ////	imageUtils.cpp
 void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
 	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
-
-////	pmc.cpp
-Eigen::VectorXd* getLayerOuptut(t_layer* layer, int bias);
-void calculateNeuroneOutput(t_neurone* neurone, Eigen::VectorXd* input, unsigned int isLinear);
-double* predictStructPMC(t_pmc* W, Eigen::VectorXd* X, unsigned int isLinear);
-double fitStructPMC(t_pmc* W, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, int inputCountPerSample, double alpha, int epochs, int display, int isLinear);
-void displayStructPmc(t_pmc* W);
-void fillFirstLayerWithInputs(t_pmc* W, Eigen::VectorXd* input);
 
 void displaySigmas(t_pmcData* PMC);
 void displayPmcModel(t_pmcData* PMC);

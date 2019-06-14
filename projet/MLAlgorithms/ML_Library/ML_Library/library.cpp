@@ -69,15 +69,13 @@ extern "C" {
 		}
 	}
 
-	SUPEREXPORT void deleteTmpPredict(Eigen::MatrixXd* pMatrixX, Eigen::MatrixXd* pMatrixY)
+	SUPEREXPORT void deleteLinearModel(double* arrayWeight)
 	{
-		delete pMatrixX;
-		delete pMatrixY;
+		delete arrayWeight;
 	}
 
-	SUPEREXPORT void deleteLinearModel(double* arrayWeight, Eigen::MatrixXd *pMatrixX, Eigen::MatrixXd *pMatrixY)
+	SUPEREXPORT void deleteDatasetMatrix(Eigen::MatrixXd* pMatrixX, Eigen::MatrixXd* pMatrixY)
 	{
-		delete[] arrayWeight;
 		delete pMatrixX;
 		delete pMatrixY;
 	}

@@ -64,6 +64,7 @@ extern "C" {
 		}
 		return retMatrix;
 	}
+
 	SUPEREXPORT void saveWeightsInCSV(char* path, Eigen::MatrixXd * W)
 	{
 		ofstream fd;
@@ -88,8 +89,6 @@ extern "C" {
 		size_t pos = 0;
 		std::string token;
 		unsigned int i = 0;
-
-		// get input count per sample (on filename)
 		std::ifstream fd(path);
 
 		if (!fd) {
@@ -114,12 +113,12 @@ extern "C" {
 			nbCol = nbCol + 1;
 			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
 			int i = 0;
-			for (int x = 0; x < nbRow; x++)
+			for (unsigned int x = 0; x < nbRow; x++)
 			{
 				if (bias == 1)
 				{
 					(*retMatrix)(x, 0) = 1;
-					for (int y = 1; y < nbCol; y++)
+					for (unsigned int y = 1; y < nbCol; y++)
 					{
 						(*retMatrix)(x, y) = dataset[i];
 						i++;
@@ -132,9 +131,9 @@ extern "C" {
 		{
 			Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(nbRow, nbCol);
 			int i = 0;
-			for (int x = 0; x < nbRow; x++)
+			for (unsigned int x = 0; x < nbRow; x++)
 			{
-				for (int y = 0; y < nbCol; y++)
+				for (unsigned int y = 0; y < nbCol; y++)
 				{
 					(*retMatrix)(x, y) = dataset[i];
 					i++;
@@ -245,9 +244,3 @@ void convertMatrixToSimpleArray(Eigen::MatrixXd W, double *arr) {
 		}
 	}
 }
-//bool matrixMultiplicationPossible(Eigen::MatrixXd matrixA, Eigen::MatrixXd matrixB)
-//{
-//	if (matrixA.rows() == matrixB.cols())
-//		return (true);
-//	return (false);
-//}
