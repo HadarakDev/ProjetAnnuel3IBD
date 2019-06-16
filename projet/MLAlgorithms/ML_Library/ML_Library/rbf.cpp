@@ -15,7 +15,6 @@ extern "C" {
 	}
 	SUPEREXPORT void* createRBFModel(int inputCountPerSample)
 	{
-
 		srand(time(NULL));
 
 		inputCountPerSample = inputCountPerSample + 1;
@@ -27,11 +26,14 @@ extern "C" {
 		return (RBF);
 
 	}
+
+
 	SUPEREXPORT void fitRBFRegression(t_rbfData * RBF, MatrixXd * X, MatrixXd * Y, double gamma)
 	{
 		RBF->W = new Eigen::MatrixXd(RBF->inputCountPerSample, 1);
 		RBF->X = new Eigen::MatrixXd(X->rows(), X->cols());
 		RBF->gamma = gamma;
+		Eigen::MatrixXd tmp(1, X->cols());
 
 		RBF->X = X;
 		Eigen::MatrixXd phi(X->rows(), X->rows());
@@ -40,7 +42,7 @@ extern "C" {
 		{
 			for (int j = 0; j < X->rows(); j++)
 			{
-				Eigen::MatrixXd tmp(1, X->cols());
+
 				tmp = (*X).block(i, 0, 1, X->cols()) - (*X).block(j, 0, 1, X->cols());
 				phi(i, j) = exp(-RBF->gamma * pow(tmp.norm(), 2));
 			}
@@ -50,6 +52,10 @@ extern "C" {
 		(*RBF->W) = phiInv * (*Y);
 	}
 
+	SUPEREXPORT void fitRBFClassification(t_rbfData* RBF, MatrixXd* X, MatrixXd* Y, double gamma)
+	{
+		fitRBFRegression(RBF, X, Y, gamma);
+	}
 	SUPEREXPORT double predictRBFRegression(t_rbfData * RBF, VectorXd * XPredict)
 	{
 		MatrixXd gauss(1, RBF->X->rows());

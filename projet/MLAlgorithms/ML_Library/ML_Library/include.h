@@ -49,4 +49,6 @@ void displayPmcModel(t_pmcData* PMC);
 void displayOutput(t_pmcData* PMC);
 void addInputsInPMC(t_pmcData* PMC, Eigen::VectorXd* input);
 void allocate(t_pmcData* PMC);
+
+int getMinInArray(double* Arr, int size);
 #endif // !"INCLUDE_H"
