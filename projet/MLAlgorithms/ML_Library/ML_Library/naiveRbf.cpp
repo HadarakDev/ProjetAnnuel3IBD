@@ -4,7 +4,7 @@ using namespace Eigen;
 
 extern "C" {
 
-	SUPEREXPORT void deleteRBFModel(t_rbfData* RBF)
+	SUPEREXPORT void deleteNaiveRBFModel(t_rbfData* RBF)
 	{
 		if (RBF->W != NULL)
 			delete RBF->W;
@@ -13,7 +13,7 @@ extern "C" {
 		delete RBF;
 
 	}
-	SUPEREXPORT void* createRBFModel(int inputCountPerSample)
+	SUPEREXPORT void* createNaiveRBFModel(int inputCountPerSample)
 	{
 		srand(time(NULL));
 
@@ -28,7 +28,7 @@ extern "C" {
 	}
 
 
-	SUPEREXPORT void fitRBFRegression(t_rbfData * RBF, MatrixXd * X, MatrixXd * Y, double gamma)
+	SUPEREXPORT void fitNaiveRBFRegression(t_rbfData * RBF, MatrixXd * X, MatrixXd * Y, double gamma)
 	{
 		RBF->W = new Eigen::MatrixXd(RBF->inputCountPerSample, 1);
 		RBF->X = new Eigen::MatrixXd(X->rows(), X->cols());
@@ -52,25 +52,26 @@ extern "C" {
 		(*RBF->W) = phiInv * (*Y);
 	}
 
-	SUPEREXPORT void fitRBFClassification(t_rbfData* RBF, MatrixXd* X, MatrixXd* Y, double gamma)
+	SUPEREXPORT void fitNaiveRBFClassification(t_rbfData* RBF, MatrixXd* X, MatrixXd* Y, double gamma)
 	{
-		fitRBFRegression(RBF, X, Y, gamma);
+		fitNaiveRBFRegression(RBF, X, Y, gamma);
 	}
-	SUPEREXPORT double predictRBFRegression(t_rbfData * RBF, VectorXd * XPredict)
+	SUPEREXPORT double predictNaiveRBFRegression(t_rbfData * RBF, VectorXd * XPredict)
 	{
 		MatrixXd gauss(1, RBF->X->rows());
 		for (int i = 0; i < RBF->X->rows(); i++)
 		{
 			Eigen::MatrixXd tmp(1, RBF->X->cols());
 			
-			tmp = (*RBF->X).block(i, 0, 1, RBF->X->cols()) - (*XPredict).transpose();
+			//tmp = (*RBF->X).block(i, 0, 1, RBF->X->cols()) - (*XPredict).transpose();
+			tmp = (*XPredict).transpose() - (*RBF->X).block(i, 0, 1, RBF->X->cols());
 			gauss(0, i) = exp(-RBF->gamma * pow(tmp.norm(), 2));
 		}
 		return (gauss * (*RBF->W)).sum();
 	}
 
-	SUPEREXPORT double predictRBFClassification(t_rbfData* RBF, VectorXd* XPredict)
+	SUPEREXPORT double predictNaiveRBFClassification(t_rbfData* RBF, VectorXd* XPredict)
 	{
-		return predictRBFRegression(RBF, XPredict) >= 0 ? 1.0 : -1.0;
+		return predictNaiveRBFRegression(RBF, XPredict) >= 0 ? 1.0 : -1.0;
 	}
 }

@@ -50,5 +50,6 @@ void displayOutput(t_pmcData* PMC);
 void addInputsInPMC(t_pmcData* PMC, Eigen::VectorXd* input);
 void allocate(t_pmcData* PMC);
 
+int checkUsed(int* tab, int tmp, int sizeUsed);
 int getMinInArray(double* Arr, int size);
 #endif // !"INCLUDE_H"
