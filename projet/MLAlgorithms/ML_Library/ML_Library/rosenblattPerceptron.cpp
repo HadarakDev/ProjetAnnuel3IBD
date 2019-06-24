@@ -1,5 +1,7 @@
 #include "include.h"
 
+using namespace std;
+
 extern "C" {
 	SUPEREXPORT double predictLinearRegression(Eigen::MatrixXd* W, Eigen::MatrixXd* X);
 	SUPEREXPORT double predictLinearClassification(

@@ -1,6 +1,9 @@
 #include "include.h"
 #include <Eigen/Dense>
 
+using namespace std;
+using namespace cv;
+
 void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH)
 {
 	Mat image;

@@ -1,6 +1,8 @@
 #include "include.h"
 
 using namespace Eigen;
+using namespace std;
+
 
 extern "C" {
 

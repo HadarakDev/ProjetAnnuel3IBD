@@ -5,6 +5,8 @@
 #include <cmath>
 #include <limits>
 
+using namespace std;
+
 extern "C" {
 	SUPEREXPORT void* getDatasetY(char* str, unsigned int numberImage)
 	{

@@ -1,5 +1,7 @@
+
 #ifndef INCLUDE_H_
 #define INCLUDE_H_
+
 
 
 //C++ LIB
@@ -22,8 +24,6 @@
 #include "pmc.h"
 #include "rbf.h"
 
-using namespace std;
-using namespace cv;
 
 #if _WIN32
 #define SUPEREXPORT __declspec(dllexport)
@@ -41,7 +41,7 @@ void fixColinearity(Eigen::MatrixXd* matrix);
 int isColinear(Eigen::MatrixXd* matrix);
 
 ////	imageUtils.cpp
-void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX,
+void getPixelsFromImage(std::string imagePath, int component, Eigen::MatrixXd *datasetX,
 	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
 
 void displaySigmas(t_pmcData* PMC);

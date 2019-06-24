@@ -3,6 +3,7 @@
 #include <vector>
 
 using namespace Eigen;
+using namespace std;
 
 extern "C" {
 	SUPEREXPORT void *createPMCModel(int* structure, int nbLayer);
