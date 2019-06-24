@@ -1,3 +1,5 @@
+from ctypes import *
+
 def createNaiveRBFModel(myDll, inputCountPerSample):
     myDll.createNaiveRBFModel.argtypes = [ c_uint ]
     myDll.createNaiveRBFModel.restype = c_void_p

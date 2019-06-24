@@ -1,30 +1,43 @@
+from ctypes import *
+
+def matrixToArray(matrix):
+    ret = []
+    for el in matrix:
+        ret.extend(el)
+    return ret
+
+# Python Function to get coordinates
+def get(i, l):
+    return [z[i] for z in l]
+
+
 # Get matrix X from imagesPath
 def getDatasetX(myDll, imagesPath, imageW, imageH, numberImage, component):
     imagePathUTF = imagesPath.encode('utf-8')
     myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
-	myDll.getDatasetX.restype = c_void_p
-	pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
+    myDll.getDatasetX.restype = c_void_p
+    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
     return pMatrixX
 
 # Get matrix Y from imagesPath
 def getDatasetY(myDll, imagesPath, numberImage):
     imagePathUTF = imagesPath.encode('utf-8')
     myDll.getDatasetY.restype = c_void_p
-	myDll.getDatasetY.argtypes = [c_char_p, c_uint]
-	pMatrixY = myDll.getDatasetY(imagePathUTF, numberImage)
+    myDll.getDatasetY.argtypes = [c_char_p, c_uint]
+    pMatrixY = myDll.getDatasetY(imagePathUTF, numberImage)
     return pMatrixY
 
 # Get both matrix X & Y from imagesPath
 def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component):	
-	ImagePathUTF = imagesPath.encode('utf-8')
-	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
-	myDll.getDatasetX.restype = c_void_p
-	pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
+    imagePathUTF = imagesPath.encode('utf-8')
+    myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
+    myDll.getDatasetX.restype = c_void_p
+    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
 
-	myDll.getDatasetY.restype = c_void_p
-	myDll.getDatasetY.argtypes = [c_char_p, c_uint]
-	pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage )
-	return pMatrixX, pMatrixY
+    myDll.getDatasetY.restype = c_void_p
+    myDll.getDatasetY.argtypes = [c_char_p, c_uint]
+    pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage )
+    return pMatrixX, pMatrixY
 
 # Load point into matrix
 def loadTestCase(myDll, X, row, col, bias):
@@ -34,9 +47,10 @@ def loadTestCase(myDll, X, row, col, bias):
     return pMatrixX
 
 # Dataset to Vector ( double * => vectorXd)
-def datasetToVector(dataset, bias):
+def datasetToVector(myDll, dataset, bias):
     size = len(dataset)
     arr = (c_double * size)(*dataset)
+    c_double_p = POINTER(c_double)
     myDll.datasetToVector.argtypes = [ c_double_p, c_uint, c_uint ]
     myDll.datasetToVector.restype = c_void_p
     vector = myDll.datasetToVector( arr, size, bias )
