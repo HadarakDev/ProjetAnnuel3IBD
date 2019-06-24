@@ -1,0 +1,43 @@
+# Get matrix X from imagesPath
+def getDatasetX(myDll, imagesPath, imageW, imageH, numberImage, component):
+    imagePathUTF = imagesPath.encode('utf-8')
+    myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
+	myDll.getDatasetX.restype = c_void_p
+	pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
+    return pMatrixX
+
+# Get matrix Y from imagesPath
+def getDatasetY(myDll, imagesPath, numberImage):
+    imagePathUTF = imagesPath.encode('utf-8')
+    myDll.getDatasetY.restype = c_void_p
+	myDll.getDatasetY.argtypes = [c_char_p, c_uint]
+	pMatrixY = myDll.getDatasetY(imagePathUTF, numberImage)
+    return pMatrixY
+
+# Get both matrix X & Y from imagesPath
+def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component):	
+	ImagePathUTF = imagesPath.encode('utf-8')
+	myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
+	myDll.getDatasetX.restype = c_void_p
+	pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
+
+	myDll.getDatasetY.restype = c_void_p
+	myDll.getDatasetY.argtypes = [c_char_p, c_uint]
+	pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage )
+	return pMatrixX, pMatrixY
+
+# Load point into matrix
+def loadTestCase(myDll, X, row, col, bias):
+    myDll.loadTestCase.restype = c_void_p
+    myDll.loadTestCase.argtypes = [POINTER(ARRAY(c_double, len(X))), c_uint, c_uint, c_uint]
+    pMatrixX = myDll.loadTestCase( (c_double * len(X))(*X), row,  col, bias )
+    return pMatrixX
+
+# Dataset to Vector ( double * => vectorXd)
+def datasetToVector(dataset, bias):
+    size = len(dataset)
+    arr = (c_double * size)(*dataset)
+    myDll.datasetToVector.argtypes = [ c_double_p, c_uint, c_uint ]
+    myDll.datasetToVector.restype = c_void_p
+    vector = myDll.datasetToVector( arr, size, bias )
+    return vector

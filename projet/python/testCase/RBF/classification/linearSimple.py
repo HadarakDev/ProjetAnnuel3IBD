@@ -37,7 +37,7 @@ pArrayWeight = myDll.createRBFModel(Xnp.shape[1])
 
 # Fit RBF with regression version
 myDll.fitRBFClassification.argtypes = [ c_void_p, c_void_p, c_void_p, c_double ]							
-error = myDll.fitRBFClassification( pArrayWeight, pMatrixX, pMatrixY, gamma)
+myDll.fitRBFClassification( pArrayWeight, pMatrixX, pMatrixY, gamma)
 
 # Prototyping the method Dataset to Vector ( double * => vectorXd)
 myDll.datasetToVector.argtypes = [ c_double_p, c_uint, c_uint ]

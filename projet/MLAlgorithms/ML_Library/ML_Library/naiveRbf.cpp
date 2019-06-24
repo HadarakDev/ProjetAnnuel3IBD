@@ -13,6 +13,7 @@ extern "C" {
 		delete RBF;
 
 	}
+
 	SUPEREXPORT void* createNaiveRBFModel(int inputCountPerSample)
 	{
 		srand(time(NULL));
@@ -24,9 +25,7 @@ extern "C" {
 		RBF->W = NULL;
 		RBF->X = NULL;
 		return (RBF);
-
 	}
-
 
 	SUPEREXPORT void fitNaiveRBFRegression(t_rbfData * RBF, MatrixXd * X, MatrixXd * Y, double gamma)
 	{

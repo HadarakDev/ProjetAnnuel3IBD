@@ -67,7 +67,7 @@ extern "C" {
 		return retMatrix;
 	}
 
-	SUPEREXPORT void saveWeightsInCSV(char* path, Eigen::MatrixXd * W)
+	SUPEREXPORT void saveLinearWeightsInCSV(char* path, Eigen::MatrixXd * W)
 	{
 		ofstream fd;
 
@@ -84,7 +84,7 @@ extern "C" {
 		fd.close();
 	}
 
-	SUPEREXPORT void *loadWeightsWithCSV(char* path, unsigned int inputCountPerSample)
+	SUPEREXPORT void *loadLinearWeightsWithCSV(char* path, unsigned int inputCountPerSample)
 	{
 		Eigen::MatrixXd* W = new Eigen::MatrixXd(inputCountPerSample + 1, 1);
 		double x;
