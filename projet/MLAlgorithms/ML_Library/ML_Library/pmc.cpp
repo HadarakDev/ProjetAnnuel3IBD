@@ -136,17 +136,15 @@ extern "C" {
 	}
 
 
-	SUPEREXPORT double* predictPMCRegression(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
+	SUPEREXPORT double* predictPMCRegression(t_pmcData* PMC, Eigen::VectorXd* X,  int res)
 	{
 		return (predictPMC(PMC, X, 1, res));
 	}
 
-	SUPEREXPORT double* predictPMCClassification(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
+	SUPEREXPORT double* predictPMCClassification(t_pmcData* PMC, Eigen::VectorXd* X, int res)
 	{
 		return (predictPMC(PMC, X, 0, res));
 	}
-
-
 
 	SUPEREXPORT double fitPMCRegression(t_pmcData* PMC, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, double alpha, int epochs, int display)
 	{
@@ -163,7 +161,7 @@ extern "C" {
 
 			for (int i = 0; i < epochs; i++)
 			{
-				if (i % display == 0)
+				if (display != -1 && i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 
 				for (int k = 0; k < SampleCount; k++)
@@ -235,10 +233,9 @@ extern "C" {
 			if ((*Y).cols() != PMC->structure[PMC->lenStructure - 1])
 				throw std::exception("erreur Y n'est pas de la meme taille que les neurones");
 
-
 			for (int i = 0; i < epochs; i++)
 			{
-				if (i % display == 0)
+				if (display != -1 && i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				
 				for (int k = 0; k < SampleCount; k++)
@@ -340,6 +337,7 @@ double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
 		return (NULL);
 	}
 }
+
 void addInputsInPMC(t_pmcData* PMC, Eigen::VectorXd* input)
 {
 	for (int i = 0; i < input->size(); i++)

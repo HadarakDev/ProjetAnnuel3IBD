@@ -31,7 +31,7 @@ extern "C" {
 		try {
 			for (int i = 0; i < epochs; i++)
 			{
-				if (i % display == 0)
+				if (display != -1 && i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				for (int k = 0; k < SampleCount; k++)
 				{	

@@ -6,10 +6,6 @@ extern "C" {
 
 	SUPEREXPORT void deleteNaiveRBFModel(t_rbfData* RBF)
 	{
-		if (RBF->W != NULL)
-			delete RBF->W;
-		if (RBF->X != NULL)
-			delete RBF->X;
 		delete RBF;
 
 	}
