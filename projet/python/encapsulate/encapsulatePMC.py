@@ -4,7 +4,63 @@ import matplotlib.pyplot as plt
 from numpy.ctypeslib import ndpointer
 from encapsulateSharedMethods import *
 
-def displayPMCResult2D(myDll, pPMC, X1, X2, lenResult):
+def displayPMCRegResult3D(myDll, pArrayWeight, ax, maxRange, lenResult):
+    XX, YY, ZZ = [], [], []
+    for x1 in range(0, maxRange, 10):
+        for x2 in range(0, maxRange, 10):
+            x1 /= 100
+            x2 /= 100
+            XX.append(x1)
+            YY.append(x2)
+            predictX = np.array([x1, x2])
+            datasetTmp = datasetToVector(myDll, predictX, 1)
+            value = predictPMCRegression(myDll, pArrayWeight, datasetTmp, 1, lenResult) 
+            ZZ.append(value[0])
+    ax.plot_trisurf(XX, YY, ZZ, lw=0, color='#bbdefb', alpha=0.5)
+
+def displayPMCRegResult2D(myDll, pPMC, X1, lenResult):
+    for x1 in X1:
+        predictX = np.array([x1])
+        datasetTmp = datasetToVector(myDll, predictX, 1)
+        value = predictPMCRegression(myDll, pPMC, datasetTmp, 1, lenResult) 
+        plt.scatter(x1, value[0], color='#bbdefb')
+
+def displayPMCClassifResult2DTripleClass(myDll, pPMC, X1, X2, lenResult):
+    classA = []
+    classB = []
+    classC = []
+
+    # Prototyping the method predict PMC 
+    for x1 in X1:
+        for x2 in X2: 
+            predictX = np.array([x1, x2])
+            datasetTmp = datasetToVector(myDll, predictX, 1)
+            value = predictPMCClassification(myDll, pPMC, datasetTmp, 1, lenResult)
+            if value[0] > value[1] and value[0] > value[2]:
+                classA.append(tuple([x1, x2]))
+            elif value[1] > value[0] and value[1] > value[2]:
+                classB.append(tuple([x1, x2]))
+            elif value[2] > value[0] and value[2] > value[1]:
+                classC.append(tuple([x1, x2]))
+
+    # Display points for each class
+    plt.scatter(
+        get(0, classA),
+        get(1, classA),
+        color="#bbdefb"
+    )
+    plt.scatter(
+        get(0, classB),
+        get(1, classB),
+        color="#ffcdd2"
+    )
+    plt.scatter(
+        get(0, classC),
+        get(1, classC),
+        color="#c8e6c9"
+    )
+
+def displayPMCClassifResult2D(myDll, pPMC, X1, X2, lenResult):
     classA = []
     classB = []
 
@@ -32,8 +88,7 @@ def displayPMCResult2D(myDll, pPMC, X1, X2, lenResult):
     )
 
 # Create & Allocate PMC Model using structure (example : [2, 3, 1])
-def createPMCModel(myDll, pmcStruct):
-    arrStruct = (c_int * len(pmcStruct))(*pmcStruct)
+def createPMCModel(myDll, pmcStruct, arrStruct):
     myDll.createPMCModel.argtypes = [ POINTER(ARRAY(c_int, len(pmcStruct))), c_uint ]
     myDll.createPMCModel.restype = c_void_p
     pPMC = myDll.createPMCModel( arrStruct, len(pmcStruct) )
