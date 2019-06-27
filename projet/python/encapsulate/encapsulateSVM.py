@@ -4,6 +4,13 @@ import numpy as np
 import cvxopt.base
 from encapsulateSharedMethods import *
 
+def displaySVMRegResult2D(myDll, WVector, X1):
+    for x1 in X1:
+        predictX = np.array([x1])
+        pMatrixX = loadTestCase(myDll, predictX, 1, len(predictX), 1)
+        value = predictSvmRegression(myDll, WVector, pMatrixX)  
+        plt.scatter(x1, value, color='#bbdefb')
+
 def displaySVMClassifResult2DTripleClass(myDll, WVector1, WVector2, WVector3, X1, X2):
     classA = []
     classB = []
@@ -16,6 +23,7 @@ def displaySVMClassifResult2DTripleClass(myDll, WVector1, WVector2, WVector3, X1
             value1 = predictSvmRegression(myDll, WVector1, pMatrixX)
             value2 = predictSvmRegression(myDll, WVector2, pMatrixX)
             value3 = predictSvmRegression(myDll, WVector3, pMatrixX)
+
             if value1 >= value2 and value1 >= value3:
                 classA.append(tuple([x1, x2]))
             elif value2 >= value1 and value2 >= value3:
@@ -40,7 +48,7 @@ def displaySVMClassifResult2DTripleClass(myDll, WVector1, WVector2, WVector3, X1
         color="#c8e6c9"
     )
 
-def displaySVMRegResult2D(myDll, WVector, X1, X2):
+def displaySVMClassifResult2D(myDll, WVector, X1, X2):
     classA = []
     classB = []
     for x1 in X1:
@@ -104,4 +112,16 @@ def getBigMatrix(X, Y):
     for i in range(0, X.shape[0]):
         for j in range(0, X.shape[0]):
             bigMatrix[i][j] = np.dot(X[i],np.transpose(X[j])) * (Y[i] * Y[j])
+    return bigMatrix
+
+def kernelTrick(n,m):
+    return (np.exp(-np.dot(m, m)) * np.exp(-np.dot(n, n)) * np.exp(2 * np.dot(n, m)))
+
+
+
+def getBigMatrixKernelTrick(X, Y):
+    bigMatrix = np.empty(shape=(X.shape[0], X.shape[0]))
+    for i in range(0, X.shape[0]):
+        for j in range(0, X.shape[0]):
+            bigMatrix[i][j] = kernelTrick(X[i], X[j]) * (Y[i] * Y[j])
     return bigMatrix

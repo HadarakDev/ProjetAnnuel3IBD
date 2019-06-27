@@ -10,55 +10,55 @@ extern "C" {
 	SUPEREXPORT double predictLinearRegression(Eigen::MatrixXd* W, Eigen::MatrixXd* X);
 	SUPEREXPORT double predictLinearClassification(Eigen::MatrixXd* W, Eigen::MatrixXd* X);
 
-	SUPEREXPORT void testOSQP(Eigen::SparseMatrix<double> spMatrix)
-	{
-		// Load problem data
-		//c_float P_x[25] = { 2.0, 3.0, -4.0, -5.0, -8.0, 3.0, 5.0, -6.0, -9.0, -12.0, -4.0, -6.0, 8.0, 10.0, 16.0, -5.0, -9.0, 10.0, 17.0, 20.0, -8.0, -12.0, 16.0, 20.0, 32.0, };
-		//c_int   P_nnz = 25;
-		//c_int   P_i[4] = { 0, 1, 0, 1, };
-		//c_int   P_p[3] = { 0, 2, 4, };
-		c_float q[5] = { -1.0, -1.0, -1.0, -1.0, -1.0};
-		c_float A_x[4] = { -1.0  };
-		c_int   A_nnz = 4;
-		c_int   A_i[4] = { 0, 1, 0, 2, };
-		c_int   A_p[3] = { 0, 2, 4, };
-		c_float l[1] = { 0.0 };
-		//c_float u[3] = { 1.0, 0.7, 0.7, };
+	//SUPEREXPORT void testOSQP(Eigen::SparseMatrix<double> spMatrix)
+	//{
+	//	// Load problem data
+	//	//c_float P_x[25] = { 2.0, 3.0, -4.0, -5.0, -8.0, 3.0, 5.0, -6.0, -9.0, -12.0, -4.0, -6.0, 8.0, 10.0, 16.0, -5.0, -9.0, 10.0, 17.0, 20.0, -8.0, -12.0, 16.0, 20.0, 32.0, };
+	//	//c_int   P_nnz = 25;
+	//	//c_int   P_i[4] = { 0, 1, 0, 1, };
+	//	//c_int   P_p[3] = { 0, 2, 4, };
+	//	c_float q[5] = { -1.0, -1.0, -1.0, -1.0, -1.0};
+	//	c_float A_x[4] = { -1.0  };
+	//	c_int   A_nnz = 4;
+	//	c_int   A_i[4] = { 0, 1, 0, 2, };
+	//	c_int   A_p[3] = { 0, 2, 4, };
+	//	c_float l[1] = { 0.0 };
+	//	//c_float u[3] = { 1.0, 0.7, 0.7, };
 
 
-		// Problem settings
-		OSQPSettings* settings = (OSQPSettings*)c_malloc(sizeof(OSQPSettings));
+	//	// Problem settings
+	//	OSQPSettings* settings = (OSQPSettings*)c_malloc(sizeof(OSQPSettings));
 
-		// Structures
-		OSQPWorkspace* work; // Workspace
-		OSQPData* data;      // OSQPData
-		// Populate data
-		data = (OSQPData*)c_malloc(sizeof(OSQPData));
-		data->n = 1; //nb variables
-		data->m = 2; // nb constraints
-		data->P = csc_matrix(data->n, data->n, spMatrix.nonZeros(), spMatrix.valuePtr(), (c_int *)spMatrix.outerIndexPtr(), (c_int*)spMatrix.innerIndexPtr());
-		data->q = q;
-		data->A = csc_matrix(data->m, data->n, A_nnz, A_x, A_i, A_p);
-		data->l = l;
-		data->u = NULL;
+	//	// Structures
+	//	OSQPWorkspace* work; // Workspace
+	//	OSQPData* data;      // OSQPData
+	//	// Populate data
+	//	data = (OSQPData*)c_malloc(sizeof(OSQPData));
+	//	data->n = 1; //nb variables
+	//	data->m = 2; // nb constraints
+	//	data->P = csc_matrix(data->n, data->n, spMatrix.nonZeros(), spMatrix.valuePtr(), (c_int *)spMatrix.outerIndexPtr(), (c_int*)spMatrix.innerIndexPtr());
+	//	data->q = q;
+	//	data->A = csc_matrix(data->m, data->n, A_nnz, A_x, A_i, A_p);
+	//	data->l = l;
+	//	data->u = NULL;
 
-		// Define Solver settings as default
-		osqp_set_default_settings(settings);
-		settings->alpha = 1.0;
+	//	// Define Solver settings as default
+	//	osqp_set_default_settings(settings);
+	//	settings->alpha = 1.0;
 
-		// Setup workspace
-		work = osqp_setup(data, settings);
+	//	// Setup workspace
+	//	work = osqp_setup(data, settings);
 
-		// Solve Problem
-		osqp_solve(work);
+	//	// Solve Problem
+	//	osqp_solve(work);
 
-		// Clean workspace
-		osqp_cleanup(work);
-		c_free(data->A);
-		c_free(data->P);
-		c_free(data);
-		c_free(settings);
-	}
+	//	// Clean workspace
+	//	osqp_cleanup(work);
+	//	c_free(data->A);
+	//	c_free(data->P);
+	//	c_free(data);
+	//	c_free(settings);
+	//}
 
 	//SUPEREXPORT void fitSvm(Eigen::MatrixXd *X, Eigen::MatrixXd *Y)
 	//{
@@ -117,8 +117,7 @@ extern "C" {
 
 		tmpMatrixX = (*X).block(idxAlpha, 0, 1, X->cols());
 		tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
-
-		
+	
 		(*W)(0) = (1 / (*Y)(idxAlpha, 0)) - (tmpW.adjoint() * tmpVectorX);
 		for (int i = 0; i < tmpW.size(); i++)
 		{
@@ -133,7 +132,6 @@ extern "C" {
 
 		for (int i = 0; i < WVector->size(); i++)
 			(*W)(i, 0) = (*WVector)(i);
-
 		return predictLinearClassification(W, X);
 	}
 

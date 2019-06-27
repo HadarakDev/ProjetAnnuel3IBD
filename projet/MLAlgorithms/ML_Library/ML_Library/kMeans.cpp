@@ -5,7 +5,7 @@ using namespace std;
 
 extern "C" {
 
-	SUPEREXPORT MatrixXd *kMeans(MatrixXd X, int k, int it)
+	SUPEREXPORT MatrixXd* kMeans(MatrixXd X, int k, int it)
 	{
 		srand(time(NULL));
 		bool changeCentroids = true;
@@ -13,7 +13,7 @@ extern "C" {
 			return NULL;
 
 		MatrixXd* centroids = new MatrixXd(k, X.cols());
-		int *references = new int[X.rows()];
+		int* references = new int[X.rows()];
 		Eigen::MatrixXd tmp(1, X.cols());
 		double* tmpNorms = new double[k];
 		int* usedCentroid = new int[k];
@@ -80,26 +80,6 @@ extern "C" {
 		}
 		cout << (*centroids) << endl;
 		return (centroids);
-	}
-
-	SUPEREXPORT void test_k_means()
-	{
-		cout << "test" << endl;
-
-		MatrixXd testX(8, 2);
-		
-		testX << 1, 3,
-			3, 1,
-			3, 3,
-			1, 1,
-			6, 7,
-			7, 6,
-			6, 6,
-			7, 7;
-
-		
-		//cout << testX << endl;
-		kMeans(testX, 2, -1);
 	}
 }
 

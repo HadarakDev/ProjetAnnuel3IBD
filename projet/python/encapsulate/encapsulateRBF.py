@@ -72,7 +72,7 @@ def displayRbfClassifResult2D(myDll, pRBF, X1, X2):
             value = predictNaiveRBFClassification(myDll, pRBF, datasetTmp)
             if value > 0:
                 classA.append(tuple([x1, x2]))
-            else:
+            elif value < 0:
                 classB.append(tuple([x1, x2]))
 
     # Display points for each class
