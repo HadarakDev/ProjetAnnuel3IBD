@@ -126,6 +126,52 @@ extern "C" {
 		return (W);
 	}
 
+	SUPEREXPORT void* fitSvmKernelTrick(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd* alphas)
+	{
+		
+		Eigen::VectorXd tmpW = Eigen::VectorXd::Zero(X->cols());
+		for (int i = 0; i < alphas->size(); i++)
+		{
+			if ((*alphas)(i) - 0.000001 < 0.00000001)
+			{
+				(*alphas)(i) = 0;
+			}
+		}
+		for (int i = 0; i < X->rows(); i++)
+		{
+			tmpW += (*alphas)(i) * (*Y)(i, 0) * (*X).row(i);
+		}
+
+		Eigen::VectorXd* W = new Eigen::VectorXd(X->cols() + 1);
+		int idxAlpha = -1;
+		for (int i = 0; i < alphas->size(); i++)
+		{
+			if ((*alphas)(i) - 0.000001 > 0.00000001)
+			{
+				idxAlpha = i;
+				break;
+			}
+		}
+		if (idxAlpha == -1)
+		{
+			cout << "no support vector found" << endl;
+			return NULL;
+		}
+		
+		Eigen::MatrixXd tmpMatrixX(1, (*X).cols());
+		Eigen::VectorXd tmpVectorX((*X).cols());
+
+		tmpMatrixX = (*X).block(idxAlpha, 0, 1, X->cols());
+		tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+
+		(*W)(0) = (1 / (*Y)(idxAlpha, 0)) - kernelTrick(tmpW, tmpVectorX);
+		for (int i = 0; i < tmpW.size(); i++)
+		{
+			(*W)(i + 1) = tmpW(i);
+		}
+		return (W);
+	}
+
 	SUPEREXPORT double predictSvmClassification(Eigen::VectorXd* WVector, Eigen::MatrixXd* X)
 	{
 		Eigen::MatrixXd* W = new Eigen::MatrixXd(WVector->size(), 1);
@@ -143,4 +189,13 @@ extern "C" {
 			(*W)(i, 0) = (*WVector)(i);
 		return predictLinearRegression(W, X);
 	}
+}
+
+double kernelTrick(Eigen::VectorXd m, Eigen::VectorXd n)
+{
+	double MM = (m).transpose() * (m);
+	double NN = (n).transpose() * (n);
+	cout << exp(-MM) * exp(-NN) * exp(2 * (n).transpose() * (m)) << endl;
+	return (exp(-MM) * exp(-NN) * exp(2 * (n).transpose() * (m)));
+	
 }
