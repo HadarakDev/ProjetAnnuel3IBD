@@ -33,9 +33,12 @@ def displayRbfClassifResult2DTripleClass(myDll, pArrayWeight1, pArrayWeight2, pA
         for x2 in X2: 
             predictX = np.array([x1, x2])
             datasetTmp = datasetToVector(myDll, predictX, 1)
-            value1 = predictNaiveRBFClassification(myDll, pArrayWeight1, datasetTmp)
-            value2 = predictNaiveRBFClassification(myDll, pArrayWeight2, datasetTmp)
-            value3 = predictNaiveRBFClassification(myDll, pArrayWeight3, datasetTmp)
+            # value1 = predictNaiveRBFClassification(myDll, pArrayWeight1, datasetTmp)
+            # value2 = predictNaiveRBFClassification(myDll, pArrayWeight2, datasetTmp)
+            # value3 = predictNaiveRBFClassification(myDll, pArrayWeight3, datasetTmp)
+            value1 = predictNaiveRBFRegression(myDll, pArrayWeight1, datasetTmp)
+            value2 = predictNaiveRBFRegression(myDll, pArrayWeight2, datasetTmp)
+            value3 = predictNaiveRBFRegression(myDll, pArrayWeight3, datasetTmp)
             if value1 > value2 and value1 > value3:
                 classA.append(tuple([x1, x2]))
             elif value2 > value1 and value2 > value3:

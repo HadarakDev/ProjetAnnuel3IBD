@@ -84,6 +84,13 @@ extern "C" {
 	SUPEREXPORT void *fitSvm(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd *alphas)
 	{
 		Eigen::VectorXd tmpW = Eigen::VectorXd::Zero(X->cols());
+		for (int i = 0; i < alphas->size(); i++)
+		{
+			if ((*alphas)(i) - 0.000001 < 0.00000001)
+			{
+				(*alphas)(i) = 0;
+			}
+		}
 		for (int i = 0; i < X->rows(); i++)
 		{
 			tmpW += (*alphas)(i) * (*Y)(i, 0) * (*X).row(i);
@@ -95,7 +102,7 @@ extern "C" {
 		{
 			if ((*alphas)(i) - 0.000001 > 0.00000001)
 			{
-				idxAlpha = i;
+				idxAlpha = i;	
 				break;
 			}
 		}
@@ -105,8 +112,14 @@ extern "C" {
 			return NULL;
 		}
 
+		Eigen::MatrixXd tmpMatrixX(1, (*X).cols());
+		Eigen::VectorXd tmpVectorX((*X).cols());
+
+		tmpMatrixX = (*X).block(idxAlpha, 0, 1, X->cols());
+		tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+
 		
-		(*W)(0) = (1 / (*Y)(idxAlpha, 0)) - (tmpW * X->row(idxAlpha)).sum();
+		(*W)(0) = (1 / (*Y)(idxAlpha, 0)) - (tmpW.adjoint() * tmpVectorX);
 		for (int i = 0; i < tmpW.size(); i++)
 		{
 			(*W)(i + 1) = tmpW(i);
@@ -116,10 +129,11 @@ extern "C" {
 
 	SUPEREXPORT double predictSvmClassification(Eigen::VectorXd* WVector, Eigen::MatrixXd* X)
 	{
-
 		Eigen::MatrixXd* W = new Eigen::MatrixXd(WVector->size(), 1);
+
 		for (int i = 0; i < WVector->size(); i++)
 			(*W)(i, 0) = (*WVector)(i);
+
 		return predictLinearClassification(W, X);
 	}
 

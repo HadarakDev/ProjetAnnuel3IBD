@@ -1,0 +1,107 @@
+from ctypes import *
+import matplotlib.pyplot as plt
+import numpy as np
+import cvxopt.base
+from encapsulateSharedMethods import *
+
+def displaySVMClassifResult2DTripleClass(myDll, WVector1, WVector2, WVector3, X1, X2):
+    classA = []
+    classB = []
+    classC = []
+
+    for x1 in X1:
+        for x2 in X2: 
+            predictX = np.array([x1, x2])
+            pMatrixX = loadTestCase(myDll, predictX, 1, len(predictX), 1)
+            value1 = predictSvmRegression(myDll, WVector1, pMatrixX)
+            value2 = predictSvmRegression(myDll, WVector2, pMatrixX)
+            value3 = predictSvmRegression(myDll, WVector3, pMatrixX)
+            if value1 >= value2 and value1 >= value3:
+                classA.append(tuple([x1, x2]))
+            elif value2 >= value1 and value2 >= value3:
+                classB.append(tuple([x1, x2]))
+            elif value3 >= value1 and value3 >= value2:
+                classC.append(tuple([x1, x2]))
+
+    # Display points for each class
+    plt.scatter(
+        get(0, classA),
+        get(1, classA),
+        color="#bbdefb"
+    )
+    plt.scatter(
+        get(0, classB),
+        get(1, classB),
+        color="#ffcdd2"
+    )
+    plt.scatter(
+        get(0, classC),
+        get(1, classC),
+        color="#c8e6c9"
+    )
+
+def displaySVMRegResult2D(myDll, WVector, X1, X2):
+    classA = []
+    classB = []
+    for x1 in X1:
+        for x2 in X2: 
+            predictX = np.array([x1, x2])
+            pMatrixX = loadTestCase(myDll, predictX, 1, len(predictX), 1)
+            value = predictSvmClassification(myDll, WVector, pMatrixX)
+            if value > 0:
+                classA.append(tuple([x1, x2]))
+            else:
+                classB.append(tuple([x1, x2]))
+    # Display points for each class
+    plt.scatter(
+        get(0, classA),
+        get(1, classA),
+        color="#bbdefb"
+    )
+    plt.scatter(
+        get(0, classB),
+        get(1, classB),
+        color="#ffcdd2"
+    )
+
+def predictSvmClassification(myDll, WVector, pMatrixX):
+    myDll.predictSvmClassification.argtypes = [ c_void_p , c_void_p ]
+    myDll.predictSvmClassification.restype = c_double   
+    result = myDll.predictSvmClassification(WVector, pMatrixX)
+    return result
+
+def predictSvmRegression(myDll, WVector, pMatrixX):
+    myDll.predictSvmRegression.argtypes = [ c_void_p , c_void_p ]
+    myDll.predictSvmRegression.restype = c_double   
+    result = myDll.predictSvmRegression(WVector, pMatrixX)
+    return result
+
+def fitSvm(myDll, pMatrixX, pMatrixY, alphaVector):
+    myDll.fitSvm.argtypes = [c_void_p, c_void_p, c_void_p]
+    myDll.fitSvm.restype = c_void_p
+    WVector = myDll.fitSvm(pMatrixX, pMatrixY, alphaVector)
+    return WVector
+
+def getAlpha(bigMatrix, Y):
+# Define problem data
+    q = np.ones(bigMatrix.shape[0])
+    q = cvxopt.matrix(-q)
+
+    n = bigMatrix.shape[0]
+
+    bigMatrix = cvxopt.matrix(bigMatrix)
+    A = cvxopt.matrix(Y.T, (1, n))
+    b = cvxopt.matrix(0.0)
+    G = cvxopt.matrix(np.diag(np.ones(n) * -1.0))
+    h = cvxopt.matrix(np.zeros(n))
+    cvxopt.solvers.options['show_progress'] = False
+    solution = cvxopt.solvers.qp(bigMatrix, q, G, h, A, b)
+    alphas = np.ravel(solution['x'])
+    return alphas
+
+def getBigMatrix(X, Y):
+    bigMatrix = np.empty(shape=(X.shape[0], X.shape[0]))
+    for i in range(0, X.shape[0]):
+        for j in range(0, X.shape[0]):
+            bigMatrix[i][j] = np.dot(X[i],np.transpose(X[j])) * (Y[i] * Y[j])
+    return bigMatrix

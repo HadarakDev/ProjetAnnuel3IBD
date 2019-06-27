@@ -1,4 +1,9 @@
 from ctypes import *
+import matplotlib.pyplot as plt
+
+def plot_dataset(X, Y):
+    plt.plot(X[Y > 0, 0], X[Y > 0, 1], 'bx')
+    plt.plot(X[Y < 0, 0], X[Y < 0, 1], 'rx')
 
 def matrixToArray(matrix):
     ret = []

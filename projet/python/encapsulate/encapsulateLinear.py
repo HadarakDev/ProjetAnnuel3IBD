@@ -33,14 +33,15 @@ def displayLinearClassifResult2DTripleClass(myDll, pArrayWeight1, pArrayWeight2,
         for x2 in X2: 
             predictX = np.array([x1, x2])
             pMatrixX = loadTestCase(myDll, predictX, 1, len(predictX), 1)
-            value1 = predictLinearClassification(myDll, pArrayWeight1, pMatrixX)
-            value2 = predictLinearClassification(myDll, pArrayWeight2, pMatrixX)
-            value3 = predictLinearClassification(myDll, pArrayWeight3, pMatrixX)
-            if value1 > value2 and value1 > value3:
+
+            value1 = predictLinearRegression(myDll, pArrayWeight1, pMatrixX)
+            value2 = predictLinearRegression(myDll, pArrayWeight2, pMatrixX)
+            value3 = predictLinearRegression(myDll, pArrayWeight3, pMatrixX)
+            if value1 >= value2 and value1 >= value3:
                 classA.append(tuple([x1, x2]))
-            elif value2 > value1 and value2 > value3:
+            elif value2 >= value1 and value2 >= value3:
                 classB.append(tuple([x1, x2]))
-            elif value3 > value1 and value3 > value2:
+            elif value3 >= value1 and value3 >= value2:
                 classC.append(tuple([x1, x2]))
 
     # Display points for each class
