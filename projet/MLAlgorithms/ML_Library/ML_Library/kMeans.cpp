@@ -78,7 +78,6 @@ extern "C" {
 			}
 			p++;
 		}
-		//cout << (*centroids) << endl;
 		return (centroids);
 	}
 }

@@ -8,7 +8,7 @@
 using namespace std;
 
 extern "C" {
-	SUPEREXPORT double* matrixToNumpy(Eigen::MatrixXd *X, int k, int row)
+	SUPEREXPORT double* matrixToNumpy(Eigen::MatrixXd *X, int k)
 	{
 		double* ret = new double[X->cols() *k];
 		
