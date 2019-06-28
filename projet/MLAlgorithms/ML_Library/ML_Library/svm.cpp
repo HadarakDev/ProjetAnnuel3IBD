@@ -126,10 +126,9 @@ extern "C" {
 		return (W);
 	}
 
-	SUPEREXPORT void* fitSvmKernelTrick(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd* alphas)
+	SUPEREXPORT double fitSvmKernelTrick(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd* alphas)
 	{
 		
-		Eigen::VectorXd tmpW = Eigen::VectorXd::Zero(X->cols());
 		for (int i = 0; i < alphas->size(); i++)
 		{
 			if ((*alphas)(i) - 0.000001 < 0.00000001)
@@ -137,12 +136,7 @@ extern "C" {
 				(*alphas)(i) = 0;
 			}
 		}
-		for (int i = 0; i < X->rows(); i++)
-		{
-			tmpW += (*alphas)(i) * (*Y)(i, 0) * (*X).row(i);
-		}
 
-		Eigen::VectorXd* W = new Eigen::VectorXd(X->cols() + 1);
 		int idxAlpha = -1;
 		for (int i = 0; i < alphas->size(); i++)
 		{
@@ -164,12 +158,35 @@ extern "C" {
 		tmpMatrixX = (*X).block(idxAlpha, 0, 1, X->cols());
 		tmpVectorX = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
 
-		(*W)(0) = (1 / (*Y)(idxAlpha, 0)) - kernelTrick(tmpW, tmpVectorX);
-		for (int i = 0; i < tmpW.size(); i++)
+
+		double tmp;
+		for (int i = 0; i < X->rows(); i++)
 		{
-			(*W)(i + 1) = tmpW(i);
+			tmp += (*alphas)(i) * (*Y)(i, 0) * kernelTrick((*X).row(i), tmpVectorX);
 		}
-		return (W);
+		return ((1 / (*Y)(idxAlpha, 0)) - tmp);
+
+
+	}
+
+	SUPEREXPORT double predictSvmKernelTrickClassification(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd* XPredict, Eigen::VectorXd* alphas, double W0)
+	{
+		for (int i = 0; i < alphas->size(); i++)
+		{
+			if ((*alphas)(i) - 0.000001 < 0.00000001)
+			{
+				(*alphas)(i) = 0;
+			}
+		}
+		double res = 0;
+
+		for (int i = 0; i < X->rows(); i++)
+		{
+			res += (*alphas)(i) * (*Y)(i, 0) * kernelTrick((*X).row(i), *XPredict);
+		}
+
+		return (res + W0);// >= 0 ? 1.0 : -1.0;
+
 	}
 
 	SUPEREXPORT double predictSvmClassification(Eigen::VectorXd* WVector, Eigen::MatrixXd* X)
@@ -195,7 +212,6 @@ double kernelTrick(Eigen::VectorXd m, Eigen::VectorXd n)
 {
 	double MM = (m).transpose() * (m);
 	double NN = (n).transpose() * (n);
-	cout << exp(-MM) * exp(-NN) * exp(2 * (n).transpose() * (m)) << endl;
 	return (exp(-MM) * exp(-NN) * exp(2 * (n).transpose() * (m)));
 	
 }

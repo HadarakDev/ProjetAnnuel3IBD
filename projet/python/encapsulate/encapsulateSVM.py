@@ -4,6 +4,31 @@ import numpy as np
 import cvxopt.base
 from encapsulateSharedMethods import *
 
+def displaySVMKerneltrickClassifResult2D(myDll, W0, pMatrixX, pMatrixY,alphaVector, X1, X2):
+    classA = []
+    classB = []
+    for x1 in X1:
+        for x2 in X2: 
+            predictX = np.array([x1, x2])
+            datasetTmp = datasetToVector(myDll, predictX, 0)
+            value = predictSvmKernelTrickClassification(myDll, pMatrixX, pMatrixY, datasetTmp, alphaVector, W0)
+            if value > 0:
+                classA.append(tuple([x1, x2]))
+            else:
+                classB.append(tuple([x1, x2]))
+    # Display points for each class
+    plt.scatter(
+        get(0, classA),
+        get(1, classA),
+        color="#bbdefb"
+        
+    )
+    plt.scatter(
+        get(0, classB),
+        get(1, classB),
+        color="#ffcdd2"
+    )
+
 def displaySVMRegResult2D(myDll, WVector, X1):
     for x1 in X1:
         predictX = np.array([x1])
@@ -83,6 +108,18 @@ def predictSvmRegression(myDll, WVector, pMatrixX):
     myDll.predictSvmRegression.restype = c_double   
     result = myDll.predictSvmRegression(WVector, pMatrixX)
     return result
+
+def predictSvmKernelTrickClassification(myDll, pMatrixX, pMatrixY, datasetTmp, alphaVector, W0):
+    myDll.predictSvmKernelTrickClassification.argtypes = [ c_void_p , c_void_p, c_void_p, c_void_p, c_double]
+    myDll.predictSvmKernelTrickClassification.restype = c_double
+    value = myDll.predictSvmKernelTrickClassification(pMatrixX, pMatrixY, datasetTmp, alphaVector, W0)
+    return value
+
+def fitSvmKernelTrick(myDll, pMatrixX, pMatrixY, alphaVector):
+    myDll.fitSvmKernelTrick.argtypes = [c_void_p, c_void_p, c_void_p]
+    myDll.fitSvmKernelTrick.restype = c_double
+    W0 = myDll.fitSvmKernelTrick(pMatrixX, pMatrixY, alphaVector)
+    return W0
 
 def fitSvm(myDll, pMatrixX, pMatrixY, alphaVector):
     myDll.fitSvm.argtypes = [c_void_p, c_void_p, c_void_p]
