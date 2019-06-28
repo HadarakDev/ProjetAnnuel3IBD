@@ -4,6 +4,43 @@ import numpy as np
 import cvxopt.base
 from encapsulateSharedMethods import *
 
+def displaySVMKernelClassifResult2DTripleClass(myDll, W0A, W0B, W0C, alphaVectorA, alphaVectorB, alphaVectorC, pMatrixX, pMatrixYA, pMatrixYB, pMatrixYC, X1, X2):
+    classA = []
+    classB = []
+    classC = []
+
+    for x1 in X1:
+        for x2 in X2: 
+            predictX = np.array([x1, x2])
+            datasetTmp = datasetToVector(myDll, predictX, 0)
+            value1 = predictSvmKernelTrickClassification(myDll, pMatrixX, pMatrixYA, datasetTmp, alphaVectorA, W0A)
+            value2 = predictSvmKernelTrickClassification(myDll, pMatrixX, pMatrixYB, datasetTmp, alphaVectorB, W0B)
+            value3 = predictSvmKernelTrickClassification(myDll, pMatrixX, pMatrixYC, datasetTmp, alphaVectorC, W0C)
+
+            if value1 >= value2 and value1 >= value3:
+                classA.append(tuple([x1, x2]))
+            elif value2 >= value1 and value2 >= value3:
+                classB.append(tuple([x1, x2]))
+            elif value3 >= value1 and value3 >= value2:
+                classC.append(tuple([x1, x2]))
+
+    # Display points for each class
+    plt.scatter(
+        get(0, classA),
+        get(1, classA),
+        color="#bbdefb"
+    )
+    plt.scatter(
+        get(0, classB),
+        get(1, classB),
+        color="#ffcdd2"
+    )
+    plt.scatter(
+        get(0, classC),
+        get(1, classC),
+        color="#c8e6c9"
+    )
+
 def displaySVMKerneltrickClassifResult2D(myDll, W0, pMatrixX, pMatrixY,alphaVector, X1, X2):
     classA = []
     classB = []
