@@ -1,7 +1,7 @@
 #include "include.h"
 //#include <windows.h>
 //#include <iostream>
-#include "osqp.h"
+//#include "osqp.h"
 
 using namespace Eigen;
 using namespace std;
