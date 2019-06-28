@@ -1,13 +1,14 @@
 #include "include.h"
 
 using namespace Eigen;
+using namespace std;
+
 
 extern "C" {
 
 	// Initialisation random weight [-1,1]
 	SUPEREXPORT void *createLinearModel(int inputCountPerSample)
 	{
-
 		srand(time(NULL));
 
 		inputCountPerSample = inputCountPerSample + 1;

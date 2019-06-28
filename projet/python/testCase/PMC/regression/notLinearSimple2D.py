@@ -43,7 +43,7 @@ pArrayWeight = myDll.createPMCModel(arrStruct, len(pmcStruct))
 # Fit PMC with regression version
 myDll.fitPMCRegression.argtypes = [ c_void_p, c_void_p, c_void_p, c_int, c_double, c_int, c_int ]
 myDll.fitPMCRegression.restype = c_double								
-error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, 2, alpha, epochs, display)
+error = myDll.fitPMCRegression( pArrayWeight, pMatrixX, pMatrixY, 3, alpha, epochs, display)
 
 # Prototyping the method Dataset to Vector ( double * => vectorXd)
 myDll.datasetToVector.argtypes = [ c_double_p, c_uint, c_uint ]

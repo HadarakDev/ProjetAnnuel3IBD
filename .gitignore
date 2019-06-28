@@ -443,3 +443,11 @@ projet/MLAlgorithms/ML_Library/packages/
 *.crt
 *.key
 *.zip
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/rbfWithKmeans.obj
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/kMeans.obj
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/naiveRbf.obj
+projet/python/jupyter/.ipynb_checkpoints/pmcTest-checkpoint.ipynb
+projet/python/jupyter/.ipynb_checkpoints/rbfTest-checkpoint.ipynb
+projet/python/jupyter/.ipynb_checkpoints/linearTest-checkpoint.ipynb
+projet/python/jupyter/.ipynb_checkpoints/2019_3A_IBD_TestCases-checkpoint.ipynb
+projet/MLAlgorithms/ML_Library/ML_Library/x64/Release/svm.obj

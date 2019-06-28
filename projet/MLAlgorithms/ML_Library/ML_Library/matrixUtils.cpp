@@ -5,7 +5,25 @@
 #include <cmath>
 #include <limits>
 
+using namespace std;
+
 extern "C" {
+	SUPEREXPORT double* matrixToNumpy(Eigen::MatrixXd *X, int k)
+	{
+		double* ret = new double[X->cols() *k];
+		
+		int n = 0;
+		for (int i = 0; i < X->rows(); i++)
+		{
+			for (int j = 0; j < X->cols(); j++)
+			{
+				ret[n] = (*X)(i, j);
+				n++;
+			}
+		}
+		return ret;
+	}
+
 	SUPEREXPORT void* getDatasetY(char* str, unsigned int numberImage)
 	{
 		size_t pos = 0;
@@ -65,7 +83,7 @@ extern "C" {
 		return retMatrix;
 	}
 
-	SUPEREXPORT void saveWeightsInCSV(char* path, Eigen::MatrixXd * W)
+	SUPEREXPORT void saveLinearWeightsInCSV(char* path, Eigen::MatrixXd * W)
 	{
 		ofstream fd;
 
@@ -82,7 +100,7 @@ extern "C" {
 		fd.close();
 	}
 
-	SUPEREXPORT void *loadWeightsWithCSV(char* path, unsigned int inputCountPerSample)
+	SUPEREXPORT void *loadLinearWeightsWithCSV(char* path, unsigned int inputCountPerSample)
 	{
 		Eigen::MatrixXd* W = new Eigen::MatrixXd(inputCountPerSample + 1, 1);
 		double x;

@@ -3,6 +3,7 @@
 #include <vector>
 
 using namespace Eigen;
+using namespace std;
 
 extern "C" {
 	SUPEREXPORT void *createPMCModel(int* structure, int nbLayer);
@@ -76,8 +77,8 @@ extern "C" {
 			line.erase(0, pos + 1);
 		}
 
-		int* a = &v[0];
-		PMC = (t_pmcData*)createPMCModel(a, v.size());
+		int* pmcStructure = &v[0];
+		PMC = (t_pmcData*)createPMCModel(pmcStructure, v.size());
 		
 		for (int l = 1; l < PMC->lenStructure; l++)
 		{
@@ -134,48 +135,15 @@ extern "C" {
 		}
 	}
 
-	SUPEREXPORT double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
-	{
-		try {		
-			addInputsInPMC(PMC, X);
-			for (int l = 1; l < PMC->lenStructure; l++)
-			{
-				for (int j = 1; j < PMC->structure[l] + 1; j++)
-				{
-					double tmpTotal = 0;
-					for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
-					{
-						tmpTotal += PMC->W[l][j][i] * PMC->output[l - 1][i];
-					}
-					if (l == PMC->lenStructure - 1 && isLinear == 1)
-						PMC->output[l][j] = tmpTotal;
-					else
-						PMC->output[l][j] = tanh(tmpTotal);
 
-				}
-			}
-			if (res == 1)
-			{
-				double* ret = new double[PMC->structure[PMC->lenStructure - 1]];
-				for (int i = 1; i < PMC->structure[PMC->lenStructure - 1] + 1; i++)
-				{
-					ret[i - 1] =  (double)PMC->output[PMC->lenStructure - 1][i];
-				}
-				
-				return (ret);
-			}
-			return (NULL);
-		}
-		catch (const runtime_error & error)
-		{
-			std::cout << "Error occurred: " << error.what() << std::endl;
-			return (NULL);
-		}
-		catch (const std::exception & ex)
-		{
-			std::cout << "Error occurred: " << ex.what() << std::endl;
-			return (NULL);
-		}
+	SUPEREXPORT double* predictPMCRegression(t_pmcData* PMC, Eigen::VectorXd* X,  int res)
+	{
+		return (predictPMC(PMC, X, 1, res));
+	}
+
+	SUPEREXPORT double* predictPMCClassification(t_pmcData* PMC, Eigen::VectorXd* X, int res)
+	{
+		return (predictPMC(PMC, X, 0, res));
 	}
 
 	SUPEREXPORT double fitPMCRegression(t_pmcData* PMC, Eigen::MatrixXd* X, Eigen::MatrixXd* Y, int SampleCount, double alpha, int epochs, int display)
@@ -193,7 +161,7 @@ extern "C" {
 
 			for (int i = 0; i < epochs; i++)
 			{
-				if (i % display == 0)
+				if (display != -1 && i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 
 				for (int k = 0; k < SampleCount; k++)
@@ -265,10 +233,9 @@ extern "C" {
 			if ((*Y).cols() != PMC->structure[PMC->lenStructure - 1])
 				throw std::exception("erreur Y n'est pas de la meme taille que les neurones");
 
-
 			for (int i = 0; i < epochs; i++)
 			{
-				if (i % display == 0)
+				if (display != -1 && i % display == 0)
 					cout << "current epochs  : " << i << " on " << epochs << endl;
 				
 				for (int k = 0; k < SampleCount; k++)
@@ -324,6 +291,50 @@ extern "C" {
 	SUPEREXPORT void deleteResult(double *res)
 	{
 		delete[] res;
+	}
+}
+
+double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
+{
+	try {
+		addInputsInPMC(PMC, X);
+		for (int l = 1; l < PMC->lenStructure; l++)
+		{
+			for (int j = 1; j < PMC->structure[l] + 1; j++)
+			{
+				double tmpTotal = 0;
+				for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
+				{
+					tmpTotal += PMC->W[l][j][i] * PMC->output[l - 1][i];
+				}
+				if (l == PMC->lenStructure - 1 && isLinear == 1)
+					PMC->output[l][j] = tmpTotal;
+				else
+					PMC->output[l][j] = tanh(tmpTotal);
+
+			}
+		}
+		if (res == 1)
+		{
+			double* ret = new double[PMC->structure[PMC->lenStructure - 1]];
+			for (int i = 1; i < PMC->structure[PMC->lenStructure - 1] + 1; i++)
+			{
+				ret[i - 1] = (double)PMC->output[PMC->lenStructure - 1][i];
+			}
+
+			return (ret);
+		}
+		return (NULL);
+	}
+	catch (const runtime_error & error)
+	{
+		std::cout << "Error occurred: " << error.what() << std::endl;
+		return (NULL);
+	}
+	catch (const std::exception & ex)
+	{
+		std::cout << "Error occurred: " << ex.what() << std::endl;
+		return (NULL);
 	}
 }
 
