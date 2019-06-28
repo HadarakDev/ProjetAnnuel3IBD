@@ -45,9 +45,9 @@ def displaySVMClassifResult2DTripleClass(myDll, WVector1, WVector2, WVector3, X1
         for x2 in X2: 
             predictX = np.array([x1, x2])
             pMatrixX = loadTestCase(myDll, predictX, 1, len(predictX), 1)
-            value1 = predictSvmRegression(myDll, WVector1, pMatrixX)
-            value2 = predictSvmRegression(myDll, WVector2, pMatrixX)
-            value3 = predictSvmRegression(myDll, WVector3, pMatrixX)
+            value1 = predictSvmClassification(myDll, WVector1, pMatrixX)
+            value2 = predictSvmClassification(myDll, WVector2, pMatrixX)
+            value3 = predictSvmClassification(myDll, WVector3, pMatrixX)
 
             if value1 >= value2 and value1 >= value3:
                 classA.append(tuple([x1, x2]))
