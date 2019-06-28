@@ -78,7 +78,7 @@ extern "C" {
 			}
 			p++;
 		}
-		cout << (*centroids) << endl;
+		//cout << (*centroids) << endl;
 		return (centroids);
 	}
 }

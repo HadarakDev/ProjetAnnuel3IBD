@@ -8,6 +8,22 @@
 using namespace std;
 
 extern "C" {
+	SUPEREXPORT double* matrixToNumpy(Eigen::MatrixXd *X, int k, int row)
+	{
+		double* ret = new double[X->cols() *k];
+		
+		int n = 0;
+		for (int i = 0; i < X->rows(); i++)
+		{
+			for (int j = 0; j < X->cols(); j++)
+			{
+				ret[n] = (*X)(i, j);
+				n++;
+			}
+		}
+		return ret;
+	}
+
 	SUPEREXPORT void* getDatasetY(char* str, unsigned int numberImage)
 	{
 		size_t pos = 0;
