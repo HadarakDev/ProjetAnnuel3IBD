@@ -81,6 +81,11 @@ extern "C" {
 	//	testOSQP(spMatrix);
 	//	/*cout << (*bigMatrix) << endl;*/
 	//}
+	SUPEREXPORT void deleteSVMModel(Eigen::VectorXd* W)
+	{
+		delete W;
+	}
+
 	SUPEREXPORT void *fitSvm(Eigen::MatrixXd* X, Eigen::MatrixXd* Y, Eigen::VectorXd *alphas)
 	{
 		Eigen::VectorXd tmpW = Eigen::VectorXd::Zero(X->cols());

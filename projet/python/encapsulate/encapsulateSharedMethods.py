@@ -1,6 +1,13 @@
 from ctypes import *
 import matplotlib.pyplot as plt
 
+def convertListToString(myList, path):
+	ret = ""
+	for el in myList:
+		ret += path + el
+		ret += ','
+	return ret
+
 def plot_dataset_old(X, Y):
     plt.plot(X[Y > 0, 0], X[Y > 0, 1], 'bx')
     plt.plot(X[Y < 0, 0], X[Y < 0, 1], 'rx')
@@ -36,7 +43,7 @@ def getDatasetY(myDll, imagesPath, numberImage):
     return pMatrixY
 
 # Get both matrix X & Y from imagesPath
-def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component):	
+def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component):
     imagePathUTF = imagesPath.encode('utf-8')
     myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
     myDll.getDatasetX.restype = c_void_p

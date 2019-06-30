@@ -3,6 +3,64 @@ import numpy as np
 import matplotlib.pyplot as plt
 from encapsulateSharedMethods import *
 
+def evaluateLinearAlgorithmOnDataset(pathDatasetTrain, pathDatasetPredict, pathLog):
+    start_time = time.time()
+    # chargemennt de la DLL
+    myDll = CDLL(pathDLL)
+    done = 0
+    f = open(pathLog, 'a')
+    imagesNameTrain = os.listdir(pathDatasetTrain)
+    nb = startNumberImageTrain
+    while nb <= len(imagesNameTrain):
+        f = open(pathLog, 'a')
+        selectedImages = random.sample(imagesNameTrain, numberImageTrain)
+        selectedImages = convertListToString(selectedImages, pathDatasetTrain)
+        pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImageTrain)
+
+        pArrayWeight = createLinearModel(myDll, inputCountPerSample)
+    
+        error = fitLinearRegression( myDll, pArrayWeight, pMatrixX, pMatrixY, numberImageTrain, inputCountPerSample )
+
+        imagesNameTest = os.listdir(pathDatasetPredict)	
+        selectedImages = random.sample(imagesNameTest, numberImagePredict)
+        selectedImages = [pathDatasetPredict + el for el in selectedImages ]
+        
+        predictResponse = predictLinearRegressionAverage(myDll, selectedImages, \
+                                                 pArrayWeight, imageW, imageH, component)
+        f.write("Nombre Image de l'entrainement : %s | W = %s | H = %s \n" % (nb, imageW, imageH))
+        f.write("Moyenne erreurs² : %s \n" % predictResponse)
+        f.write("Moyenne erreurs : %s \n" % predictResponse**0.5 )
+        f.write("--- %s seconds --- \n" % (time.time() - start_time))
+            
+        print("Nombre Image de l'entrainement : %s | W = %s | H = %s \n" % (nb, imageW, imageH))
+        print(("Moyenne erreurs² : %s \n" % predictResponse)
+        print("Moyenne erreurs : %s \n" % predictResponse**0.5 )
+
+        deleteLinearModel( myDll, pArrayWeight)
+        nb = nb * evaluateFactor
+        if done == 1:
+            break
+        if nb > len(imagesNameTrain):
+            nb = len(imagesNameTrain)
+            done = 1
+        f.close()
+        print ("----LOG---")     
+    print("--- Evaluate Is OVER ----- \n\n\n\n")
+
+def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component):
+    average = 0
+
+    for image in tabSelectedImages:
+        imageName = image[image.rfind("/")+1:]
+        age = int(imageName[:imageName.find("_")])
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component)
+        res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
+        deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
+        average += (round(res) - age)**2
+        
+    average =  average / len(tabSelectedImages)
+    return average
+
 def displayLinearRegResult3D(myDll, pArrayWeight, ax, maxRange):
     XX, YY, ZZ = [], [], []
     for x1 in range(0, maxRange, 10):
@@ -134,13 +192,13 @@ def deleteLinearModel(myDll, pArrayWeight):
     myDll.deleteLinearModel( pArrayWeight )
 
 # Load Linear Model from CSV
-def loadLinearWeightsWithCSV(pathLoad, inputCountPerSample):
+def loadLinearWeightsWithCSV(myDll, pathLoad, inputCountPerSample):
     myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
     myDll.loadWeightsWithCSV.restype = c_void_p
     pArrayWeight = myDll.loadWeightsWithCSV( pathLoad.encode('utf-8'), inputCountPerSample )
     return pArrayWeight
 
 # Save Linear Model In CSV
-def saveLinearWeightsInCSV(pathSave, pArrayWeight):
+def saveLinearWeightsInCSV(myDll, pathSave, pArrayWeight):
     myDll.saveLinearWeightsInCSV.argtypes = [c_char_p, c_void_p]
-    myDll.saveWeightsInCSV( pathSave.encode('utf-8'), pArrayWeight )
+    myDll.saveLinearWeightsInCSV( pathSave.encode('utf-8'), pArrayWeight )

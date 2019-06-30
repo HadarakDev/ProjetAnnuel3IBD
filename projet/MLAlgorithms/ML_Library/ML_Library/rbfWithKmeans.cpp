@@ -7,10 +7,10 @@ extern "C" {
 	SUPEREXPORT MatrixXd* kMeans(MatrixXd X, int k, int it);
 	SUPEREXPORT void deleteRBFModel(t_rbfData* RBF)
 	{
-		if (RBF->W != NULL)
-			delete RBF->W;
-		if (RBF->X != NULL)
-			delete RBF->X;
+		//if (RBF->W != NULL)
+		//	delete RBF->W;
+		//if (RBF->X != NULL)
+		//	delete RBF->X;
 		delete RBF;
 	}
 	SUPEREXPORT void* createRBFModel(int inputCountPerSample)
