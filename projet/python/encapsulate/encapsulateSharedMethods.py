@@ -70,3 +70,9 @@ def datasetToVector(myDll, dataset, bias):
     myDll.datasetToVector.restype = c_void_p
     vector = myDll.datasetToVector( arr, size, bias )
     return vector
+
+def matrixToVector(myDll, pMatrixXPredict, inputCountPerSample, bias):
+    myDll.matrixToVector.argtypes = [ c_void_p, c_uint, c_uint]
+    myDll.matrixToVector.restype = c_void_p
+    pVectorXPredict = myDll.matrixToVector(pMatrixXPredict, inputCountPerSample, 1)
+    return pVectorXPredict
