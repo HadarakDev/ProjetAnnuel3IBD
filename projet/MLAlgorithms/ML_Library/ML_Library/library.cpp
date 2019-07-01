@@ -70,14 +70,17 @@ extern "C" {
 		}
 	}
 
-	SUPEREXPORT void deleteLinearModel(double* arrayWeight)
+	SUPEREXPORT void deleteLinearModel(Eigen::MatrixXd* arrayWeight)
 	{
+		arrayWeight->resize(0, 0);
 		delete arrayWeight;
 	}
 
 	SUPEREXPORT void deleteDatasetMatrix(Eigen::MatrixXd* pMatrixX, Eigen::MatrixXd* pMatrixY)
 	{
+		pMatrixX->resize(0, 0);
 		delete pMatrixX;
+		pMatrixY->resize(0, 0);
 		delete pMatrixY;
 	}
 }

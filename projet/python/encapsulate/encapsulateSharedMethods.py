@@ -30,6 +30,11 @@ def deleteDatasetMatrix(myDll, pMatrixX, pMatrixY):
     myDll.deleteDatasetMatrix.argtypes = [ c_void_p, c_void_p ]
     myDll.deleteDatasetMatrix( pMatrixX, pMatrixY )
 
+# Deallocate matrix X & Y 
+def deleteVector(myDll, pVector):
+    myDll.deleteVector.argtypes = [ c_void_p]
+    myDll.deleteVector( pVector )
+
 # Get matrix X from imagesPath
 def getDatasetX(myDll, imagesPath, imageW, imageH, numberImage, component):
     imagePathUTF = imagesPath.encode('utf-8')

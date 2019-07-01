@@ -2,6 +2,12 @@
 using namespace Eigen;
 
 extern "C" {
+	SUPEREXPORT void deleteVector(Eigen::VectorXd *vector)
+	{
+		vector->resize(0);
+		delete vector;
+	}
+
 	SUPEREXPORT void *datasetToVector(double *dataset, unsigned int size, unsigned int bias)
 	{
 		if (bias == 1)
