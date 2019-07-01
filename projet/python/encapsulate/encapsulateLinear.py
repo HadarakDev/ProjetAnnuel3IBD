@@ -30,7 +30,7 @@ def evaluateLinearAlgorithmOnDataset(myDll, pathDatasetTrain, pathDatasetPredict
         selectedImages = [pathDatasetPredict + el for el in selectedImages ]
         
         predictResponse = predictLinearRegressionAverage(myDll, selectedImages, \
-                                                 pArrayWeight, imageW, imageH, component)
+                                                 pArrayWeight, imageW, imageH, component, 0)
         f.write("Nombre Image de l'entrainement : %s | W = %s | H = %s \n" % (nb, imageW, imageH))
         f.write("Moyenne erreurs² : %s \n" % predictResponse)
         f.write("Moyenne erreurs : %s \n" % predictResponse**0.5 )
@@ -51,7 +51,7 @@ def evaluateLinearAlgorithmOnDataset(myDll, pathDatasetTrain, pathDatasetPredict
         print ("----LOG---")     
     print("--- Evaluate Is OVER ----- \n\n\n\n")
 
-def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component):
+def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display):
     average = 0
 
     for image in tabSelectedImages:
@@ -60,6 +60,8 @@ def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, image
         pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component)
         res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
+        if display == 1:
+            print("age : ", age, "/ predicted : ", res)
         average += (round(res) - age)**2
         
     average =  average / len(tabSelectedImages)
