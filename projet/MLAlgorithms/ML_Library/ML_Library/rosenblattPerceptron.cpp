@@ -41,6 +41,7 @@ extern "C" {
 					(*W) = (*W) + (alpha * (expectedOutput - predictOutput)) * tmpX.transpose();
 				}
 			}
+			return (0);
 		}
 		catch (const std::exception & ex)
 		{

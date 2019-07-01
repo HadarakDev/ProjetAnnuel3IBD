@@ -12,7 +12,8 @@ def	predictPMCRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, 
         age = int(imageName[:imageName.find("_")])
         pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component)
         pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 1)
-        res = predictPMCRegression(myDll, pArrayWeight, datasetTmp, 1, 1) 
+        res = predictPMCRegression(myDll, pArrayWeight, pVectorXPredict, 1, 1)
+        deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
         average += (round(res[0]) - age)**2
         
     average =  average / len(tabSelectedImages)

@@ -34,7 +34,7 @@ extern "C" {
 		Eigen::VectorXd* retVector = new Eigen::VectorXd(inputCountPerSample);
 
 		tmpMatrixX = (*X).block(0, 0, 1, inputCountPerSample);
-		*retVector = (Map<VectorXd>(tmpMatrixX.data(), tmpMatrixX.cols()));
+		*retVector = (Map<VectorXd>(X->data(), X->cols()));
 
 		return retVector;
 	}

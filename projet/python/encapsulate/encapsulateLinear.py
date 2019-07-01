@@ -187,11 +187,6 @@ def predictLinearRegression(myDll, pArrayWeight, pMatrixX):
     predictResponse = myDll.predictLinearRegression( pArrayWeight, pMatrixX )
     return predictResponse
 
-# Deallocate matrix X & Y 
-def deleteDatasetMatrix(myDll, pMatrixX, pMatrixY):
-    myDll.deleteDatasetMatrix.argtypes = [ c_void_p, c_void_p ]
-    myDll.deleteDatasetMatrix( pMatrixX, pMatrixY )
-
 # Deallocate lienar weight matrix
 def deleteLinearModel(myDll, pArrayWeight):
     myDll.deleteLinearModel.argtypes = [ c_void_p ]

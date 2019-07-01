@@ -25,6 +25,10 @@ def matrixToArray(matrix):
 def get(i, l):
     return [z[i] for z in l]
 
+# Deallocate matrix X & Y 
+def deleteDatasetMatrix(myDll, pMatrixX, pMatrixY):
+    myDll.deleteDatasetMatrix.argtypes = [ c_void_p, c_void_p ]
+    myDll.deleteDatasetMatrix( pMatrixX, pMatrixY )
 
 # Get matrix X from imagesPath
 def getDatasetX(myDll, imagesPath, imageW, imageH, numberImage, component):

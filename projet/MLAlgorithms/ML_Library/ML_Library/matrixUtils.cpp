@@ -248,8 +248,8 @@ Eigen::MatrixXd convertArrayToMatrix(int SampleCount, int inputCountPerSample, d
 }
 
 void convertMatrixToSimpleArray(Eigen::MatrixXd W, double *arr) {
-	int col = W.cols();
-	int row = W.rows();
+	int col = (int)W.cols();
+	int row = (int)W.rows();
 	int j = 0;
 	
 	for (int x = 0; x < row; x++)
