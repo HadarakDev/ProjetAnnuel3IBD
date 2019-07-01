@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 from numpy.ctypeslib import ndpointer
 from encapsulateSharedMethods import *
 
+def	predictPMCRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component):
+    average = 0
+
+    for image in tabSelectedImages:
+        imageName = image[image.rfind("/")+1:]
+        age = int(imageName[:imageName.find("_")])
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component)
+        pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 1)
+        res = predictPMCRegression(myDll, pArrayWeight, datasetTmp, 1, 1) 
+        average += (round(res[0]) - age)**2
+        
+    average =  average / len(tabSelectedImages)
+    return average 
+
 def displayPMCRegResult3D(myDll, pArrayWeight, ax, maxRange, lenResult):
     XX, YY, ZZ = [], [], []
     for x1 in range(0, maxRange, 10):

@@ -1,28 +1,32 @@
 from ctypes import *
 import numpy as np
+import time
+import os
+import random
 import matplotlib.pyplot as plt
 from encapsulateSharedMethods import *
 
-def evaluateLinearAlgorithmOnDataset(pathDatasetTrain, pathDatasetPredict, pathLog):
+def evaluateLinearAlgorithmOnDataset(myDll, pathDatasetTrain, pathDatasetPredict, pathLog, imageW, imageH, component, startNumberImageTrain, evaluateFactor):
     start_time = time.time()
     # chargemennt de la DLL
-    myDll = CDLL(pathDLL)
     done = 0
     f = open(pathLog, 'a')
     imagesNameTrain = os.listdir(pathDatasetTrain)
     nb = startNumberImageTrain
+    inputCountPerSample = imageH * imageW * component
     while nb <= len(imagesNameTrain):
         f = open(pathLog, 'a')
-        selectedImages = random.sample(imagesNameTrain, numberImageTrain)
+        selectedImages = random.sample(imagesNameTrain, nb)
         selectedImages = convertListToString(selectedImages, pathDatasetTrain)
-        pMatrixX, pMatrixY = prepareDataset(selectedImages, myDll, numberImageTrain)
+        
+        pMatrixX, pMatrixY = prepareDataset(myDll, selectedImages, imageW, imageH, nb, component)
 
         pArrayWeight = createLinearModel(myDll, inputCountPerSample)
     
-        error = fitLinearRegression( myDll, pArrayWeight, pMatrixX, pMatrixY, numberImageTrain, inputCountPerSample )
+        error = fitLinearRegression( myDll, pArrayWeight, pMatrixX, pMatrixY, nb, inputCountPerSample )
 
         imagesNameTest = os.listdir(pathDatasetPredict)	
-        selectedImages = random.sample(imagesNameTest, numberImagePredict)
+        selectedImages = random.sample(imagesNameTest, len(imagesNameTest ))
         selectedImages = [pathDatasetPredict + el for el in selectedImages ]
         
         predictResponse = predictLinearRegressionAverage(myDll, selectedImages, \
@@ -31,9 +35,9 @@ def evaluateLinearAlgorithmOnDataset(pathDatasetTrain, pathDatasetPredict, pathL
         f.write("Moyenne erreurs² : %s \n" % predictResponse)
         f.write("Moyenne erreurs : %s \n" % predictResponse**0.5 )
         f.write("--- %s seconds --- \n" % (time.time() - start_time))
-            
+
         print("Nombre Image de l'entrainement : %s | W = %s | H = %s \n" % (nb, imageW, imageH))
-        print(("Moyenne erreurs² : %s \n" % predictResponse)
+        print("Moyenne erreurs² : %s \n" % predictResponse)
         print("Moyenne erreurs : %s \n" % predictResponse**0.5 )
 
         deleteLinearModel( myDll, pArrayWeight)
