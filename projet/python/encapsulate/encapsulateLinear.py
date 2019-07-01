@@ -199,9 +199,9 @@ def deleteLinearModel(myDll, pArrayWeight):
 
 # Load Linear Model from CSV
 def loadLinearWeightsWithCSV(myDll, pathLoad, inputCountPerSample):
-    myDll.loadWeightsWithCSV.argtypes = [c_char_p, c_void_p]
-    myDll.loadWeightsWithCSV.restype = c_void_p
-    pArrayWeight = myDll.loadWeightsWithCSV( pathLoad.encode('utf-8'), inputCountPerSample )
+    myDll.loadLinearWeightsWithCSV.argtypes = [c_char_p, c_uint]
+    myDll.loadLinearWeightsWithCSV.restype = c_void_p
+    pArrayWeight = myDll.loadLinearWeightsWithCSV( pathLoad.encode('utf-8'), inputCountPerSample )
     return pArrayWeight
 
 # Save Linear Model In CSV

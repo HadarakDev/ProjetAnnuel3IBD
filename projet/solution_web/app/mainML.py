@@ -1,4 +1,4 @@
-def getMLResults(path):
+def getMLResults(pathImg, pathImgCrop, modele=None):
     results = {}
     results["models"] = []
     results["models"].append({"nom": "Modele lineaire", "implement": "NA", "framework": "NA"})

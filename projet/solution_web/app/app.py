@@ -27,7 +27,7 @@ def accueil():
                 cardImage = "tmp/" + cardImage
 
                 #lancer analyse ML
-                results = getMLResults(DOSSIER_SAVE + resizeCropImg)
+                results = getMLResults(pathImg=DOSSIER_SAVE+cardImage, pathImgCrop=DOSSIER_SAVE+resizeCropImg)
 
         else:
             flash("Vous avez oublié le fichier !")
@@ -57,7 +57,7 @@ def avance():
             cardImage = "tmp/" + cardImage
 
             # lancer analyse ML
-            results = getMLResults(DOSSIER_SAVE + resizeCropImg)
+            results = getMLResults(pathImg=DOSSIER_SAVE+cardImage, pathImgCrop=DOSSIER_SAVE+resizeCropImg, modele=modelChoose)
 
         else:
             flash("Vous avez oublié le fichier !")
