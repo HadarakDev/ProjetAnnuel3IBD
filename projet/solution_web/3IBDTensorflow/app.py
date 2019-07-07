@@ -24,10 +24,15 @@ def accueil():
 
                 #preparation photo
                 cardImage, resizeCropImg = get_path_image_clean(namefile)
-                cardImage = "tmp/" + cardImage
+
 
                 #lancer analyse ML
-                results = getMLResults(pathImg=DOSSIER_SAVE+cardImage, pathImgCrop=DOSSIER_SAVE+resizeCropImg)
+                if resizeCropImg is None:
+                    results = getMLResults(pathImg=DOSSIER_SAVE+cardImage)
+                else:
+                    results = getMLResults(pathImg=DOSSIER_SAVE+cardImage, pathImgCrop=DOSSIER_SAVE+resizeCropImg)
+
+                cardImage = "tmp/" + cardImage
         else:
             flash("Vous avez oublié le fichier !")
 

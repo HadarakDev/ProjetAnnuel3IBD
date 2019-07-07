@@ -10,7 +10,7 @@ def getTableResult(pathImg, crop=False):
 
     # Normalise pixels
     predictX = predictX / (255 * 40000)
-    print(predictX)
+    print("HERE", predictX)
 
     # model Lineare
     myResult = "NA"
@@ -27,11 +27,16 @@ def getTableResult(pathImg, crop=False):
 
     return results
 
-def getMLResults(pathImg, pathImgCrop, modele=None):
+def getMLResults(pathImg, pathImgCrop=None, modele=None):
 
+    print("OCUOUCC")
+    print("ICI", pathImg, pathImgCrop)
     results = {"models": None, "modelsHead": None}
-    results["models"] = getTableResult(pathImgCrop)
-    results["modelsHead"] = getTableResult(pathImgCrop, crop=True)
+
+    results["models"] = getTableResult(pathImg)
+
+    if pathImgCrop is not None:
+        results["modelsHead"] = getTableResult(pathImgCrop, crop=True)
 
 
     print(results)

@@ -42,25 +42,28 @@ def auto_crop_image(image):
 
 
 def get_path_image_clean(path):
-    print(path)
     # Ouverture image
     img = cv2.imread(DOSSIER_SAVE + path, color)
-    print(img.shape)
 
     # Decoupage image
     crpimg, imgMod, tmp2 = auto_crop_image(img)
 
     #Resize Image
     #rescrpimg = cv2.resize( crpimg, (int(200), int(200)) )
-    rescrpimg = crpimg
+
 
     #sauvagarde
     nameImgMod = path[:path.rfind(".")] + "_card" + path[path.rfind("."):]
-    nameResCropImg = path[:path.rfind(".")] + "_crop" + path[path.rfind("."):]
     cv2.imwrite(DOSSIER_SAVE + nameImgMod, imgMod)
-    cv2.imwrite(DOSSIER_SAVE + nameResCropImg, rescrpimg)
 
-    return nameImgMod, nameResCropImg
+    if crpimg is not None:
+        rescrpimg = crpimg
+        nameResCropImg = path[:path.rfind(".")] + "_crop" + path[path.rfind("."):]
+        cv2.imwrite(DOSSIER_SAVE + nameResCropImg, rescrpimg)
+
+        return nameImgMod, nameResCropImg
+
+    return nameImgMod, None
 
 
 def get_age_filename(filename):
@@ -106,6 +109,7 @@ def resize_and_get_pixels_from_image(path):
     else:
         raise ValueError("Erreur choix couleur photo")
 
+    print("QQQ", path)
     img = cv2.imread(path, cons)
     img = cv2.resize(img, (width, height))
 
