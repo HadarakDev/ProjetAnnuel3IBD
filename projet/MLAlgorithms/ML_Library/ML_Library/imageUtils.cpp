@@ -14,7 +14,7 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 
 	if (sizeImageH != image.rows || sizeImageW != image.cols)
 	{
-		cout << "invalid image size" << imagePath << endl;
+		cout << "invalid image size " << imagePath << " " << image.rows << endl;
 		return;
 	}
 	for (int x = 0; x < image.rows; x++)
