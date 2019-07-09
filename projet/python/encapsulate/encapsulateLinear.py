@@ -51,13 +51,14 @@ def evaluateLinearAlgorithmOnDataset(myDll, pathDatasetTrain, pathDatasetPredict
         print ("----LOG---")     
     print("--- Evaluate Is OVER ----- \n\n\n\n")
 
-def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display):
+def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255):
     average = 0
 
     for image in tabSelectedImages:
         imageName = image[image.rfind("/")+1:]
         age = int(imageName[:imageName.find("_")])
-        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component)
+
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
         res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
         if display == 1:

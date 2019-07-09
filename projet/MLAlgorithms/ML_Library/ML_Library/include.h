@@ -42,7 +42,7 @@ int isColinear(Eigen::MatrixXd* matrix);
 
 ////	imageUtils.cpp
 void getPixelsFromImage(std::string imagePath, int component, Eigen::MatrixXd *datasetX,
-	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH);
+	unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH, int is255);
 double kernelTrick(Eigen::VectorXd m, Eigen::VectorXd n);
 void displaySigmas(t_pmcData* PMC);
 void displayPmcModel(t_pmcData* PMC);

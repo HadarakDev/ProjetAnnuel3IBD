@@ -4,7 +4,7 @@
 using namespace std;
 using namespace cv;
 
-void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH)
+void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datasetX, unsigned int imageIdx, unsigned int sizeImageW, unsigned int sizeImageH, int is255)
 {
 	Mat image;
 	image = imread(imagePath, component);
@@ -24,13 +24,17 @@ void getPixelsFromImage(string imagePath, int component, Eigen::MatrixXd *datase
 			unsigned char* p = image.ptr(x, y); // order B G R 
 			for (int c = 0; c < component; c++)
 			{
-				int tmp = p[c];
-				(*datasetX)(imageIdx, i) = tmp;
+				double tmp = p[c];
+				if (is255 == 0)
+					(*datasetX)(imageIdx, i) = tmp;
+				else
+					(*datasetX)(imageIdx, i) = tmp/255;
 				i++;
 			}
 		}
 	}
 }
+
 
 void displayPixelArray(int *pixelArray, int imageSize, int component)
 {

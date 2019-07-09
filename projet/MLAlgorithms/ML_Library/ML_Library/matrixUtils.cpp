@@ -58,7 +58,7 @@ extern "C" {
 		return retMatrix;
 	}
 
-	SUPEREXPORT void* getDatasetX(char* str, unsigned int sizeImageW, unsigned int sizeImageH, unsigned int numberImage, unsigned int component)
+	SUPEREXPORT void* getDatasetX(char* str, unsigned int sizeImageW, unsigned int sizeImageH, unsigned int numberImage, unsigned int component, int is255)
 	{
 		size_t pos = 0;
 		std::string token;
@@ -70,7 +70,7 @@ extern "C" {
 			token = s.substr(0, pos);
 
 			(*retMatrix)(imageIdx, 0) = 1;
-			getPixelsFromImage(token, component, retMatrix, imageIdx, sizeImageW, sizeImageH);
+			getPixelsFromImage(token, component, retMatrix, imageIdx, sizeImageW, sizeImageH, is255);
 
 			s.erase(0, pos + 1);
 			imageIdx++;
@@ -78,10 +78,11 @@ extern "C" {
 		if (s.length() != 0)
 		{
 			(*retMatrix)(imageIdx, 0) = 1;
-			getPixelsFromImage(s, component, retMatrix, imageIdx, sizeImageW, sizeImageH);
+			getPixelsFromImage(s, component, retMatrix, imageIdx, sizeImageW, sizeImageH, is255);
 		}
 		return retMatrix;
 	}
+
 
 	SUPEREXPORT void saveLinearWeightsInCSV(char* path, Eigen::MatrixXd * W)
 	{

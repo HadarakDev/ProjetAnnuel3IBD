@@ -52,16 +52,17 @@ def getDatasetY(myDll, imagesPath, numberImage):
     return pMatrixY
 
 # Get both matrix X & Y from imagesPath
-def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component):
+def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component, is255):
     imagePathUTF = imagesPath.encode('utf-8')
-    myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint]
+    myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint, c_uint]
     myDll.getDatasetX.restype = c_void_p
-    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component )
+    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component, is255 )
 
     myDll.getDatasetY.restype = c_void_p
     myDll.getDatasetY.argtypes = [c_char_p, c_uint]
     pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage )
     return pMatrixX, pMatrixY
+
 
 # Load point into matrix
 def loadTestCase(myDll, X, row, col, bias):
