@@ -18,9 +18,11 @@ extern "C" {
 		{
 			for (int j = 1; j < PMC->structure[l] + 1; j++)
 			{
+				delete PMC->Wold[l][j];
 				delete PMC->W[l][j];
 			}
 			delete PMC->W[l];
+			delete PMC->Wold[l];
 		}
 		delete PMC;
 	}
@@ -108,6 +110,7 @@ extern "C" {
 			srand(time(NULL));
 			PMC = new t_pmcData[1];
 			PMC->W = new double** [nbLayer];
+			PMC->Wold = new double** [nbLayer];
 			PMC->structure = new int[nbLayer];
 
 			PMC->structure = structure;
@@ -115,13 +118,15 @@ extern "C" {
 			for (int l = 1; l < nbLayer; l++)
 			{
 				PMC->W[l] = new double* [(size_t)structure[l] + 1]; // neurones ajout biais
-
+				PMC->Wold[l] = new double* [(size_t)structure[l] + 1];
 				for (int j = 1; j < structure[l] + 1; j++)
 				{
 					PMC->W[l][j] = new double[(size_t)structure[l - 1] + 1]; // poids
+					PMC->Wold[l][j] = new double[(size_t)structure[l - 1] + 1];
 					for (int i = 0; i < structure[l - 1] + 1; i++)
 					{
 						PMC->W[l][j][i] =  (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
+						PMC->Wold[l][j][i] = 0;
 					}
 				}
 			}
@@ -201,7 +206,9 @@ extern "C" {
 						{
 							for (int i = 0; i < PMC->structure[l - 1] + 1; i++)
 							{
-								PMC->W[l][j][i] -= alpha * PMC->output[l - 1][i] * PMC->sigma[l][j];
+								double fix = alpha * PMC->output[l - 1][i] * PMC->sigma[l][j] + 0.9 * PMC->Wold[l][j][i];
+								PMC->W[l][j][i] -= fix;
+								PMC->Wold[l][j][i] = fix;
 							}
 						}
 					}

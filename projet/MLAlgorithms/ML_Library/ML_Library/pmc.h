@@ -2,10 +2,12 @@
 
 typedef struct s_pmcData
 {
+	double** sigma;
 	double	***W;
+	double*** Wold;
 	int		*structure;
 	int		lenStructure;
 	double  **output;
-	double  **sigma;
+	
 }				t_pmcData;
 
