@@ -57,7 +57,7 @@ def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, image
     for image in tabSelectedImages:
         imageName = image[image.rfind("/")+1:]
         age = int(imageName[:imageName.find("_")])
-
+        age = (age - 0) / (116-0)
         pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
         res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
