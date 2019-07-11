@@ -14,6 +14,8 @@ def	predictPMCRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, 
         pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
         pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 1)
         res = predictPMCRegression(myDll, pArrayWeight, pVectorXPredict, 1, 1)
+        age = age * (116 - 0) + 0
+        res = res * (116 - 0) + 0
         if display == 1:
             print("age : ", age, "/ predicted : ", res)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)

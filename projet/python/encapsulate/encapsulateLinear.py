@@ -61,6 +61,8 @@ def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, image
         pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
         res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
+        age = age * (116 - 0) + 0
+        res = res * (116 - 0) + 0
         if display == 1:
             print("age : ", age, "/ predicted : ", res)
         average += (round(res) - age)**2
