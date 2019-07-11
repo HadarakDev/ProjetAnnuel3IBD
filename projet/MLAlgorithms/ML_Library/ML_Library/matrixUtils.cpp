@@ -29,7 +29,9 @@ extern "C" {
 		size_t pos = 0;
 		std::string token;
 		std::string s = str;
-
+		double ageMax = 116;
+		double ageMin = 0;
+		
 		unsigned int imageIdx = 0;
 		Eigen::MatrixXd* retMatrix = new Eigen::MatrixXd(numberImage, 1);
 		while ((pos = s.find(",")) != std::string::npos) {
@@ -41,7 +43,8 @@ extern "C" {
 			size_t delim = filename.find("_");
 			string age = filename.substr(0, delim);
 
-			(*retMatrix)(imageIdx) = std::stoi(age);
+			double tmpAge = std::stod(age);
+			(*retMatrix)(imageIdx) = (tmpAge - ageMin) / (ageMax - ageMin);
 			s.erase(0, pos + 1);
 			imageIdx++;
 		}
@@ -52,8 +55,8 @@ extern "C" {
 
 			size_t delim = filename.find("_");
 			string age = filename.substr(0, delim);
-
-			(*retMatrix)(imageIdx) = std::stoi(age);
+			double tmpAge = std::stod(age);
+			(*retMatrix)(imageIdx) = (tmpAge - ageMin) / (ageMax - ageMin);
 		}
 		return retMatrix;
 	}
