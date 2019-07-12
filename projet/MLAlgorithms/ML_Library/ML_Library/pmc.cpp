@@ -6,6 +6,7 @@ using namespace Eigen;
 using namespace std;
 
 extern "C" {
+	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer);
 	SUPEREXPORT void displayPmcModel(t_pmcData* PMC)
 	{
 		cout << "STRUCT :" << endl;
@@ -28,7 +29,7 @@ extern "C" {
 			}
 		}
 	}
-	SUPEREXPORT void *createPMCModel(int* structure, int nbLayer);
+
 
 	SUPEREXPORT void deletePMCModel(t_pmcData* PMC)
 	{
@@ -116,69 +117,6 @@ extern "C" {
 		//return (PMC);
 	}
 
-	SUPEREXPORT void* createPMCModelWithFile(char* path)
-	{
-		
-		try
-		{
-			t_pmcData* PMC;
-			srand(time(NULL));
-
-			size_t pos = 0;
-			std::string token;
-			unsigned int i = 0;
-			// get input count per sample (on filename)
-			std::ifstream fd(path);
-			std::vector<int> v;
-
-			if (!fd) {
-				cout << "Unable to open file";
-				exit(1);
-			}
-			std::string line = "";
-			getline(fd, line);
-
-			while ((pos = line.find(";")) != std::string::npos) {
-				token = line.substr(0, pos);
-				v.push_back(stoi(token));
-				line.erase(0, pos + 1);
-			}
-			
-			int* pmcStructure = &v[0];
-			
-			cout << v.size() << endl;
-			PMC = new t_pmcData[1];
-			PMC->W = new double** [v.size()];
-			PMC->Wold = new double** [v.size()];
-			PMC->structure = new int[v.size()];
-
-			PMC->structure = pmcStructure;
-			PMC->lenStructure = v.size();
-			for (int l = 1; l < v.size(); l++)
-			{
-				PMC->W[l] = new double* [(size_t)pmcStructure[l] + 1]; // neurones ajout biais
-				PMC->Wold[l] = new double* [(size_t)pmcStructure[l] + 1];
-				for (int j = 1; j < pmcStructure[l] + 1; j++)
-				{
-					PMC->W[l][j] = new double[(size_t)pmcStructure[l - 1] + 1]; // poids
-					PMC->Wold[l][j] = new double[(size_t)pmcStructure[l - 1] + 1];
-					for (int i = 0; i < pmcStructure[l - 1] + 1; i++)
-					{
-						PMC->W[l][j][i] = (rand() / (double)RAND_MAX) * (1.0 - (-1.0)) - 1.0;
-						PMC->Wold[l][j][i] = 0;
-					}
-				}
-			}
-			allocate(PMC);
-			return PMC;
-		}
-		catch (const std::exception& ex)
-		{
-			std::cout << "Error occurred: " << ex.what() << std::endl;
-			return NULL;
-		}
-	}
-
 	SUPEREXPORT void* createPMCModel(int* structure, int nbLayer)
 	{
 		t_pmcData* PMC;
@@ -217,6 +155,34 @@ extern "C" {
 		}
 	}
 
+	SUPEREXPORT void* getPMCStructure(char* path)
+	{
+		t_pmcData* PMC;
+		srand(time(NULL));
+
+		size_t pos = 0;
+		std::string token;
+		unsigned int i = 0;
+		// get input count per sample (on filename)
+		std::ifstream fd(path);
+		std::vector<int> v;
+
+		if (!fd) {
+			cout << "Unable to open file";
+			exit(1);
+		}
+		std::string line = "";
+		getline(fd, line);
+
+		while ((pos = line.find(";")) != std::string::npos) {
+			token = line.substr(0, pos);
+			v.push_back(stoi(token));
+			line.erase(0, pos + 1);
+		}
+
+		int* pmcStructure = &v[0];
+		return pmcStructure;
+	}
 
 	SUPEREXPORT double* predictPMCRegression(t_pmcData* PMC, Eigen::VectorXd* X,  int res)
 	{
@@ -380,13 +346,8 @@ extern "C" {
 
 double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
 {
-	if (res == 1)
-	{
-		cout << "tatane" << endl;
-		cout << PMC->W[1][0][0] << endl;
-		//displayPmcModel(PMC);
-	}
-	try {		
+	try {
+
 		addInputsInPMC(PMC, X);
 		for (int l = 1; l < PMC->lenStructure; l++)
 		{
@@ -411,8 +372,7 @@ double* predictPMC(t_pmcData* PMC, Eigen::VectorXd* X, int isLinear, int res)
 			{
 				ret[i - 1] = (double)PMC->output[PMC->lenStructure - 1][i];
 			}
-
-			return (ret);
+			return ret;
 		}
 		return (NULL);
 	}

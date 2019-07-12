@@ -125,11 +125,6 @@ def displayPMCClassifResult2D(myDll, pPMC, X1, X2, lenResult):
         color="#ffcdd2"
     )
 
-def createPMCModelWithFile(myDll, path):
-    myDll.createPMCModelWithFile.argtypes = [ c_char_p ]
-    myDll.createPMCModelWithFile.restype = c_void_p
-    pPMC = myDll.createPMCModelWithFile(path.encode('utf-8'))
-    return pPMC
 # Create & Allocate PMC Model using structure (example : [2, 3, 1])
 def createPMCModel(myDll, pmcStruct, arrStruct):
     myDll.createPMCModel.argtypes = [ POINTER(ARRAY(c_int, len(pmcStruct))), c_uint ]
