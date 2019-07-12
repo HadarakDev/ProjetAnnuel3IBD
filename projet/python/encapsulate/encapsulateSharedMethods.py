@@ -44,23 +44,23 @@ def getDatasetX(myDll, imagesPath, imageW, imageH, numberImage, component):
     return pMatrixX
 
 # Get matrix Y from imagesPath
-def getDatasetY(myDll, imagesPath, numberImage):
+def getDatasetY(myDll, imagesPath, numberImage, ageMin, ageMax):
     imagePathUTF = imagesPath.encode('utf-8')
     myDll.getDatasetY.restype = c_void_p
-    myDll.getDatasetY.argtypes = [c_char_p, c_uint]
-    pMatrixY = myDll.getDatasetY(imagePathUTF, numberImage)
+    myDll.getDatasetY.argtypes = [c_char_p, c_uint, c_double, c_double]
+    pMatrixY = myDll.getDatasetY(imagePathUTF, numberImage, ageMin, ageMax)
     return pMatrixY
 
 # Get both matrix X & Y from imagesPath
-def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component, is255):
+def prepareDataset(myDll, imagesPath, imageW, imageH, numberImage, component, is255, ageMin, ageMax):
     imagePathUTF = imagesPath.encode('utf-8')
     myDll.getDatasetX.argtypes = [c_char_p, c_uint, c_uint, c_uint, c_uint, c_uint]
     myDll.getDatasetX.restype = c_void_p
-    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component, is255 )
+    pMatrixX = myDll.getDatasetX( imagePathUTF, imageW, imageH, numberImage, component, is255)
 
     myDll.getDatasetY.restype = c_void_p
-    myDll.getDatasetY.argtypes = [c_char_p, c_uint]
-    pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage )
+    myDll.getDatasetY.argtypes = [c_char_p, c_uint, c_double, c_double]
+    pMatrixY = myDll.getDatasetY( imagePathUTF, numberImage, ageMin, ageMax )
     return pMatrixX, pMatrixY
 
 

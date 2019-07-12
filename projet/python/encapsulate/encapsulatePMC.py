@@ -4,24 +4,41 @@ import matplotlib.pyplot as plt
 from numpy.ctypeslib import ndpointer
 from encapsulateSharedMethods import *
 
-def	predictPMCRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255):
+def	predictPMCRegressionAverageWithMinMax(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255, ageMin, ageMax):
     average = 0
 
     for image in tabSelectedImages:
         imageName = image[image.rfind("/")+1:]
         age = int(imageName[:imageName.find("_")])
-        age = (age - 0) / (116-0)
-        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
-        pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 1)
+        age = (age - ageMin) / (ageMax - ageMin)
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255, ageMin, ageMax)
+        pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 0)
         res = predictPMCRegression(myDll, pArrayWeight, pVectorXPredict, 1, 1)
-        age = age * (116 - 0) + 0
-        res = res * (116 - 0) + 0
+        age = age * (ageMax - ageMin) + ageMin
+        res = res * (ageMax - ageMin) + ageMin
         if display == 1:
             print("age : ", age, "/ predicted : ", res)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
         deleteVector(myDll, pVectorXPredict)
         average += (round(res[0]) - age)**2
 
+    average =  average / len(tabSelectedImages)
+    return average 
+
+def	predictPMCRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255):
+    average = 0
+
+    for image in tabSelectedImages:
+        imageName = image[image.rfind("/")+1:]
+        age = int(imageName[:imageName.find("_")])
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255, -1, -1)
+        pVectorXPredict = matrixToVector(myDll, pMatrixXPredict, imageW * imageH * component, 1)
+        res = predictPMCRegression(myDll, pArrayWeight, pVectorXPredict, 1, 1)
+        if display == 1:
+            print("age : ", age, "/ predicted : ", res)
+        deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
+        deleteVector(myDll, pVectorXPredict)
+        average += (round(res[0]) - age)**2
     average =  average / len(tabSelectedImages)
     return average 
 
@@ -108,6 +125,11 @@ def displayPMCClassifResult2D(myDll, pPMC, X1, X2, lenResult):
         color="#ffcdd2"
     )
 
+def createPMCModelWithFile(myDll, path):
+    myDll.createPMCModelWithFile.argtypes = [ c_char_p ]
+    myDll.createPMCModelWithFile.restype = c_void_p
+    pPMC = myDll.createPMCModelWithFile(path.encode('utf-8'))
+    return pPMC
 # Create & Allocate PMC Model using structure (example : [2, 3, 1])
 def createPMCModel(myDll, pmcStruct, arrStruct):
     myDll.createPMCModel.argtypes = [ POINTER(ARRAY(c_int, len(pmcStruct))), c_uint ]
@@ -149,11 +171,10 @@ def deletePMCModel(myDll, pPMC):
     myDll.deletePMCModel( pPMC )
 
 # Load Weights PMC With CSV
-def loadPMCWithCSV(myDll, pathPMC):
-    myDll.loadPMCWithCSV.restype = [c_void_p ]
-    myDll.loadPMCWithCSV.argtypes = [ c_char_p ]
-    pPMC = myDll.loadPMCWithCSV( pathPMC.encode('utf-8') )
-    return pPMC
+def loadPMCWithCSV(myDll, pathPMC, pPMC):
+    #myDll.loadPMCWithCSV.restype = c_void_p 
+    myDll.loadPMCWithCSV.argtypes = [ c_char_p, c_void_p ]
+    myDll.loadPMCWithCSV( pathPMC.encode('utf-8'), pPMC )
 
 def savePMCInCSV(myDll, pathSavePMC, pPMC):
     myDll.savePMCInCSV.argtypes = [ c_char_p, c_void_p ]

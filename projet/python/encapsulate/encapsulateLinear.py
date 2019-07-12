@@ -51,18 +51,35 @@ def evaluateLinearAlgorithmOnDataset(myDll, pathDatasetTrain, pathDatasetPredict
         print ("----LOG---")     
     print("--- Evaluate Is OVER ----- \n\n\n\n")
 
+def	predictLinearRegressionAverageWithMinMax(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255, min, max):
+    average = 0
+
+    for image in tabSelectedImages:
+        imageName = image[image.rfind("/")+1:]
+        age = int(imageName[:imageName.find("_")])
+        age = (age - min) / (max - min)
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
+        res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
+        deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
+        age = age * (max - min) + min
+        res = res * (max - min) + min
+        if display == 1:
+            print("age : ", age, "/ predicted : ", res)
+        average += (round(res) - age)**2
+        
+    average =  average / len(tabSelectedImages)
+    return average
+
+
 def	predictLinearRegressionAverage(myDll, tabSelectedImages, pArrayWeight, imageW, imageH, component, display, is255):
     average = 0
 
     for image in tabSelectedImages:
         imageName = image[image.rfind("/")+1:]
         age = int(imageName[:imageName.find("_")])
-        age = (age - 0) / (116-0)
-        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255)
+        pMatrixXPredict, pMatrixYPredict = prepareDataset(myDll, image, imageW, imageH, 1, component, is255, -1, -1)
         res = predictLinearRegression(myDll, pArrayWeight, pMatrixXPredict)
         deleteDatasetMatrix(myDll,  pMatrixXPredict, pMatrixYPredict)
-        age = age * (116 - 0) + 0
-        res = res * (116 - 0) + 0
         if display == 1:
             print("age : ", age, "/ predicted : ", res)
         average += (round(res) - age)**2
