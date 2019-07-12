@@ -52,7 +52,6 @@ extern "C" {
 
 	SUPEREXPORT void savePMCInCSV(char *path, t_pmcData* PMC)
 	{
-		displayPmcModel(PMC);
 		ofstream fd;
 
 		fd.open(path);
