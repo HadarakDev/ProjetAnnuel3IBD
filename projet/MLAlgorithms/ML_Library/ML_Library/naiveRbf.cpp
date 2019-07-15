@@ -77,7 +77,7 @@ extern "C" {
 
 		fd.open(path);
 
-		fd << RBF->X->rows() << ";" << RBF->X->cols();
+		fd << RBF->X->rows() << ";" << RBF->X->cols() << endl;
 
 		// write X
 		for (int x = 0; x < RBF->X->rows(); x++)
@@ -88,6 +88,7 @@ extern "C" {
 				fd << ";";
 			}
 		}
+		fd << endl;
 		// write W
 		for (int x = 0; x < RBF->W->rows(); x++)
 		{
